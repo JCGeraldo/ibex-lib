@@ -1,0 +1,7 @@
+binario: /home/jgera/ibex-local/ibexopt-raak/build/ibexopt-raak
+ibex-lib: 5e51fffc 2025-01-15 rama local
+ibex-affine: c219009 2026-09-04 rama raak
+SETS=easy medium  LRS=xn art compo  TLIM=60  P=4  ONLY=
+corridas: 399
+inicio: 2026-09-13T19:33:06-03:00
+fin: 2026-09-13T19:37:55-03:00

@@ -1,0 +1,21 @@
+cmake_minimum_required (VERSION 3.10)
+project (IBEXOPT_RAAK LANGUAGES CXX)
+
+# Ejecutable local de experimentos: ibexopt04 del fork + relajaciones del plugin
+# ibex-affine. Se configura igual que el consumidor de prueba del CI de ibex-affine:
+#   cmake -DCMAKE_PREFIX_PATH=$HOME/ibex-local/prefix ..
+
+if (NOT CMAKE_BUILD_TYPE)
+  set (CMAKE_BUILD_TYPE Release)
+endif ()
+
+find_package (ibex_affine REQUIRED)
+
+add_executable (ibexopt-raak
+                src/bin/ibexopt_raak.cpp
+                src/ibex_Optimizer04Config_Affine.cpp
+                src/ibex_Optimizer04Config_Affine.h)
+target_include_directories (ibexopt-raak PRIVATE
+                            ${CMAKE_CURRENT_SOURCE_DIR}/src
+                            ${CMAKE_CURRENT_SOURCE_DIR}/src/bin)
+target_link_libraries (ibexopt-raak PRIVATE Ibex::ibex-affine)

@@ -166,7 +166,7 @@ Ctc& Optimizer04Config::get_ctc() {
 	Ctc* cxn;
 	CtcPolytopeHull* cxn_poly;
 	CtcCompo* cxn_compo;
-	if (linearrelaxation=="compo" || linearrelaxation=="art"|| linearrelaxation=="xn") {
+	if (linearrelaxation=="compo" || linearrelaxation=="art"|| linearrelaxation=="xn" || linearrelaxation=="raak" || linearrelaxation=="raakcompo") {
 		cxn_poly = &rec(new CtcPolytopeHull(*lr));
 		cxn_compo = &rec(new CtcCompo(*cxn_poly, *hc44xn));
 	        if (sys->nb_ctr==0)
@@ -176,7 +176,7 @@ Ctc& Optimizer04Config::get_ctc() {
 	}
 	//  the actual contractor  ctc + linear relaxation
 	Ctc* ctcxn;
-	if (linearrelaxation=="compo" || linearrelaxation=="art"|| linearrelaxation=="xn")
+	if (linearrelaxation=="compo" || linearrelaxation=="art"|| linearrelaxation=="xn" || linearrelaxation=="raak" || linearrelaxation=="raakcompo")
 		ctcxn = &rec(new CtcCompo  (*ctc, *cxn));
 	else
 		ctcxn = ctc;
