@@ -18,6 +18,7 @@ for r in rows:
     for k in ("scale", "w_itv", "w_sample", "w_aff", "nl_err", "ratio_aff", "ratio_itv", "us"):
         r[k] = float(r[k])
     r["viol"] = int(r["viol"]); r["k_used"] = int(r["k_used"]); r["active"] = r["active"] == "1"
+    r["viol_itv"] = int(r.get("viol_itv", 0) or 0); r["lin"] = (r.get("lin", "1") == "1")
 VARS = ["af2_k0", "af2_k3", "raa_k0", "raa_k3", "aa_k0", "aa_k3"]
 key = lambda r: (r["instance"], r["func"], r["box_id"])
 by = defaultdict(dict)
@@ -42,18 +43,22 @@ def compare(a, b, keys, thr=0.05):
 
 L = ["# Fase 3, nivel 1 — sobreestimacion de rangos sin resolver", "",
      f"Fuente: `{os.path.basename(src)}`: {len(rows)} filas, {len(by)} (instancia, funcion, caja), "
-     f"{len(set(r['instance'] for r in rows))} instancias. Violaciones de contencion: {sum(r['viol'] for r in rows)}.", "",
+     f"{len(set(r['instance'] for r in rows))} instancias. Violaciones de contencion: puntual {sum(r['viol'] for r in rows)}, "
+     f"de intervalo {sum(r['viol_itv'] for r in rows)}.", "",
      "*ratio* = anchura de la forma afin / anchura del rango muestreado (media geometrica sobre las cajas donde la forma es activa).",
      "Escala 1 = caja inicial; 0.5, 0.25, ... = sub-cajas aleatorias de esa anchura relativa.", "",
      "## Sobreestimacion por variante y escala", "",
-     "| variante | " + " | ".join(f"escala {s:g}" for s in scales) + " | todas | formas inactivas | k-nomial/RAA actuo (filas) | us/eval |",
-     "|---|" + "---|" * (len(scales) + 4)]
+     "| variante | " + " | ".join(f"escala {s:g}" for s in scales) + " | todas | formas inactivas | no linearizables | k-nomial/RAA actuo (filas) | us/eval |",
+     "|---|" + "---|" * (len(scales) + 5)]
 for v in VARS:
     rv = [r for r in rows if r["variant"] == v]
     cells = [gm([r["ratio_aff"] for r in rv if r["scale"] == s]) for s in scales]
     L.append(f"| {vs.VARIANT_LABEL[v]} | " + " | ".join(f"{c:.3f}" for c in cells) + f" | {gm([r['ratio_aff'] for r in rv]):.3f} | "
-             f"{sum(1 for r in rv if not r['active'])} | {sum(1 for r in rv if r['k_used'] > 0)} | {np.mean([r['us'] for r in rv]):.1f} |")
-L += ["", f"Intervalos (extension natural): ratio {gm([r['ratio_itv'] for r in rows if r['variant']=='af2_k0']):.3f} (todas las escalas).", "",
+             f"{sum(1 for r in rv if not r['active'])} | {sum(1 for r in rv if r['active'] and not r['lin'])} | {sum(1 for r in rv if r['k_used'] > 0)} | {np.mean([r['us'] for r in rv]):.1f} |")
+base_rows = [r for r in rows if r["variant"] == "af2_k0"]
+L.append("| *extension natural de intervalos* | " + " | ".join(f"{gm([r['ratio_itv'] for r in base_rows if r['scale'] == s]):.3f}" for s in scales)
+         + f" | {gm([r['ratio_itv'] for r in base_rows]):.3f} | — | — | — | — |")
+L += ["",
       "## Separacion de efectos (anchura de la forma; gana = mas estrecha en mas de 5 %)", "",
       "| efecto | comparacion | n | gana | empata | pierde | identicas | media geom. |", "|---|---|---|---|---|---|---|---|"]
 keys = list(by.keys())
@@ -78,16 +83,23 @@ for v in VARS:
     ys = [gm([r["ratio_aff"] for r in rows if r["variant"] == v and r["scale"] == s]) for s in scales]
     ax.plot(range(len(scales)), ys, vs.VARIANT_STYLE[v], color=vs.VARIANT_COLOR[v], marker="o", label=vs.VARIANT_LABEL[v])
 ax.set_xticks(range(len(scales))); ax.set_xticklabels([f"{s:g}" for s in scales]); ax.set_xlabel("anchura relativa de la caja (1 = caja inicial)")
-ax.set_ylabel("anchura afin / rango muestreado (media geom.)"); ax.set_yscale("log"); ax.legend(fontsize=8, ncol=2)
+ax.set_ylabel("anchura afin / rango muestreado (media geom.)"); ax.legend(fontsize=8, ncol=2)
+ys_itv = [gm([r["ratio_itv"] for r in rows if r["variant"] == "af2_k0" and r["scale"] == s]) for s in scales]
+ax.plot(range(len(scales)), ys_itv, ":", color=vs.TEXT2, marker="s", label="extension natural de intervalos")
+ax.legend(fontsize=8, ncol=2)
 ax.set_title("Nivel 1: sobreestimacion por variante y tamano de caja", loc="left", color=vs.TEXT, fontsize=11)
 fig.tight_layout(); fig.savefig(os.path.join(out, "nivel1_gm_por_escala.png")); plt.close(fig)
 
 fig, ax = plt.subplots(figsize=(8, 3.6))
 labels = [f"{vs.VARIANT_LABEL[a]}\nvs {vs.VARIANT_LABEL[b]}" for _, a, b, _ in eff_rows]
 g = [c["gana"] for *_, c in eff_rows]; e_ = [c["empata"] for *_, c in eff_rows]; p = [c["pierde"] for *_, c in eff_rows]
-x = np.arange(len(eff_rows)); w = 0.26
-ax.bar(x - w, g, w, color=vs.SLOTS[2], label="mas estrecha (>5 %)"); ax.bar(x, e_, w, color="#c3c2b7", label="igual (±5 %)"); ax.bar(x + w, p, w, color=vs.SLOTS[7], label="mas ancha (>5 %)")
+x = np.arange(len(eff_rows)); w = 0.36
+ax.bar(x - w / 2, g, w, color=vs.SLOTS[2], label="mas estrecha (>5 %)"); ax.bar(x + w / 2, p, w, color=vs.SLOTS[7], label="mas ancha (>5 %)")
+for xi, (gi, pi_) in enumerate(zip(g, p)):
+    ax.annotate(str(gi), (xi - w / 2, gi), ha="center", va="bottom", fontsize=7, color=vs.TEXT2)
+    ax.annotate(str(pi_), (xi + w / 2, pi_), ha="center", va="bottom", fontsize=7, color=vs.TEXT2)
 ax.set_xticks(x); ax.set_xticklabels(labels, fontsize=7); ax.set_ylabel("(instancia, funcion, caja)"); ax.legend(fontsize=8)
-ax.set_title("Nivel 1: victorias / empates / derrotas por par de variantes", loc="left", color=vs.TEXT, fontsize=11)
+n_tot = eff_rows[0][3]["n"] if eff_rows else 0
+ax.set_title(f"Nivel 1: casos mas estrechos / mas anchos por par de variantes (el resto de {n_tot} es igual ±5 %)", loc="left", color=vs.TEXT, fontsize=10)
 fig.tight_layout(); fig.savefig(os.path.join(out, "nivel1_efectos.png")); plt.close(fig)
 print("ok:", out)

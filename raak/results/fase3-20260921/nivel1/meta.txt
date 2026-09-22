@@ -1,0 +1,4 @@
+SETS=easy medium hard others blowup unsolved benchs-unconstrainedoptim TRIG=auto SUBBOXES=2 SAMPLES=200 instancias=390
+ibex-affine: c219009 + parches:  M src/CMakeLists.txt  M src/arithmetic/ibex_Affine2_fAF2.cpp  M src/arithmetic/ibex_Affine3_fAFFullI.cpp  M src/arithmetic/ibex_AffineMain.h  M src/arithmetic/ibex_AffineMain_impl.h  M src/numeric/ibex_LinearizerAffine2.cpp  M src/numeric/ibex_LinearizerAffine2.h ?? src/arithmetic/ibex_AffineMain_trig_impl.h ?? src/arithmetic/ibex_AffineTrig.h ?? src/arithmetic/ibex_KNomial.h 
+inicio: 2026-09-21T22:15:18-03:00
+fin: 2026-09-21T22:19:15-03:00 exit=0

@@ -74,8 +74,7 @@ fig, axes = plt.subplots(1, 2, figsize=(10, 3.8), sharey=True)
 for ax, f in zip(axes, ["sin", "cos"]):
     for m in MODES:
         ys = [gm([r["ratio"] for r in sel(func=f, arith="AF2", mode=m, width=w)]) for w in widths]
-        ax.plot(widths, ys, vs.MODE_LABEL and "-", color=vs.MODE_COLOR[m], marker="o", label=vs.MODE_LABEL[m])
-        ax.annotate(m, (widths[-1], ys[-1]), xytext=(4, 0), textcoords="offset points", color=vs.MODE_COLOR[m], fontsize=8, va="center")
+        ax.plot(widths, ys, "-", color=vs.MODE_COLOR[m], marker="o", label=vs.MODE_LABEL[m])
     ax.set_xscale("log"); ax.set_title(f"{f}(x): sobreestimacion frente al ancho", color=vs.TEXT, fontsize=10, loc="left")
     ax.set_xlabel("ancho del intervalo"); ax.axhline(1.0, color=vs.TEXT2, linewidth=0.8)
 axes[0].set_ylabel("anchura afin / anchura exacta (media geom.)")

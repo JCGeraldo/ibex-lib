@@ -21,6 +21,7 @@
 #include "ibex_Affine.h"
 #include "ibex_KNomial.h"
 #include "ibex_AffineTrig.h"
+#include "ibex_LinearizerAffine2.h"   // affine_form_is_linearizable
 using namespace std;
 using namespace ibex;
 
@@ -33,18 +34,25 @@ static const Variant VARS[6] = {
 	{"aa_k0",  "aa",  0, true,  AFFINE_AF2}, {"aa_k3",  "aa",  3, true,  AFFINE_AF2},
 };
 
-struct AffRes { bool active; double mid, rad; vector<double> a; };
+struct AffRes { bool active, lin; int nc; double mid, rad; vector<double> a; };
 
+// Lee la forma afin resultante. Los coeficientes de las variables son noise(i), i < n, pero solo si la
+// forma los tiene: en AF_fAF2 una subexpresion que colapsa a intervalo (p. ej. sin de un argumento de
+// ancho >= 2 pi) deja una forma con noise_count() < n, y noise(i) fuera de rango leeria memoria ajena.
+// 'lin' = affine_form_is_linearizable (lo que exige LinearizerAffineT para usar la forma en la relajacion).
 template<class T>
 static AffRes eval_aff(AffineEval<T>& ev, const IntervalVector& box) {
 	AffRes r;
 	pair<Domain*, TemplateDomain<AffineMain<T> >*> res = ev.eval(box, AffineVarMainVector<T>(box));
 	const AffineMain<T>& af = res.second->i();
+	const int n = box.size();
 	r.active = af.is_active();
+	r.nc = r.active ? af.noise_count() : 0;
+	r.lin = affine_form_is_linearizable(af, n);
 	const Interval I = af.itv();
 	r.mid = I.mid(); r.rad = I.rad();
-	r.a.assign(box.size(), 0.0);
-	if (r.active) for (int i = 0; i < box.size(); i++) r.a[i] = af.noise(i);
+	r.a.assign(n, 0.0);
+	if (r.active) for (int i = 0; i < n && i < r.nc; i++) r.a[i] = af.noise(i);
 	return r;
 }
 
@@ -76,7 +84,7 @@ int main(int argc, char** argv) {
 	mt19937_64 rng(seed);
 	uniform_real_distribution<double> U(0.0, 1.0);
 
-	printf("instance,set,func,box_id,scale,variant,arith,k,n,clipped,active,w_itv,w_sample,w_aff,nl_err,ratio_aff,ratio_itv,viol,k_used,us\n");
+	printf("instance,set,func,box_id,scale,variant,arith,k,n,clipped,active,w_itv,w_sample,w_aff,nl_err,ratio_aff,ratio_itv,viol,k_used,us,viol_itv,max_exc,lin,nc\n");
 	long rows = 0, skipped_vec = 0, total_viol = 0, inactive = 0;
 
 	for (size_t fi = 0; fi < files.size(); fi++) {
@@ -158,7 +166,9 @@ int main(int argc, char** argv) {
 					const long ku = k_used_total() - ku0;
 					affine_mode() = AFFINE_AF2; knomial_max_k() = 0;
 
-					double w_aff = 2.0 * r.rad, nl = 0.0; long viol = 0;
+					// viol: puntos fuera de la envolvente puntual mid + sum a_i eps_i +- nl (la comprobacion fuerte);
+					// viol_itv: puntos fuera del intervalo [mid - rad, mid + rad] (la debil); max_exc: mayor exceso puntual
+					double w_aff = 2.0 * r.rad, nl = 0.0, max_exc = 0.0; long viol = 0, viol_itv = 0;
 					if (r.active) {
 						double sa = 0.0; for (int i = 0; i < n; i++) sa += fabs(r.a[i]);
 						nl = std::max(0.0, r.rad - sa);
@@ -166,15 +176,18 @@ int main(int argc, char** argv) {
 						for (size_t s = 0; s < pts.size(); s++) {
 							double model = r.mid;
 							for (int i = 0; i < n; i++) model += r.a[i] * ((pts[s][i] - B[i].mid()) / B[i].rad());
-							if (fabs(fv[s] - model) > nl + tol) viol++;
+							const double exc = fabs(fv[s] - model) - nl;
+							if (exc > tol) viol++;
+							if (exc > max_exc) max_exc = exc;
+							if (fabs(fv[s] - r.mid) > r.rad + tol) viol_itv++;
 						}
 					} else { inactive++; w_aff = INFINITY; nl = INFINITY; }
 					total_viol += viol; rows++;
-					printf("%s,%s,%s,%zu,%g,%s,%s,%d,%d,%d,%d,%.10g,%.10g,%.10g,%.10g,%.6g,%.6g,%ld,%ld,%.1f\n",
+					printf("%s,%s,%s,%zu,%g,%s,%s,%d,%d,%d,%d,%.10g,%.10g,%.10g,%.10g,%.6g,%.6g,%ld,%ld,%.1f,%ld,%.3g,%d,%d\n",
 					       inst.c_str(), set.c_str(), funcs[k].first.c_str(), bi, boxes[bi].second, V.name, V.arith, V.k, n, clipped,
 					       r.active ? 1 : 0, w_itv, w_sample, w_aff, nl,
 					       (w_sample > 1e-15 && r.active) ? w_aff / w_sample : -1.0,
-					       (w_sample > 1e-15) ? w_itv / w_sample : -1.0, viol, ku, us);
+					       (w_sample > 1e-15) ? w_itv / w_sample : -1.0, viol, ku, us, viol_itv, max_exc, r.lin ? 1 : 0, r.nc);
 				}
 			}
 		}

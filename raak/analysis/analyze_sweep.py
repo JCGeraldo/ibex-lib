@@ -54,7 +54,14 @@ def perf_profile(ax, vlist, metric, title):
     for i in insts:
         vals = [res[i][v][metric] for v in vlist if solved(res[i][v]) and res[i][v][metric] > 0]
         best[i] = min(vals) if vals else None
-    taus = np.logspace(0, math.log10(max(TLIM, 1e4)), 200)
+    # tau hasta el mayor cociente finito observado (con margen), no mas alla
+    tmax = 1.0
+    for i in insts:
+        if best[i] is None: continue
+        for v in vlist:
+            r = res[i][v]
+            if solved(r) and r[metric] > 0: tmax = max(tmax, r[metric] / best[i])
+    taus = np.logspace(0, math.log10(tmax * 1.5), 200)
     for v in vlist:
         ratios = []
         for i in insts:

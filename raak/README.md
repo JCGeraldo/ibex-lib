@@ -14,7 +14,25 @@ Trabajo local sobre dos repos fijados a un commit:
 **Estado:** prototipo de investigación. La aritmética no es rigurosa: el margen de redondeo de la
 reescritura es heurístico (falta la fase F6).
 
-## Resultados en una línea
+## Comparación AF2 / RAA / AA × k-nomial (plan 2026-09-21)
+
+Sobre el prototipo se montó la comparación sistemática de tres aritméticas afines, cada una con y
+sin reducción k-nomial (seis variantes), primero en rangos y luego dentro del solver:
+
+| Documento | Contenido |
+|---|---|
+| [`docs/PLAN_COMPARACION.md`](docs/PLAN_COMPARACION.md) | El plan (Fases 0–4), estado de cada fase y bitácora |
+| [`docs/FASE0_VERIFICACIONES.md`](docs/FASE0_VERIFICACIONES.md) | Línea 778 de `ibex_Affine2_fAF2.cpp`; inventario del plugin de Jordan Ninin |
+| [`docs/FASE2_TRIGONOMETRICAS.md`](docs/FASE2_TRIGONOMETRICAS.md) | Seno/coseno: cuerda (Chebyshev de la RAA), min-range, mecanismo general; calidad medida |
+| [`docs/FASE3_EXPERIMENTOS.md`](docs/FASE3_EXPERIMENTOS.md) | Nivel 1 (rangos) y nivel 2 (solver, ≥ 30 min por instancia): diseño, estrategia de cómputo y resultados |
+| [`docs/CAMBIOS_CODIGO.md`](docs/CAMBIOS_CODIGO.md) | **Cada función agregada y qué hace** (parches 0001–0008, CLI, tests, scripts) |
+
+CLI (`ibexopt-raak`): `--lr=xn|art|compo --arith=af2|raa|aa --knomial_k=0|3 --trig=auto|cheb|minrange|legacy`.
+Parches: `0004` separa aritmética y k-nomial, `0005` corner test de la RAA, `0006` k-nomial en AA,
+`0007` linearizador para AA, `0008` seno/coseno. Resultados en `results/fase1-*`, `fase2-*`, `fase3-*`
+y análisis/gráficos con `analysis/*.py`.
+
+## Resultados en una línea (prototipo RAA-K, septiembre 2026)
 
 - **Implementación validada:** el port en C++ reproduce bit a bit la implementación de referencia en
   Python (`knomial.py`), y en 58 instancias QPLIB coincide con su métrica `af2_error` con diferencia
