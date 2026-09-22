@@ -87,3 +87,6 @@ tabla consolidada (`results/fase3-20260921/RESUMEN.md`, `resumen_medias_geom.png
   evaluaciones sin violaciones; regresión 21/21 idéntica) y documentada; nivel 1 de la Fase 3
   ejecutado (380 instancias, 0 violaciones) y analizado; nivel 2 lanzado en WSL (cadena A→D,
   `-t 1800`, 12 procesos) con análisis probado sobre el parcial de la etapa A.
+- 2026-09-22: etapas A, B y C del nivel 2 terminadas, analizadas y commiteadas; Fase 4
+  (tabla consolidada, gráficos, README de resultados) hecha para ellas. Etapa D detenida a
+  petición del usuario (reanudable) a la espera de su confirmación.

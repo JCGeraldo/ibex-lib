@@ -217,10 +217,45 @@ Lecturas:
 Gráficos y tablas: `analisis/nivel2_perfil_art.png`, `analisis/nivel2_dispersion_art.png`,
 `analisis/nivel2_tabla.md`.
 
-### Etapas C y D — `hard` + `others`
+### Etapa C — `hard` + `others`, relajación `compo` (15 instancias × 7 configuraciones, `-t 1800`)
 
-En curso en WSL al cierre de esta redacción (15 instancias × 13 configuraciones, casi todas al
-límite de 1800 s: 8–9 h de pared). Cuando terminen, el análisis se genera con los mismos comandos:
+`results/fase3-20260921/C_hard_others_compo/`. 15 instancias: 11 se resuelven con AF2/RAA,
+`polygon25` agota el tiempo en todas las configuraciones, `ship` es `NO_FEASIBLE_FOUND` y las dos
+`test_infinity*` no acotadas.
+
+| variante | resueltas | celdas gana / empata / pierde | celdas media geom. | CPU media geom. | CPU total (h) |
+|---|---|---|---|---|---|
+| AF2 (base) | 11 | — | 1 | 1 | 0.98 |
+| AF2 + k-nomial | 11 | 0 / 11 / 0 | 0.997 | 0.984 | 0.98 |
+| RAA | 11 | 1 / 10 / 0 | **0.830** | **0.835** | 0.97 |
+| RAA + k-nomial | 11 | 1 / 10 / 0 | 0.828 | 0.824 | 0.97 |
+| AA | **8** | 2 / 2 / 4 | 0.992 | 1.183 | 2.33 |
+| AA + k-nomial | 11 | 3 / 8 / 0 | 0.830 | 1.001 | 1.06 |
+| X-Taylor (control) | 7 | 0 / 0 / 7 | 2.766 | 2.089 | 2.99 |
+
+Lecturas (con la cautela de que son 11 instancias):
+
+1. **RAA vuelve a ganar sin perder**: la media 0.83 la explica una sola instancia,
+   `others/ex8_4_5bis`, que pasa de 51 412 celdas y 46 s (AF2) a 6 602 celdas y 6 s (RAA): otra vez
+   los cuadrados de Chebyshev (AA, que ya los tiene, hace 7 088). En las otras 10 RAA es idéntica a
+   AF2 celda a celda.
+2. **La AA tradicional deja de resolver tres instancias que AF2 sí resuelve** (`chem`, `chem-1`,
+   `chembis`: agota los 1800 s con 4 veces más celdas que AF2 en 420 s) y necesita 2.3 h de CPU en
+   total frente a 1 h. **Con el k-nomial las tres vuelven a resolverse** con las mismas celdas que
+   AF2 (111 720 frente a 111 578) y tiempos similares: aquí el k-nomial no es una mejora marginal
+   sino la diferencia entre resolver o no. Dentro de AA el efecto es celdas 0.78 y CPU 0.81 (4 gana,
+   1 pierde en las 8 comparables). AA + k-nomial iguala a RAA en celdas (0.830) pero no en CPU (1.00
+   frente a 0.83).
+3. **El k-nomial sobre AF2 y RAA sigue sin actuar** (0 / 11 / 0, medias 0.997): ninguna de estas
+   instancias tiene productos con dos símbolos compartidos.
+4. El control X-Taylor solo resuelve 7 y es 2.8× peor en celdas: en `hard` la relajación afín es
+   decisiva, no un refinamiento.
+
+### Etapa D — `hard` + `others`, relajación `art`
+
+Detenida a petición del usuario tras cerrar la etapa C (12 de 90 corridas hechas; la cadena es
+reanudable: al relanzar `~/ibex-local/results/fase3-20260921/chain.sh` salta lo ya hecho). Cuando
+termine, el análisis se genera con los mismos comandos:
 
 ```bash
 bash ~/ibex-local/tmp/an_stage.sh C_hard_others_compo      # analisis + copia al repo (idem D_hard_others_art)
@@ -230,7 +265,11 @@ cd ~/ibex-local/analysis && python3 consolidate.py ~/ibex-local/results/fase3-20
 (`an_stage.sh` equivale a `python3 raak/analysis/analyze_sweep.py <etapa>/runs.csv <etapa>/analisis --tlim 1800`
 seguido de copiar `runs.csv`, `meta.txt` y `analisis/` a `raak/results/fase3-20260921/<etapa>/`.)
 
-## Conclusiones (nivel 1 + etapas A y B del nivel 2)
+## Conclusiones (nivel 1 + etapas A, B y C del nivel 2)
+
+Añadido tras la etapa C: en `hard`, la AA tradicional sola pierde alcance (3 instancias sin resolver
+de 11) y el k-nomial se lo devuelve por completo; RAA gana otra instancia grande (`ex8_4_5bis`, 8×
+menos celdas) sin perder ninguna. Las conclusiones de abajo se mantienen y se refuerzan.
 
 Tabla consolidada: `results/fase3-20260921/RESUMEN.md`; gráfico: `resumen_medias_geom.png`.
 
