@@ -47,7 +47,7 @@ el archivo `CAMBIOS_CODIGO.md` lista cada función agregada. Un commit local por
 Pendiente conocido (heredado): el margen de redondeo de la reescritura k-nomial es heurístico
 (fase de rigor F6, fuera de este plan).
 
-## Fase 2 — Funciones trigonométricas  🔄
+## Fase 2 — Funciones trigonométricas  ✅ (2026-09-21)
 
 1. Implementación (parche 0008): `Asin_CH/Acos_CH` (pendiente de cuerda = Chebyshev de la RAA,
    Ec. 12 de [A]) y `Asin_MR/Acos_MR` (min-range), con el mecanismo general de residuo exacto
@@ -58,7 +58,7 @@ Pendiente conocido (heredado): el margen de redondeo de la reescritura k-nomial 
    anchos de 0.01 a 2π) × 2 aritméticas × 3 modos: contención por muestreo, sobreestimación
    respecto del rango exacto, error de linealización, tiempo. Resultados en `results/fase2-*/`.
 
-## Fase 3 — Evaluación experimental  ⏳
+## Fase 3 — Evaluación experimental  🔄 (nivel 1 ✅ 2026-09-21; nivel 2 en curso)
 
 1. Nivel 1 (rangos): `tests/range_eval.cpp` evalúa objetivo y restricciones de cada instancia de
    `benchs/optim` con las seis variantes sobre la caja inicial y sub-cajas, sin resolver:
@@ -81,4 +81,7 @@ tabla consolidada, con un `README.md` en la carpeta de resultados que explica ca
 ## Bitácora
 
 - 2026-09-21: Fase 0 documentada; Fase 1 consolidada en el repo (parches 0004–0007, CLI, tests,
-  scripts, resultados) y revalidada; Fase 2 implementada (parche 0008) y en validación.
+  scripts, resultados) y revalidada; Fase 2 implementada (parche 0008), validada (17 640
+  evaluaciones sin violaciones; regresión 21/21 idéntica) y documentada; nivel 1 de la Fase 3
+  ejecutado (380 instancias, 0 violaciones) y analizado; nivel 2 lanzado en WSL (cadena A→D,
+  `-t 1800`, 12 procesos) con análisis probado sobre el parcial de la etapa A.

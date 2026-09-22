@@ -100,7 +100,7 @@ CLI nuevo ya no hace falta (los alias se traducen a `art`/`compo`), pero se cons
 | `wsl_fase1_ref*.sh`, `wsl_fase1_paso1*.sh` | Pasos de aceptación de la Fase 1 (referencia bit a bit, cada parche). |
 | `wsl_fase2_paso21.sh` | Fase 2: recompila, corre `trig_lin_test`, los tests de la Fase 1, la regresión sin trigonométricas, las instancias con `sin`/`cos` por modo, y guarda el parche 0008. |
 | `wsl_fase3_nivel1.sh` | Fase 3 nivel 1: compila y corre `range_eval` sobre todos los conjuntos de `benchs/optim`. |
-| `wsl_fase3_sweep.sh`, `wsl_fase3_status.sh` | Fase 3 nivel 2: barrido reanudable en paralelo con las seis variantes (+ `xn`), y su monitor. |
+| `wsl_fase3_sweep.sh`, `wsl_fase3_status.sh`, `wsl_fase3_launch.sh` | Fase 3 nivel 2: barrido reanudable en paralelo con las seis variantes (+ `xn`), su monitor, y el lanzador que hace una prueba corta y encadena las etapas A–D en segundo plano. |
 | `analysis/analyze_trig.py` | Fase 2.2: tablas y gráficos de calidad de `sin`/`cos`. |
 | `analysis/analyze_range.py` | Nivel 1: sobreestimación por variante, separación de efectos aritmética / k-nomial. |
 | `analysis/analyze_sweep.py` | Nivel 2: victorias/derrotas/empates, medias geométricas, perfiles de desempeño, dispersión log-log, tabla consolidada y `README.md` de la carpeta de resultados. |
