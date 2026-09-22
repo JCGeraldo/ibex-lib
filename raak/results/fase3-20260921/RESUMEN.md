@@ -1,6 +1,6 @@
 # Fase 4 — tabla consolidada del nivel 2
 
-Etapas: A_easy_medium_compo, B_easy_medium_art, C_hard_others_compo. Base de cada comparacion: AF2 sin k-nomial de la misma etapa; 
+Etapas: A_easy_medium_compo, B_easy_medium_art, C_hard_others_compo, D_hard_others_art. Base de cada comparacion: AF2 sin k-nomial de la misma etapa; 
 *gana* = cociente < 0.95, *pierde* = > 1.05; medias geometricas sobre las instancias resueltas por ambas.
 
 ## A_easy_medium_compo
@@ -73,4 +73,27 @@ Etapas: A_easy_medium_compo, B_easy_medium_art, C_hard_others_compo. Base de cad
 | k-nomial | AA + k-nomial / AA | 4 / 3 / 1 | 0.779 | 0.807 |
 | total | RAA + k-nomial / AF2 | 1 / 10 / 0 | 0.828 | 0.824 |
 | total | AA + k-nomial / AF2 | 3 / 8 / 0 | 0.830 | 1.001 |
+
+## D_hard_others_art
+
+15 instancias.
+
+| variante | resueltas | celdas gana / empata / pierde | celdas media geom. | CPU gana / empata / pierde | CPU media geom. |
+|---|---|---|---|---|---|
+| AF2 (base) | 11 | — | 1 | — | 1 |
+| AF2 + k-nomial | 11 | 0 / 11 / 0 | 0.998 | 0 / 11 / 0 | 0.998 |
+| RAA | 11 | 1 / 10 / 0 | 0.802 | 1 / 10 / 0 | 0.824 |
+| RAA + k-nomial | 11 | 1 / 10 / 0 | 0.800 | 3 / 8 / 0 | 0.807 |
+| AA | 9 | 2 / 1 / 6 | 1.346 | 2 / 1 / 6 | 1.628 |
+| AA + k-nomial | 11 | 2 / 8 / 1 | 0.797 | 2 / 0 / 9 | 1.014 |
+
+| efecto | comparacion | celdas gana / empata / pierde | celdas media geom. | CPU media geom. |
+|---|---|---|---|---|
+| aritmetica | RAA / AF2 | 1 / 10 / 0 | 0.802 | 0.824 |
+| aritmetica | AA / AF2 | 2 / 1 / 6 | 1.346 | 1.628 |
+| k-nomial | AF2 + k-nomial / AF2 | 0 / 11 / 0 | 0.998 | 0.998 |
+| k-nomial | RAA + k-nomial / RAA | 0 / 11 / 0 | 0.998 | 0.980 |
+| k-nomial | AA + k-nomial / AA | 5 / 4 / 0 | 0.563 | 0.606 |
+| total | RAA + k-nomial / AF2 | 1 / 10 / 0 | 0.800 | 0.807 |
+| total | AA + k-nomial / AF2 | 2 / 8 / 1 | 0.797 | 1.014 |
 

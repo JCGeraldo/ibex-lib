@@ -1,0 +1,17 @@
+binario: /home/evapo/ibex-local/ibexopt-raak/build/ibexopt-raak
+ibex-affine: c219009 + parches:  M src/CMakeLists.txt  M src/arithmetic/ibex_Affine2_fAF2.cpp  M src/arithmetic/ibex_Affine3_fAFFullI.cpp  M src/arithmetic/ibex_AffineMain.h  M src/arithmetic/ibex_AffineMain_impl.h  M src/numeric/ibex_LinearizerAffine2.cpp  M src/numeric/ibex_LinearizerAffine2.h ?? src/arithmetic/ibex_AffineMain_trig_impl.h ?? src/arithmetic/ibex_AffineTrig.h ?? src/arithmetic/ibex_KNomial.h 
+SETS=hard others LRS=art TLIM=1800 P=12 TRIG=auto WITH_XN=0 ONLY=
+instancias: 15  variantes: 6  tareas: 90
+inicio: 2026-09-22T16:50:50-03:00
+binario: /home/evapo/ibex-local/ibexopt-raak/build/ibexopt-raak
+ibex-affine: c219009 + parches:  M src/CMakeLists.txt  M src/arithmetic/ibex_Affine2_fAF2.cpp  M src/arithmetic/ibex_Affine3_fAFFullI.cpp  M src/arithmetic/ibex_AffineMain.h  M src/arithmetic/ibex_AffineMain_impl.h  M src/numeric/ibex_LinearizerAffine2.cpp  M src/numeric/ibex_LinearizerAffine2.h ?? src/arithmetic/ibex_AffineMain_trig_impl.h ?? src/arithmetic/ibex_AffineTrig.h ?? src/arithmetic/ibex_KNomial.h 
+SETS=hard others LRS=art TLIM=1800 P=12 TRIG=auto WITH_XN=0 ONLY=
+instancias: 15  variantes: 6  tareas: 90
+inicio: 2026-09-22T17:23:21-03:00
+fin: 2026-09-22T18:00:11-03:00
+binario: /home/evapo/ibex-local/ibexopt-raak/build/ibexopt-raak
+ibex-affine: c219009 + parches:  M src/CMakeLists.txt  M src/arithmetic/ibex_Affine2_fAF2.cpp  M src/arithmetic/ibex_Affine3_fAFFullI.cpp  M src/arithmetic/ibex_AffineMain.h  M src/arithmetic/ibex_AffineMain_impl.h  M src/numeric/ibex_LinearizerAffine2.cpp  M src/numeric/ibex_LinearizerAffine2.h ?? src/arithmetic/ibex_AffineMain_trig_impl.h ?? src/arithmetic/ibex_AffineTrig.h ?? src/arithmetic/ibex_KNomial.h 
+SETS=hard others LRS=art TLIM=1800 P=12 TRIG=auto WITH_XN=0 ONLY=
+instancias: 15  variantes: 6  tareas: 90
+inicio: 2026-09-22T18:02:39-03:00
+fin: 2026-09-22T18:32:39-03:00

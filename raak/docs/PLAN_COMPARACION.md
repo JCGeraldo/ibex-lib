@@ -58,7 +58,7 @@ Pendiente conocido (heredado): el margen de redondeo de la reescritura k-nomial 
    anchos de 0.01 a 2π) × 2 aritméticas × 3 modos: contención por muestreo, sobreestimación
    respecto del rango exacto, error de linealización, tiempo. Resultados en `results/fase2-*/`.
 
-## Fase 3 — Evaluación experimental  🔄 (nivel 1 ✅ 2026-09-21; nivel 2 en curso)
+## Fase 3 — Evaluación experimental  ✅ (nivel 1 2026-09-21; nivel 2 etapas A–D 2026-09-22)
 
 1. Nivel 1 (rangos): `tests/range_eval.cpp` evalúa objetivo y restricciones de cada instancia de
    `benchs/optim` con las seis variantes sobre la caja inicial y sub-cajas, sin resolver:
@@ -71,7 +71,7 @@ Pendiente conocido (heredado): el margen de redondeo de la reescritura k-nomial 
    efecto de la aritmética (`arith` con `k=0` frente a `af2 k=0`) del efecto del k-nomial
    (`k=3` frente a `k=0` dentro de cada aritmética).
 
-## Fase 4 — Resultados  ✅ para nivel 1 y etapas A–B (C–D se agregan al terminar)
+## Fase 4 — Resultados  ✅ (nivel 1 y etapas A–D)
 
 Gráficos (perfiles de desempeño, dispersión log-log de tiempos y celdas, calidad de sin/cos) y
 tabla consolidada (`results/fase3-20260921/RESUMEN.md`, `resumen_medias_geom.png`), con
@@ -89,4 +89,6 @@ tabla consolidada (`results/fase3-20260921/RESUMEN.md`, `resumen_medias_geom.png
   `-t 1800`, 12 procesos) con análisis probado sobre el parcial de la etapa A.
 - 2026-09-22: etapas A, B y C del nivel 2 terminadas, analizadas y commiteadas; Fase 4
   (tabla consolidada, gráficos, README de resultados) hecha para ellas. Etapa D detenida a
-  petición del usuario (reanudable) a la espera de su confirmación.
+  petición del usuario (reanudable) a la espera de su confirmación; reanudada con su confirmación
+  y terminada el mismo día (12 corridas interrumpidas rehechas). **Plan completo**: las cuatro
+  etapas analizadas, consolidación y conclusiones finales en `FASE3_EXPERIMENTOS.md`.

@@ -251,25 +251,38 @@ Lecturas (con la cautela de que son 11 instancias):
 4. El control X-Taylor solo resuelve 7 y es 2.8× peor en celdas: en `hard` la relajación afín es
    decisiva, no un refinamiento.
 
-### Etapa D — `hard` + `others`, relajación `art`
+### Etapa D — `hard` + `others`, relajación `art` (15 instancias × 6 variantes, `-t 1800`)
 
-Detenida a petición del usuario tras cerrar la etapa C (12 de 90 corridas hechas; la cadena es
-reanudable: al relanzar `~/ibex-local/results/fase3-20260921/chain.sh` salta lo ya hecho). Cuando
-termine, el análisis se genera con los mismos comandos:
+`results/fase3-20260921/D_hard_others_art/`. La etapa se detuvo a petición del usuario tras la C y
+se reanudó al día siguiente; las 12 corridas interrumpidas (`chem`, `chem-1`) se rehicieron desde
+cero (el script ya no registra fila para una corrida interrumpida).
 
-```bash
-bash ~/ibex-local/tmp/an_stage.sh C_hard_others_compo      # analisis + copia al repo (idem D_hard_others_art)
-cd ~/ibex-local/analysis && python3 consolidate.py ~/ibex-local/results/fase3-20260921   # RESUMEN.md y grafico
-```
+| variante | resueltas | celdas gana / empata / pierde | celdas media geom. | CPU media geom. | CPU total (h) |
+|---|---|---|---|---|---|
+| AF2 (base) | 11 | — | 1 | 1 | 0.88 |
+| AF2 + k-nomial | 11 | 0 / 11 / 0 | 0.998 | 0.998 | 0.88 |
+| RAA | 11 | 1 / 10 / 0 | **0.802** | **0.824** | 0.87 |
+| RAA + k-nomial | 11 | 1 / 10 / 0 | 0.800 | 0.807 | 0.87 |
+| AA | **9** | 2 / 1 / 6 | 1.346 | 1.628 | 2.19 |
+| AA + k-nomial | 11 | 2 / 8 / 1 | 0.797 | 1.014 | 0.95 |
 
-(`an_stage.sh` equivale a `python3 raak/analysis/analyze_sweep.py <etapa>/runs.csv <etapa>/analisis --tlim 1800`
-seguido de copiar `runs.csv`, `meta.txt` y `analisis/` a `raak/results/fase3-20260921/<etapa>/`.)
+Lecturas: el mismo patrón que la etapa C, más marcado porque `art` no tiene la intersección con
+X-Taylor que amortigua a la AA. RAA gana `ex8_4_5bis` (85 942 → 7 600 celdas) y empata el resto.
+La AA sola pierde `chem` y `chem-1` (agota los 1800 s con 758 000 celdas frente a 112 836 en 330 s
+de AF2) y es un 35 % peor en celdas y un 63 % en CPU en las 9 que resuelve; con el k-nomial vuelve a
+resolver las 11 con casi las mismas celdas que AF2 (`chem`: 112 984 en 378 s), y dentro de AA el
+efecto es celdas 0.563 y CPU 0.606 (5 gana / 4 empata / 0 pierde). El k-nomial sobre AF2 y RAA:
+0 / 11 / 0.
 
-## Conclusiones (nivel 1 + etapas A, B y C del nivel 2)
+Regenerar cualquier etapa: `python3 raak/analysis/analyze_sweep.py <etapa>/runs.csv <etapa>/analisis --tlim 1800`;
+consolidado: `python3 raak/analysis/consolidate.py raak/results/fase3-20260921`.
 
-Añadido tras la etapa C: en `hard`, la AA tradicional sola pierde alcance (3 instancias sin resolver
-de 11) y el k-nomial se lo devuelve por completo; RAA gana otra instancia grande (`ex8_4_5bis`, 8×
-menos celdas) sin perder ninguna. Las conclusiones de abajo se mantienen y se refuerzan.
+## Conclusiones (nivel 1 + las cuatro etapas del nivel 2)
+
+Añadido tras `hard`+`others` (etapas C y D): la AA tradicional sola pierde alcance (2–3 instancias
+de 11 sin resolver, en las dos relajaciones) y el k-nomial se lo devuelve por completo, con celdas
+0.56–0.78 dentro de AA; RAA gana otra instancia grande (`ex8_4_5bis`, 8–11× menos celdas) sin
+perder ninguna. Las conclusiones de abajo, escritas con A y B, se mantienen y se refuerzan.
 
 Tabla consolidada: `results/fase3-20260921/RESUMEN.md`; gráfico: `resumen_medias_geom.png`.
 
@@ -293,4 +306,5 @@ Tabla consolidada: `results/fase3-20260921/RESUMEN.md`; gráfico: `resumen_media
    `sin` a intervalo) no afectan al nivel 2 porque esas instancias no están en las etapas.
 5. **Limitaciones.** Una corrida por configuración (sin repeticiones ni semillas alternativas); el
    umbral ±5 % separa ruido de efecto solo aproximadamente; el margen de redondeo del k-nomial
-   sigue siendo heurístico; `hard`+`others` pendientes de análisis.
+   sigue siendo heurístico; en `hard`+`others` son solo 11 instancias comparables, y `blowup` y
+   `unsolved` (63 instancias) quedaron fuera del barrido del solver por coste.
