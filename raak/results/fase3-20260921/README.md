@@ -3,8 +3,9 @@
 Comparación de las seis variantes (AF2 | RAA | AA) × (sin | con k-nomial) más el control `xn`.
 Binario y parches: ver `meta.txt` de cada carpeta. Diseño y lecturas: `../../docs/FASE3_EXPERIMENTOS.md`.
 
-| carpeta | qué contiene |
+| carpeta / archivo | qué contiene |
 |---|---|
+| `RESUMEN.md`, `resumen_medias_geom.png` | **Tabla consolidada** (una por etapa: resueltas, gana/empata/pierde y medias geométricas de celdas y CPU frente a AF2 sin k-nomial; separación de efectos) y el gráfico de barras de esas medias geométricas por variante y etapa (1 = AF2; más bajo es mejor). Generados por `analysis/consolidate.py`. |
 | `nivel1/` | Sobreestimación de rangos sin resolver (`tests/range_eval.cpp`): `range.csv.gz` (una fila por instancia × función × caja × variante), `range_log.txt`, `meta.txt` y `analisis/` |
 | `nivel1/analisis/nivel1_tabla.md` | Tablas: sobreestimación por variante y escala de caja, separación de efectos (aritmética / k-nomial), por conjunto |
 | `nivel1/analisis/nivel1_gm_por_escala.png` | Media geométrica de anchura afín / rango muestreado por variante y tamaño de caja; la línea punteada gris es la extensión natural de intervalos. Más abajo es mejor. |

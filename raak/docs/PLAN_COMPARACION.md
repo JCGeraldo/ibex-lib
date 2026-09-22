@@ -71,10 +71,12 @@ Pendiente conocido (heredado): el margen de redondeo de la reescritura k-nomial 
    efecto de la aritmética (`arith` con `k=0` frente a `af2 k=0`) del efecto del k-nomial
    (`k=3` frente a `k=0` dentro de cada aritmética).
 
-## Fase 4 — Resultados  ⏳
+## Fase 4 — Resultados  ✅ para nivel 1 y etapas A–B (C–D se agregan al terminar)
 
 Gráficos (perfiles de desempeño, dispersión log-log de tiempos y celdas, calidad de sin/cos) y
-tabla consolidada, con un `README.md` en la carpeta de resultados que explica cada gráfico.
+tabla consolidada (`results/fase3-20260921/RESUMEN.md`, `resumen_medias_geom.png`), con
+`README.md` en la carpeta de resultados que explica cada gráfico. Conclusiones en
+`FASE3_EXPERIMENTOS.md`.
 
 ---
 

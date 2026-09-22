@@ -219,4 +219,39 @@ Gráficos y tablas: `analisis/nivel2_perfil_art.png`, `analisis/nivel2_dispersio
 
 ### Etapas C y D — `hard` + `others`
 
-*(en curso)*
+En curso en WSL al cierre de esta redacción (15 instancias × 13 configuraciones, casi todas al
+límite de 1800 s: 8–9 h de pared). Cuando terminen, el análisis se genera con los mismos comandos:
+
+```bash
+bash ~/ibex-local/tmp/an_stage.sh C_hard_others_compo      # analisis + copia al repo (idem D_hard_others_art)
+cd ~/ibex-local/analysis && python3 consolidate.py ~/ibex-local/results/fase3-20260921   # RESUMEN.md y grafico
+```
+
+(`an_stage.sh` equivale a `python3 raak/analysis/analyze_sweep.py <etapa>/runs.csv <etapa>/analisis --tlim 1800`
+seguido de copiar `runs.csv`, `meta.txt` y `analisis/` a `raak/results/fase3-20260921/<etapa>/`.)
+
+## Conclusiones (nivel 1 + etapas A y B del nivel 2)
+
+Tabla consolidada: `results/fase3-20260921/RESUMEN.md`; gráfico: `resumen_medias_geom.png`.
+
+1. **Cotas más ajustadas (nivel 1).** RAA nunca es más ancha que AF2 y la mejora en el 3 % de los
+   casos (hasta −10 % en las funciones densas de `benchs-unconstrainedoptim`); AA gana y pierde a
+   partes iguales frente a AF2 y es 15 veces más lenta por evaluación. El k-nomial casi no actúa
+   sobre AF2/RAA en los modelos de `benchs/optim` (necesita factores con ≥ 2 símbolos comunes) y
+   actúa 5 veces más sobre AA, sin ensanchar nunca.
+2. **Aporte del k-nomial.** Sobre AF2 y RAA es neutro dentro del solver (medias geométricas de celdas
+   entre 0.994 y 1.005 en las dos relajaciones; 2–8 instancias en cada sentido). **Sobre AA es
+   consistente**: celdas 0.957 (`compo`) y 0.948 (`art`), con 24–29 instancias mejoradas frente a
+   7–15 empeoradas, y CPU 0.97 en ambas. Es la única aritmética en la que la reescritura tiene
+   material sobre el que actuar (los rayos que AA crea en cada operación).
+3. **Qué aritmética elegir en el solver.** Con `compo` (la relajación por defecto de `ibexopt04`
+   con afines) la mejor en celdas es **AA + k-nomial (0.905)** con CPU igual a AF2; RAA es un
+   poco mejor que AF2 (0.982) sin coste. Con `art` sola la mejor es **RAA (celdas 0.979, CPU
+   0.969)**, y AA solo se sostiene con el k-nomial. En ningún caso una variante resuelve instancias
+   que otra no resuelva en `easy`+`medium`: las diferencias son de eficiencia, no de alcance.
+4. **Coherencia con el nivel 1.** Las dos mejoras grandes de RAA (`ex8_4_4bis`, `bearing`) vienen de
+   los cuadrados de Chebyshev, no del k-nomial; las 19 formas AF2 no linearizables (colapso de
+   `sin` a intervalo) no afectan al nivel 2 porque esas instancias no están en las etapas.
+5. **Limitaciones.** Una corrida por configuración (sin repeticiones ni semillas alternativas); el
+   umbral ±5 % separa ruido de efecto solo aproximadamente; el margen de redondeo del k-nomial
+   sigue siendo heurístico; `hard`+`others` pendientes de análisis.

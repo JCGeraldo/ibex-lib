@@ -104,3 +104,5 @@ CLI nuevo ya no hace falta (los alias se traducen a `art`/`compo`), pero se cons
 | `analysis/analyze_trig.py` | Fase 2.2: tablas y gráficos de calidad de `sin`/`cos`. |
 | `analysis/analyze_range.py` | Nivel 1: sobreestimación por variante, separación de efectos aritmética / k-nomial. |
 | `analysis/analyze_sweep.py` | Nivel 2: victorias/derrotas/empates, medias geométricas, perfiles de desempeño, dispersión log-log, tabla consolidada y `README.md` de la carpeta de resultados. |
+| `analysis/consolidate.py` | Fase 4: `RESUMEN.md` (tabla consolidada de todas las etapas) y `resumen_medias_geom.png`. |
+| `analysis/vizstyle.py` | Paleta fija por variante (orden validado para deficiencias de color), etiquetas y estilo común de todos los gráficos. |
