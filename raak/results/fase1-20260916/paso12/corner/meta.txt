@@ -1,0 +1,7 @@
+binario: /home/evapo/ibex-local/ibexopt-raak/build/ibexopt-raak
+ibex-affine: c219009 + parches:  M src/CMakeLists.txt  M src/arithmetic/ibex_Affine2_fAF2.cpp  M src/numeric/ibex_LinearizerAffine2.cpp ?? build/ ?? src/arithmetic/ibex_KNomial.h 
+TLIM=300 P=4
+VARIANTS=raak_1=--lr=art --arith=raa --knomial_k=0;raak_3=--lr=art --arith=raa --knomial_k=3;raakcompo_1=--lr=compo --arith=raa --knomial_k=0;raakcompo_3=--lr=compo --arith=raa --knomial_k=3
+INSTS=medium/ex8_4_4bis medium/bearing
+inicio: 2026-09-16T22:57:40-03:00
+fin: 2026-09-16T22:59:13-03:00

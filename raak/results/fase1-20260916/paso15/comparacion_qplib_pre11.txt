@@ -1,0 +1,2 @@
+   filas: 36  identicas: 36  distintas: 0
+   MISMOS INSUMOS: REPRODUCCION EXACTA

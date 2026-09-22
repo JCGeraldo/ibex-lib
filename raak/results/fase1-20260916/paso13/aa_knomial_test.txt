@@ -1,0 +1,5 @@
+aa_knomial_test: 3000 productos Affine3 (2 a 5 variables, rayos id>=50 por sqr/productos previos), 300 muestras por producto; saltados: 0
+violaciones_contencion=0 violaciones_radio=0 diferencias_k0=0
+  (max exceso: 0.000e+00; comparados con la referencia: 3000; productos con rayos nuevos en el resultado: 2994; k=3 mas estrecho que k=0 en 2984; radio k3/k0 medio = 0.9086)
+biblioteca: aa_used/aa_products = 2984/2986 (bloques extraidos: 2692 en 2986 llamadas)
+AA KNOMIAL OK

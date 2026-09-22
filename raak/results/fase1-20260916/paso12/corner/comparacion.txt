@@ -1,0 +1,10 @@
+instancia            variante       estado     celdas    ref_estado ref_celdas resultado
+medium/bearing       raak_1         SUCCESS    29528     SUCCESS    29528     IDENTICA
+medium/bearing       raak_3         SUCCESS    29528     SUCCESS    29528     IDENTICA
+medium/bearing       raakcompo_1    SUCCESS    15210     SUCCESS    15210     IDENTICA
+medium/bearing       raakcompo_3    SUCCESS    15210     SUCCESS    15210     IDENTICA
+medium/ex8_4_4bis    raak_1         SUCCESS    10294     SUCCESS    10294     IDENTICA
+medium/ex8_4_4bis    raak_3         SUCCESS    10294     SUCCESS    10294     IDENTICA
+medium/ex8_4_4bis    raakcompo_1    SUCCESS    8618      SUCCESS    8618      IDENTICA
+medium/ex8_4_4bis    raakcompo_3    SUCCESS    8618      SUCCESS    8618      IDENTICA
+identicas=8 diferentes=0 ambas_timeout=0 nuevas=0 sin_ref=0

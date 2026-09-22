@@ -11,11 +11,18 @@
 
 #include "ibex_Optimizer04Config.h"
 
+#include <string>
+
 namespace ibex {
 
 class Optimizer04Config_Affine : public Optimizer04Config {
 public:
-	Optimizer04Config_Affine(int argc, char** argv);
+	/**
+	 * \param arith aritmetica afin del linearizador de art/compo: "af2" (LinearizerAffine2, modelo
+	 *              AF_fAF2, tambien para "raa": la diferencia RAA/AF2 la fija ibex::affine_mode())
+	 *              o "aa" (LinearizerAffineT<AF_fAFFullI>, Affine3; parche 0007).
+	 */
+	Optimizer04Config_Affine(int argc, char** argv, const std::string& arith = "af2");
 
 protected:
 	// load_sys NO se sobreescribe a proposito: el constructor de la clase base lo
@@ -25,6 +32,8 @@ protected:
 	// get_linear_relax si se sobreescribe: la llama get_ctc(), que se invoca
 	// cuando el Optimizer se construye con este objeto ya completo.
 	virtual Linearizer* get_linear_relax() override;
+
+	std::string arith;
 };
 
 } // namespace ibex

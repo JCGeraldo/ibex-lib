@@ -12,32 +12,37 @@
 
 namespace ibex {
 
-Optimizer04Config_Affine::Optimizer04Config_Affine(int argc, char** argv) :
-		Optimizer04Config(argc, argv) {
+Optimizer04Config_Affine::Optimizer04Config_Affine(int argc, char** argv, const std::string& arith_) :
+		Optimizer04Config(argc, argv), arith(arith_) {
 }
 
-// "raak" y "raakcompo" usan los mismos linearizadores que "art" y "compo": la
-// diferencia esta en la multiplicacion de formas afines, que el main configura
-// con ibex::knomial_max_k() antes de construir el optimizador.
-//
-// Nota: Optimizer04Config::get_ctc() solo envuelve la relajacion en
-// CtcPolytopeHull si el nombre esta en su lista; el fork local la amplia
-// con "raak" y "raakcompo".
+// El main ya ha traducido los alias (raak, raakcompo, --raak_k) a --lr=art|compo mas --arith y
+// --knomial_k, y ha fijado ibex::affine_mode() y ibex::knomial_max_k(). Aqui solo se elige el
+// linearizador: AF2/RAA usan LinearizerAffine2 (= LinearizerAffineT<AF_fAF2>); AA usa
+// LinearizerAffineT<AF_fAFFullI> (Affine3, parche 0007).
 Linearizer* Optimizer04Config_Affine::get_linear_relax() {
 	if (linearrelaxation == "xn")
 		return &rec(new LinearizerXTaylor(*ext_sys));
 
-	if (linearrelaxation == "art" || linearrelaxation == "raak")
-		return &rec(new LinearizerAffine2(*ext_sys));
+	Linearizer* affine = NULL;
+	if (linearrelaxation == "art" || linearrelaxation == "compo") {
+		if (arith == "aa")
+			affine = &rec(new LinearizerAffineT<AF_fAFFullI>(*ext_sys));
+		else
+			affine = &rec(new LinearizerAffine2(*ext_sys));
+	}
 
-	if (linearrelaxation == "compo" || linearrelaxation == "raakcompo")
+	if (linearrelaxation == "art")
+		return affine;
+
+	if (linearrelaxation == "compo")
 		return &rec(new LinearizerCompo(
 				rec(new LinearizerXTaylor(*ext_sys)),
-				rec(new LinearizerAffine2(*ext_sys))));
+				*affine));
 
 	std::stringstream ss;
 	ss << "[ibexopt-raak] relajacion lineal desconocida: '" << linearrelaxation
-	   << "' (opciones: xn | art | compo | raak | raakcompo)";
+	   << "' (opciones: xn | art | compo; alias raak | raakcompo solo en el main)";
 	ibex_error(ss.str().c_str());
 	return NULL;
 }

@@ -1,0 +1,44 @@
+instancia            variante       estado     celdas    ref_estado ref_celdas resultado
+easy/ex2_1_1         alias_raak_1   SUCCESS    6         SUCCESS    6         IDENTICA
+easy/ex2_1_1         art            SUCCESS    6         SUCCESS    6         IDENTICA
+easy/ex2_1_1         art_af2_k3     SUCCESS    6         -          -         nueva (sin referencia)
+easy/ex2_1_1         raak_1         SUCCESS    6         SUCCESS    6         IDENTICA
+easy/ex2_1_1         raak_3         SUCCESS    6         SUCCESS    6         IDENTICA
+easy/ex2_1_1         raakcompo_3    SUCCESS    6         SUCCESS    6         IDENTICA
+easy/ex2_1_2         alias_raak_1   SUCCESS    0         SUCCESS    0         IDENTICA
+easy/ex2_1_2         art            SUCCESS    0         SUCCESS    0         IDENTICA
+easy/ex2_1_2         art_af2_k3     SUCCESS    0         -          -         nueva (sin referencia)
+easy/ex2_1_2         raak_1         SUCCESS    0         SUCCESS    0         IDENTICA
+easy/ex2_1_2         raak_3         SUCCESS    0         SUCCESS    0         IDENTICA
+easy/ex2_1_2         raakcompo_3    SUCCESS    0         SUCCESS    0         IDENTICA
+easy/ex5_4_3         alias_raak_1   SUCCESS    44        SUCCESS    44        IDENTICA
+easy/ex5_4_3         art            SUCCESS    44        SUCCESS    44        IDENTICA
+easy/ex5_4_3         art_af2_k3     SUCCESS    44        -          -         nueva (sin referencia)
+easy/ex5_4_3         raak_1         SUCCESS    44        SUCCESS    44        IDENTICA
+easy/ex5_4_3         raak_3         SUCCESS    44        SUCCESS    44        IDENTICA
+easy/ex5_4_3         raakcompo_3    SUCCESS    44        SUCCESS    44        IDENTICA
+medium/bearing       alias_raak_1   SUCCESS    29528     SUCCESS    29528     IDENTICA
+medium/bearing       art            SUCCESS    45894     SUCCESS    45894     IDENTICA
+medium/bearing       art_af2_k3     SUCCESS    45894     -          -         nueva (sin referencia)
+medium/bearing       raak_1         SUCCESS    29528     SUCCESS    29528     IDENTICA
+medium/bearing       raak_3         SUCCESS    29528     SUCCESS    29528     IDENTICA
+medium/bearing       raakcompo_3    SUCCESS    15210     SUCCESS    15210     IDENTICA
+medium/ex5_3_2       alias_raak_1   SUCCESS    186       SUCCESS    186       IDENTICA
+medium/ex5_3_2       art            SUCCESS    186       SUCCESS    186       IDENTICA
+medium/ex5_3_2       art_af2_k3     SUCCESS    186       -          -         nueva (sin referencia)
+medium/ex5_3_2       raak_1         SUCCESS    186       SUCCESS    186       IDENTICA
+medium/ex5_3_2       raak_3         SUCCESS    186       SUCCESS    186       IDENTICA
+medium/ex5_3_2       raakcompo_3    SUCCESS    54        SUCCESS    54        IDENTICA
+medium/ex7_3_4       alias_raak_1   SUCCESS    474       SUCCESS    474       IDENTICA
+medium/ex7_3_4       art            SUCCESS    474       SUCCESS    474       IDENTICA
+medium/ex7_3_4       art_af2_k3     SUCCESS    474       -          -         nueva (sin referencia)
+medium/ex7_3_4       raak_1         SUCCESS    474       SUCCESS    474       IDENTICA
+medium/ex7_3_4       raak_3         SUCCESS    474       SUCCESS    474       IDENTICA
+medium/ex7_3_4       raakcompo_3    SUCCESS    424       SUCCESS    424       IDENTICA
+medium/ex8_4_4bis    alias_raak_1   SUCCESS    10294     SUCCESS    10294     IDENTICA
+medium/ex8_4_4bis    art            SUCCESS    120168    SUCCESS    120168    IDENTICA
+medium/ex8_4_4bis    art_af2_k3     SUCCESS    120168    -          -         nueva (sin referencia)
+medium/ex8_4_4bis    raak_1         SUCCESS    10294     SUCCESS    10294     IDENTICA
+medium/ex8_4_4bis    raak_3         SUCCESS    10294     SUCCESS    10294     IDENTICA
+medium/ex8_4_4bis    raakcompo_3    SUCCESS    8618      SUCCESS    8618      IDENTICA
+identicas=35 diferentes=0 ambas_timeout=0 nuevas=7 sin_ref=0

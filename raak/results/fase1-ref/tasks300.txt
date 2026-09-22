@@ -1,0 +1,12 @@
+medium/ex8_4_4bis xn
+medium/ex8_4_4bis art
+medium/ex8_4_4bis compo
+medium/ex8_4_4bis raak:0
+medium/ex8_4_4bis raakcompo:0
+medium/bearing xn
+medium/bearing art
+medium/bearing compo
+medium/bearing raak:0
+medium/bearing raak:1
+medium/bearing raak:3
+medium/bearing raakcompo:0

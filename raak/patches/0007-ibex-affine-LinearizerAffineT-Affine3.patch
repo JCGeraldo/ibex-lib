@@ -1,0 +1,379 @@
+Parche 0007 (ibex-affine, sobre c219009c + 0001 + 0002 + 0004 + 0005 + 0006) -- Fase 1, paso 1.4
+
+Que cambia
+  - ibex_LinearizerAffine2.{h,cpp}: la clase pasa a template<class T> LinearizerAffineT<T> con el
+    mismo cuerpo (AffineEval<T>, AffineVarMainVector<T>, TemplateDomain<AffineMain<T>>), instanciada
+    explicitamente para AF_fAF2 y AF_fAFFullI; typedef LinearizerAffineT<AF_fAF2> LinearizerAffine2.
+    La validez de la forma es affine_form_is_linearizable<T> (AF_fAF2: is_active() &&
+    noise_count()==nb_var; AF_fAFFullI: is_active()) y el error de la relajacion es
+    err() + affine_extra_error<T> (AF_fAF2: 0.0; AF_fAFFullI: nonvar_noise_sum(nb_var)).
+  - ibex_AffineMain.h / ibex_AffineMain_impl.h / ibex_Affine3_fAFFullI.cpp: accesor publico
+    double nonvar_noise_sum(int nb_var) const = suma de |coef| de los simbolos de ruido con
+    id >= nb_var, con (1+2*AF_EM) por suma; generico sobre noise(i) y especializado para
+    AF_fAFFullI sobre _rays (el rayo de la variable var tiene id = var; los demas id >= 50).
+
+Por que
+  Nivel 2 con AA: LinearizerAffine2 exigia noise_count()==nb_var y leia err(), que en Affine3 no
+  incluye los rayos creados por operaciones no afines; relajarlos como |coef|*[-1,1] es valido.
+  Para AF2 el codigo generado es el mismo (extra = 0.0 sumado como double).
+
+Verificado
+  aa_linearizer_test (200 polinomios, 1000 puntos): violaciones=0 en AA k=0, AA k=3 y AF2;
+  7 instancias x {xn, art, compo} con af2/k=0 identicas a la referencia; --arith=aa resuelve
+  ex5_4_3 con art y compo con f* compatible con xn; 11/11 tests; tests anteriores sin cambios.
+
+diff --git a/src/arithmetic/ibex_Affine3_fAFFullI.cpp b/src/arithmetic/ibex_Affine3_fAFFullI.cpp
+index 15332c0..94ff3a4 100644
+--- a/src/arithmetic/ibex_Affine3_fAFFullI.cpp
++++ b/src/arithmetic/ibex_Affine3_fAFFullI.cpp
+@@ -193,6 +193,19 @@ double AffineMain<AF_fAFFullI>::err() const{
+ 	return _elt._garbage.rad();
+ }
+ 
++// [raak local] parche 0007: suma de |coeficiente| de los rayos que no son variables (id >= nb_var),
++// con redondeo hacia arriba (1+2*AF_EM) por suma. El rayo de la variable var tiene id = var
++// (AffineVarMain<AF_fAFFullI>::operator=), y los creados por operaciones no afines tienen id >= 50.
++template<>
++double AffineMain<AF_fAFFullI>::nonvar_noise_sum(int nb_var) const {
++	if (!is_active()) return 0.0;
++	double s = 0.0;
++	std::list<std::pair<af3_int,double> >::const_iterator it;
++	for (it = _elt._rays.begin(); it != _elt._rays.end(); ++it)
++		if (it->first >= (af3_int) nb_var) s = (1+2*AF_EM)*(s + std::fabs(it->second));
++	return s;
++}
++
+ 
+ 
+ /*
+diff --git a/src/arithmetic/ibex_AffineMain.h b/src/arithmetic/ibex_AffineMain.h
+index ad51c6c..0ba46cd 100644
+--- a/src/arithmetic/ibex_AffineMain.h
++++ b/src/arithmetic/ibex_AffineMain.h
+@@ -294,6 +294,15 @@ public:
+ 	 */
+ 	double err() const;
+ 
++	/**
++	 * [raak local] parche 0007: suma de |coeficiente| de los simbolos de ruido que no son variables
++	 * (indice/id >= nb_var), con redondeo hacia arriba (1+2*AF_EM) por suma. Relajacion valida de su
++	 * aporte, porque cada simbolo vale [-1,1]. Modelos densos: sum_{i>=nb_var} |noise(i)| (normalmente
++	 * 0, porque noise_count()==nb_var); AF_fAFFullI: rayos con id >= nb_var (los creados por operaciones
++	 * no afines, id >= 50), que err() no incluye.
++	 */
++	double nonvar_noise_sum(int nb_var) const;
++
+ 	/**
+ 	 * \brief True iff the affine form is active and valid.
+ 	 */
+@@ -934,6 +943,10 @@ AffineMain<T> chi(const AffineMain<T>&  a,const AffineMain<T>&  b,const Interval
+ template<>
+ int AffineMain<AF_fAFFullI>::noise_count() const;
+ 
++// [raak local] parche 0007
++template<>
++double AffineMain<AF_fAFFullI>::nonvar_noise_sum(int nb_var) const;
++
+ template<>
+ AffineMain<AF_fAFFullI>& AffineMain<AF_fAFFullI>::operator+=(const Interval& x);
+ 
+diff --git a/src/arithmetic/ibex_AffineMain_impl.h b/src/arithmetic/ibex_AffineMain_impl.h
+index 98abe76..5ff3e66 100644
+--- a/src/arithmetic/ibex_AffineMain_impl.h
++++ b/src/arithmetic/ibex_AffineMain_impl.h
+@@ -12,6 +12,8 @@
+ #ifndef IBEX_AFFINEMAIN_IMPL_H_
+ #define IBEX_AFFINEMAIN_IMPL_H_
+ 
++#include <cmath>
++
+ namespace ibex {
+ 
+ template<class T> const double AffineMain<T>::AF_COMPAC_Tol = 1.e-6;
+@@ -76,6 +78,15 @@ inline double AffineMain<T>::mag() const { return this->itv().mag(); }
+ template<class T>
+ inline int AffineMain<T>::noise_count() const { return _n_noise; }
+ 
++// [raak local] parche 0007 (version generica, modelos densos; AF_fAFFullI esta especializado)
++template<class T>
++inline double AffineMain<T>::nonvar_noise_sum(int nb_var) const {
++	if (!is_active()) return 0.0;
++	double s = 0.0;
++	for (int i = nb_var; i < noise_count(); i++) s = (1+2*AF_EM)*(s + std::fabs(noise(i)));
++	return s;
++}
++
+ template<class T>
+ AffineMain<T>::AffineMain(double d) : AffineMain() {
+ 	*this = Interval(d);
+diff --git a/src/numeric/ibex_LinearizerAffine2.cpp b/src/numeric/ibex_LinearizerAffine2.cpp
+index da3ae51..ad18fd9 100644
+--- a/src/numeric/ibex_LinearizerAffine2.cpp
++++ b/src/numeric/ibex_LinearizerAffine2.cpp
+@@ -15,42 +15,49 @@
+ 
+ namespace ibex {
+ 
++// [raak local] parche 0007: plantilla sobre el modelo afin T; instanciada al final para AF_fAF2
++// (= LinearizerAffine2, mismo codigo que antes) y AF_fAFFullI. La validez de la forma y el error
++// adicional se delegan en affine_form_is_linearizable / affine_extra_error (ver la cabecera).
++
+ // the constructor
+-LinearizerAffine2::LinearizerAffine2(const System& sys1) :
++template<class T>
++LinearizerAffineT<T>::LinearizerAffineT(const System& sys1) :
+ 				Linearizer(sys1.nb_var), sys(sys1),
+ 				goal_af_evl(NULL),
+-				ctr_af_evl(new Affine2Eval*[sys1.nb_ctr]) {
++				ctr_af_evl(new AffineEval<T>*[sys1.nb_ctr]) {
+ 
+ 	if (sys1.goal) {
+-		goal_af_evl = new Affine2Eval(*sys1.goal);
++		goal_af_evl = new AffineEval<T>(*sys1.goal);
+ 	}
+ 
+ 	for (int i = 0; i < sys.nb_ctr; i++) {
+-		ctr_af_evl[i] = new Affine2Eval(sys.ctrs[i].f);
++		ctr_af_evl[i] = new AffineEval<T>(sys.ctrs[i].f);
+ 	}
+ }
+ 
+-LinearizerAffine2::~LinearizerAffine2() {
++template<class T>
++LinearizerAffineT<T>::~LinearizerAffineT() {
+ 	for (int i = 0; i < sys.nb_ctr; i++) {
+ 		delete ctr_af_evl[i];
+ 	}
+ 	delete[] ctr_af_evl;
+ }
+ 
+-bool LinearizerAffine2::goal_linearization(const IntervalVector& box, LPSolver& lp_solver) {
++template<class T>
++bool LinearizerAffineT<T>::goal_linearization(const IntervalVector& box, LPSolver& lp_solver) {
+ 	// Linearization of the objective function by AF2
+ 
+ 	if (!sys.goal) {
+ 		ibex_error("LinearRelaxAffine2: there is no goal function to linearize.");
+ 	}
+ 
+-	std::pair<Domain*,Affine2Domain*> res = goal_af_evl->eval(box, Affine2Variables(box));
+-	Affine2 af2 = res.second->i();
++	std::pair<Domain*,TemplateDomain<AffineMain<T> >*> res = goal_af_evl->eval(box, AffineVarMainVector<T>(box));
++	AffineMain<T> af2 = res.second->i();
+ 	if (af2.is_empty()) {
+ 		return false;
+ 	}
+ 	try {
+-	if (af2.is_active() && af2.noise_count() == sys.nb_var) { // valid form. [local patch] an inactive (empty/unbounded) form has no coefficients: noise(i) would dereference null
++	if (affine_form_is_linearizable(af2, sys.nb_var)) { // valid form. [local patch] an inactive (empty/unbounded) form has no coefficients: noise(i) would dereference null
+ 		// convert the epsilon variables to the original box
+ 		double tmp=0;
+ 		for (int i =0; i <sys.nb_var; i++) {
+@@ -75,9 +82,10 @@ bool LinearizerAffine2::goal_linearization(const IntervalVector& box, LPSolver&
+ }
+ 
+ 
+-int LinearizerAffine2::inlinearization(const IntervalVector& box, LPSolver& lp_solver) {
++template<class T>
++int LinearizerAffineT<T>::inlinearization(const IntervalVector& box, LPSolver& lp_solver) {
+ 
+-	Affine2 af2;
++	AffineMain<T> af2;
+ 
+ 	int cont=0;
+ 	Interval ev(0), center(0), err(0);
+@@ -87,7 +95,7 @@ int LinearizerAffine2::inlinearization(const IntervalVector& box, LPSolver& lp_s
+ 	for (int ctr = 0; ctr < sys.nb_ctr; ctr++) {
+ 		CmpOp op = sys.ctrs[ctr].op;
+ 
+-		std::pair<Domain*,Affine2Domain*> res = ctr_af_evl[ctr]->eval(box, Affine2Variables(box));
++		std::pair<Domain*,TemplateDomain<AffineMain<T> >*> res = ctr_af_evl[ctr]->eval(box, AffineVarMainVector<T>(box));
+ 		ev  = res.first->i();
+ 		af2 = res.second->i();
+ 		//ev  = ctr_af_evl[ctr]->eval(box).i();
+@@ -95,7 +103,9 @@ int LinearizerAffine2::inlinearization(const IntervalVector& box, LPSolver& lp_s
+ 
+ 		//std::cout <<ev<<":::"<< af2<<"  "<<af2.size()<<"  " <<sys.nb_var<< std::endl;
+ 
+-		if (af2.is_active() && af2.noise_count() == sys.nb_var) { // valid form. [local patch] an inactive (empty/unbounded) form has no coefficients: noise(i) would dereference null
++		if (affine_form_is_linearizable(af2, sys.nb_var)) { // valid form. [local patch] an inactive (empty/unbounded) form has no coefficients: noise(i) would dereference null
++			// [raak local] simbolos de ruido que no son variables (AF_fAFFullI): se relajan como error
++			const double extra = affine_extra_error(af2, sys.nb_var);
+ 			bool b_abort=false;
+ 			// convert the epsilon variables to the original box
+ 			double tmp=0;
+@@ -120,7 +130,7 @@ int LinearizerAffine2::inlinearization(const IntervalVector& box, LPSolver& lp_s
+ 				case LEQ:
+ 				case LT: {
+ 					if (0.0 < ev.ub()) {
+-						lp_solver.add_constraint(rowconst, LEQ,	(-(af2.err()+err) - (af2.mid()-center)).lb());
++						lp_solver.add_constraint(rowconst, LEQ,	(-((af2.err()+extra)+err) - (af2.mid()-center)).lb());
+ 						cont++;
+ 					}
+ 					break;
+@@ -128,7 +138,7 @@ int LinearizerAffine2::inlinearization(const IntervalVector& box, LPSolver& lp_s
+ 				case GEQ:
+ 				case GT: {
+ 					if (ev.lb() < 0.0) {
+-						lp_solver.add_constraint(rowconst, GEQ,	((af2.err()+err) - (af2.mid()-center)).ub());
++						lp_solver.add_constraint(rowconst, GEQ,	(((af2.err()+extra)+err) - (af2.mid()-center)).ub());
+ 						cont++;
+ 					}
+ 					break;
+@@ -149,10 +159,11 @@ int LinearizerAffine2::inlinearization(const IntervalVector& box, LPSolver& lp_s
+ 
+ 
+ /*********generation of the linearized system*********/
+-int LinearizerAffine2::linearize(const IntervalVector& box, LPSolver& lp_solver) {
++template<class T>
++int LinearizerAffineT<T>::linearize(const IntervalVector& box, LPSolver& lp_solver) {
+ 
+-	Affine2 af2;
+-	Affine2Variables varaf2(box);
++	AffineMain<T> af2;
++	AffineVarMainVector<T> varaf2(box);
+ 	Vector rowconst(sys.nb_var);
+ 	Interval ev(0.0);
+ 	Interval center(0.0);
+@@ -165,7 +176,7 @@ int LinearizerAffine2::linearize(const IntervalVector& box, LPSolver& lp_solver)
+ 
+ 		op  = sys.ctrs[ctr].op;
+ 
+-		std::pair<Domain*,Affine2Domain*> res = ctr_af_evl[ctr]->eval(box, varaf2);
++		std::pair<Domain*,TemplateDomain<AffineMain<T> >*> res = ctr_af_evl[ctr]->eval(box, varaf2);
+ 		ev  = res.first->i();
+ 		af2 = res.second->i();
+ 		//ev  = ctr_af_evl[ctr]->eval(box).i();
+@@ -177,7 +188,9 @@ int LinearizerAffine2::linearize(const IntervalVector& box, LPSolver& lp_solver)
+ 		}
+ 		//std::cout <<ev<<":::"<< af2<<"  "<<af2.size()<<"  " <<sys.nb_var<< std::endl;
+ 
+-		if (af2.is_active() && af2.noise_count() == sys.nb_var) { // valid form. [local patch] an inactive (empty/unbounded) form has no coefficients: noise(i) would dereference null
++		if (affine_form_is_linearizable(af2, sys.nb_var)) { // valid form. [local patch] an inactive (empty/unbounded) form has no coefficients: noise(i) would dereference null
++			// [raak local] simbolos de ruido que no son variables (AF_fAFFullI): se relajan como error
++			const double extra = affine_extra_error(af2, sys.nb_var);
+ 			bool b_abort=false;
+ 			// convert the epsilon variables to the original box
+ 			double tmp=0;
+@@ -206,7 +219,7 @@ int LinearizerAffine2::linearize(const IntervalVector& box, LPSolver& lp_solver)
+ 					if (0.0 < ev.lb()) return -1;
+ 					else if (0.0 < ev.ub()) {
+ 						try {
+-							lp_solver.add_constraint(rowconst, LEQ,	((af2.err()+err) - (af2.mid()-center)).ub());
++							lp_solver.add_constraint(rowconst, LEQ,	(((af2.err()+extra)+err) - (af2.mid()-center)).ub());
+ 							cont++;
+ 						} catch (LPException&) { }
+ 					}
+@@ -218,7 +231,7 @@ int LinearizerAffine2::linearize(const IntervalVector& box, LPSolver& lp_solver)
+ 					if (ev.ub() < 0.0) return -1;
+ 					else if (ev.lb() < 0.0) {
+ 						try {
+-							lp_solver.add_constraint(rowconst, GEQ,	(-(af2.err()+err) - (af2.mid()-center)).lb());
++							lp_solver.add_constraint(rowconst, GEQ,	(-((af2.err()+extra)+err) - (af2.mid()-center)).lb());
+ 							cont++;
+ 						} catch (LPException&) { }
+ 					}
+@@ -228,9 +241,9 @@ int LinearizerAffine2::linearize(const IntervalVector& box, LPSolver& lp_solver)
+ 					else {
+ 						if (ev.diam()>2*lp_solver.tolerance()) {
+ 							try {
+-								lp_solver.add_constraint(rowconst, GEQ,	(-(af2.err()+err) - (af2.mid()-center)).lb());
++								lp_solver.add_constraint(rowconst, GEQ,	(-((af2.err()+extra)+err) - (af2.mid()-center)).lb());
+ 								cont++;
+-								lp_solver.add_constraint(rowconst, LEQ,	((af2.err()+err) - (af2.mid()-center)).ub());
++								lp_solver.add_constraint(rowconst, LEQ,	(((af2.err()+extra)+err) - (af2.mid()-center)).ub());
+ 								cont++;
+ 							} catch (LPException&) { }
+ 						}
+@@ -252,4 +265,8 @@ int LinearizerAffine2::linearize(const IntervalVector& box, LPSolver& lp_solver)
+ //	}
+ //}
+ 
++// [raak local] instanciaciones explicitas: AF2 (el LinearizerAffine2 de siempre) y AA (Affine3)
++template class LinearizerAffineT<AF_fAF2>;
++template class LinearizerAffineT<AF_fAFFullI>;
++
+ }
+diff --git a/src/numeric/ibex_LinearizerAffine2.h b/src/numeric/ibex_LinearizerAffine2.h
+index 26d4b86..ebb0edd 100644
+--- a/src/numeric/ibex_LinearizerAffine2.h
++++ b/src/numeric/ibex_LinearizerAffine2.h
+@@ -21,6 +21,41 @@
+ 
+ namespace ibex {
+ 
++// [raak local] parche 0007: el linearizador se templatiza sobre el modelo afin T para poder usar
++// tambien AF_fAFFullI (Affine3). LinearizerAffine2 sigue siendo LinearizerAffineT<AF_fAF2>, con el
++// mismo codigo (bit a bit) que antes.
++
++/**
++ * [raak local] Una forma afin es linearizable si esta activa y sus coeficientes noise(i), 0 <= i < nb_var,
++ * son los de las variables. En los modelos densos (AF_fAF2) eso exige noise_count() == nb_var; en
++ * AF_fAFFullI los simbolos de las variables tienen id = var y puede haber ademas rayos con id >= 50, que
++ * se relajan aparte (ver affine_extra_error).
++ */
++template<class T>
++inline bool affine_form_is_linearizable(const AffineMain<T>& af, int nb_var) {
++	return af.is_active() && af.noise_count() == nb_var;
++}
++template<>
++inline bool affine_form_is_linearizable<AF_fAFFullI>(const AffineMain<AF_fAFFullI>& af, int nb_var) {
++	(void) nb_var;
++	return af.is_active();
++}
++
++/**
++ * [raak local] Error adicional que se suma a err() en la relajacion: los simbolos de ruido que no son
++ * variables (id >= nb_var) valen [-1,1], asi que sum |coef| es una relajacion valida de su aporte.
++ * En AF_fAF2 no hay tales simbolos (0). En AF_fAFFullI, err() es solo _garbage.rad() y no los incluye.
++ */
++template<class T>
++inline double affine_extra_error(const AffineMain<T>& af, int nb_var) {
++	(void) af; (void) nb_var;
++	return 0.0;
++}
++template<>
++inline double affine_extra_error<AF_fAFFullI>(const AffineMain<AF_fAFFullI>& af, int nb_var) {
++	return af.nonvar_noise_sum(nb_var);
++}
++
+ /**
+  * \ingroup numeric
+  * \brief Affine-based linearization
+@@ -30,13 +65,14 @@ namespace ibex {
+  * \date May 2013
+  */
+ 
+-class LinearizerAffine2 : public Linearizer {
++template<class T>
++class LinearizerAffineT : public Linearizer {
+ 
+ public:
+ 
+-	LinearizerAffine2 (const System& sys);
++	LinearizerAffineT (const System& sys);
+ 
+-	~LinearizerAffine2 ();
++	~LinearizerAffineT ();
+ 
+ 	/**
+ 	 * \biref  ART iteration.
+@@ -66,14 +102,16 @@ private:
+ 	/**
+ 	 * \brief Affine evaluator for the goal function (if any)
+ 	 */
+-	AffineEval<AF_Default>* goal_af_evl;
++	AffineEval<T>* goal_af_evl;
+ 
+ 	/**
+ 	 * \brief Affine evaluators for the constraints functions
+ 	 */
+-	AffineEval<AF_Default>** ctr_af_evl;
++	AffineEval<T>** ctr_af_evl;
+ };
+ 
++typedef LinearizerAffineT<AF_fAF2> LinearizerAffine2;
++
+ } // end namespace ibex
+ 
+ #endif /* __IBEX_LINEAR_RELAX_AFFINE2_H__ */

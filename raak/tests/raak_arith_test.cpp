@@ -1,7 +1,11 @@
 // Prueba de la aritmetica RAA-K en AF_fAF2 (prototipo).
 //
-// Productos x*y de formas afines aleatorias, en cada modo
-// (0 = fAF2 original, 1 = simetrica termino a termino, 2 y 3 = RAA-K):
+// Fase 1 (parche 0004): los "modos" 0..3 del test se expresan con los dos interruptores
+// affine_mode() y knomial_max_k(): 0 = AF2/k=0 (fAF2 original), 1 = RAA/k=0 (simetrica
+// termino a termino), 2 y 3 = RAA/k=2,3 (RAA-K). La salida debe ser identica a la del test
+// anterior al parche (equivalencia bit a bit de raak_k=0/1/2/3).
+//
+// Productos x*y de formas afines aleatorias, en cada modo:
 //   (a) contencion: el valor exacto del producto cae dentro de la forma resultante
 //   (b) invariancia de pendientes: los coeficientes de ruido no dependen del modo
 //   (c) el radio de error con modo >= 1 no supera al de fAF2 original
@@ -34,6 +38,12 @@ static Affine2 build(const Affine2Variables& v, const Form& f) {
 		if (f.a[i] != 0.0) x = x + f.a[i] * Affine2(v[i]);
 	if (f.e > 0.0) x = x + Interval(-f.e, f.e);
 	return x;
+}
+
+// modo m del test -> interruptores: m>=1 es RAA; la reescritura k-nomial solo con m>=2
+static void set_mode(int m) {
+	affine_mode() = (m >= 1) ? AFFINE_RAA : AFFINE_AF2;
+	knomial_max_k() = (m >= 2) ? m : 0;
 }
 
 static bool identical(const Affine2& p, const Affine2& q, int n) {
@@ -94,10 +104,10 @@ int main() {
 		// ---------------------------------------------------------------- productos
 		std::vector<Affine2> res;
 		for (int m = 0; m < NM; m++) {
-			knomial_max_k() = modes[m];
+			set_mode(modes[m]);
 			res.push_back(x * y);
 		}
-		knomial_max_k() = 0;
+		set_mode(0);
 
 		if (shared < 2) {
 			filtered++;
@@ -138,13 +148,13 @@ int main() {
 		}
 
 		// ---------------------------------------------------------------- cuadrados
-		knomial_max_k() = 0;
+		set_mode(0);
 		Affine2 s0 = sqr(x);
-		knomial_max_k() = 3;
+		set_mode(3);
 		Affine2 s3 = sqr(x);
-		knomial_max_k() = 1;
+		set_mode(1);
 		Affine2 s1 = sqr(x);
-		knomial_max_k() = 0;
+		set_mode(0);
 		if (!identical(s1, s3, n)) sq_k1_mismatch++;
 		if (s0.is_active() && s3.is_active() && s0.noise_count() >= n && s3.noise_count() >= n) {
 			sq_tested++;

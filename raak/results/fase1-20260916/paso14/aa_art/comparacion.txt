@@ -1,0 +1,16 @@
+instancia            variante       estado     celdas    ref_estado ref_celdas resultado
+easy/ex2_1_1         art_aa_k0      SUCCESS    6         -          -         nueva (sin referencia)
+easy/ex2_1_1         art_aa_k3      SUCCESS    6         -          -         nueva (sin referencia)
+easy/ex2_1_2         art_aa_k0      SUCCESS    0         -          -         nueva (sin referencia)
+easy/ex2_1_2         art_aa_k3      SUCCESS    0         -          -         nueva (sin referencia)
+easy/ex5_4_3         art_aa_k0      SUCCESS    40        -          -         nueva (sin referencia)
+easy/ex5_4_3         art_aa_k3      SUCCESS    40        -          -         nueva (sin referencia)
+medium/bearing       art_aa_k0      TIME_OUT   44660     -          -         nueva (sin referencia)
+medium/bearing       art_aa_k3      SUCCESS    30130     -          -         nueva (sin referencia)
+medium/ex5_3_2       art_aa_k0      SUCCESS    170       -          -         nueva (sin referencia)
+medium/ex5_3_2       art_aa_k3      SUCCESS    180       -          -         nueva (sin referencia)
+medium/ex7_3_4       art_aa_k0      SUCCESS    472       -          -         nueva (sin referencia)
+medium/ex7_3_4       art_aa_k3      SUCCESS    472       -          -         nueva (sin referencia)
+medium/ex8_4_4bis    art_aa_k0      SUCCESS    10112     -          -         nueva (sin referencia)
+medium/ex8_4_4bis    art_aa_k3      SUCCESS    10112     -          -         nueva (sin referencia)
+identicas=0 diferentes=0 ambas_timeout=0 nuevas=14 sin_ref=0

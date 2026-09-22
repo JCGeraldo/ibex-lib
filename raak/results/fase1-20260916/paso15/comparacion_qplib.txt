@@ -1,0 +1,5 @@
+   filas comparadas: 36 (modo 3: 18) | sin referencia: 0
+   identicas (texto %.17g de radius, lb, ub): 12 de 36
+   desviacion relativa maxima: radius 4.472e+05 (5881__eig.txt,0), lb 1.525e+05, ub 2.747e+05
+   filas con sqr_used/prod_used distintos de la referencia: 1
+   *** QPLIB NO REPRODUCIDO

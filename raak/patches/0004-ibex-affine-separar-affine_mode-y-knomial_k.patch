@@ -1,0 +1,150 @@
+Parche 0004 (ibex-affine, sobre c219009c + 0001 + 0002) -- Fase 1, paso 1.1
+
+Que cambia
+  - ibex_KNomial.h: junto a knomial_max_k() se agrega el segundo interruptor por hilo
+    affine_mode() in {AFFINE_AF2, AFFINE_RAA}. Comentario de cabecera con la tabla de las
+    seis variantes (AF2|RAA|AA) x (k=0|k>=2). El valor knomial_max_k()==1 deja de ser un modo.
+  - ibex_Affine2_fAF2.cpp, operator*=: la cota cuadratica alternativa (knomial_quad_bound)
+    se calcula si affine_mode()==AFFINE_RAA o knomial_max_k()>=2 (antes: knomial_max_k()>=1);
+    se le pasa el k real (con k<2 no reescribe: forma simetrica termino a termino). La guarda
+    "solo si mejora a fAF2" no cambia.
+  - ibex_Affine2_fAF2.cpp, Asqr: la cota de Chebyshev [0,(Sx+e)^2] se activa solo con
+    AFFINE_RAA (antes: knomial_max_k()>=1). Con AFFINE_AF2 el cuadrado es siempre el de fAF2.
+
+Por que
+  Separar los dos efectos que el prototipo mezclaba en un solo entero: la aritmetica (AF2 o
+  parte cuadratica de la RAA de [A]) y la reescritura k-nomial. Asi existe la variante nueva
+  AF2 + k-nomial (residuo termino a termino, AF2 por el Lemma 3 de [A]) y RAA sin k-nomial.
+
+Equivalencias verificadas bit a bit (7 instancias, ref.csv/ref_t300.csv):
+  raak_k=0 == AF2/k=0 ; raak_k=1 == RAA/k=0 ; raak_k=3 == RAA/k=3 (35/35 filas identicas),
+  knomial_golden sin cambios (80 casos / 327 bloques), raak_arith_test con salida identica.
+
+diff --git a/src/arithmetic/ibex_Affine2_fAF2.cpp b/src/arithmetic/ibex_Affine2_fAF2.cpp
+index 4f8fab3..b146bfe 100644
+--- a/src/arithmetic/ibex_Affine2_fAF2.cpp
++++ b/src/arithmetic/ibex_Affine2_fAF2.cpp
+@@ -525,15 +525,20 @@ AffineMain<AF_fAF2>& AffineMain<AF_fAF2>::operator*=(const AffineMain<AF_fAF2>&
+ 			double Sx, Sy, Sxy, Sz, ttt, sss, ppp, tmp, xVal0, eee;
+ 			std::unique_ptr<double[]> xTmp(new double[_n_noise + 1]);
+ 
+-			// [raak local] modo de la parte cuadratica: 0 = fAF2 original, >=1 = ver ibex_KNomial.h.
+-			// Se copian los coeficientes de ruido antes de que se sobrescriba _val.
++			// [raak local] interruptores (ver ibex_KNomial.h). La cota cuadratica alternativa se
++			// calcula con AFFINE_RAA (forma simetrica termino a termino; con k>=2 ademas la
++			// reescritura k-nomial) o con AFFINE_AF2 y k>=2 (solo reescritura: el residuo acotado
++			// termino a termino es AF2 por el Lemma 3 de [A]). kmode es el k real: con k<2
++			// knomial_quad_bound no reescribe. Se copian los coeficientes de ruido antes de que se
++			// sobrescriba _val.
+ 			const int kmode = knomial_max_k();
++			const bool quad_alt = (affine_mode() == AFFINE_RAA) || (kmode >= 2);
+ 			std::vector<double> qx, qy;
+ 			// Filtro: la forma simetrica solo mejora a fAF2 si hay i<j con x_i, x_j, y_i, y_j no nulos,
+ 			// y un bloque exige Q_ii = x_i*y_i no nulo en al menos dos simbolos. Ambas cosas requieren
+ 			// que x e y compartan al menos dos simbolos de ruido; si no, se omite la reescritura.
+ 			bool kcand = false;
+-			if (kmode >= 1) {
++			if (quad_alt) {
+ 				knomial_stats().products++;
+ 				int shared = 0;
+ 				const int ncommon = std::min(_n_noise, y.noise_count());
+@@ -623,7 +628,7 @@ AffineMain<AF_fAF2>& AffineMain<AF_fAF2>::operator*=(const AffineMain<AF_fAF2>&
+ 
+ 			}
+ 
+-			// [raak local] con kmode >= 1 la parte cuadratica (centro 0.5*Sz, radio Sx*Sy - 0.5*Sxy)
++			// [raak local] con quad_alt la parte cuadratica (centro 0.5*Sz, radio Sx*Sy - 0.5*Sxy)
+ 			// se reemplaza por la cota de knomial_quad_bound. Los terminos cruzados con los
+ 			// errores son los mismos de fAF2. El margen por el redondeo de la reescritura es
+ 			// heuristico (prototipo, sin rigor; ver fase F6).
+@@ -770,14 +775,15 @@ AffineMain<AF_fAF2>& AffineMain<AF_fAF2>::Asqr(const Interval& itv) {
+ 
+ 		}
+ 
+-		// [raak local] con raak_k >= 1, la parte cuadratica (a^T eps + e h)^2 se acota por su rango
+-		// exacto [0, (Sx+e)^2]: es la linealizacion de Chebyshev del cuadrado de la RAA de [A]
++		// [raak local] con AFFINE_RAA (cualquier k), la parte cuadratica (a^T eps + e h)^2 se acota por su
++		// rango exacto [0, (Sx+e)^2]: es la linealizacion de Chebyshev del cuadrado de la RAA de [A]
+ 		// (y coincide con un unico bloque k-nomial, porque a a^T es un clique balanceado). fAF2 usa centro Sx2/2 y
+ 		// radio (Sx+e)^2 - Sx2/2. Solo se usa si mejora a fAF2 mas alla del margen; si no, el
+ 		// calculo es bit a bit el de fAF2 (el redondeo propio se acumula aparte en tq).
++		// Con AFFINE_AF2 el cuadrado es siempre el de fAF2, aunque haya reescritura k-nomial.
+ 		bool use_raak_sq = false;
+ 		double sq_half = 0.0, tq = 0.0;
+-		if (knomial_max_k() >= 1) {
++		if (affine_mode() == AFFINE_RAA) {
+ 			KNomialStats& kst = knomial_stats();
+ 			kst.sqr_products++;
+ 			double eS = 0.0, sq = 0.0;
+diff --git a/src/arithmetic/ibex_KNomial.h b/src/arithmetic/ibex_KNomial.h
+index c880b2b..bbb797b 100644
+--- a/src/arithmetic/ibex_KNomial.h
++++ b/src/arithmetic/ibex_KNomial.h
+@@ -27,19 +27,40 @@
+ namespace ibex {
+ 
+ /**
+- * Modo de la multiplicacion de formas afines AF_fAF2 (valor por hilo):
+- *   0     multiplicacion original de fAF2 (valor por defecto)
+- *   1     parte cuadratica de la RAA de [A]: productos simetrizados y linealizados termino a
+- *         termino (Chebyshev en x_i^2, envolvente plana en x_i x_j) y cuadrados de formas
+- *         compuestas por Chebyshev. Los errores de los factores se propagan como en fAF2
+- *         (no se usa el corner test de [A]).
+- *   k>=2  lo anterior + reescritura k-nomial SDSOS con cliques de hasta k variables (RAA-K)
++ * [raak local] Dos interruptores independientes, ambos por hilo (Fase 1, parche 0004):
++ *
++ *   affine_mode()   AFFINE_AF2 (por defecto) o AFFINE_RAA. Solo afecta a AffineMain<AF_fAF2>.
++ *   knomial_max_k() 0 (por defecto) = sin reescritura k-nomial; k>=2 = reescritura SDSOS con
++ *                   cliques de hasta k variables. El valor 1 ya no es un modo: su significado
++ *                   anterior (parte cuadratica de la RAA de [A]) es ahora AFFINE_RAA con k=0.
++ *
++ *   Aritmetica  k-nomial  Productos (operator*=)              Asqr compuestas   Errores factores
++ *   AF2  k=0    no        fAF2 original (bit a bit)           fAF2              fAF2
++ *   AF2  k>=2   si        knomial_quad_bound con bloques;     fAF2              fAF2
++ *                         residuo termino a termino (Lemma 3
++ *                         de [A]); solo si mejora a fAF2
++ *   RAA  k=0    no        forma simetrica termino a termino   Chebyshev         corner test (0005)
++ *                         (= knomial_quad_bound con max_k<2)  [0,(Sx+e)^2]
++ *   RAA  k>=2   si        knomial_quad_bound con bloques      Chebyshev         corner test (0005)
++ *   AA   k=0    no        AF_fAFFullI original (bit a bit)    Chebyshev (ya)    rayo nuevo
++ *   AA   k>=2   si        ruta simetrica sobre la union de    Chebyshev         rayo nuevo
++ *                         rayos (parche 0006)
++ *
++ * Equivalencias con los modos del prototipo (bit a bit): raak_k=0 == AF2/k=0;
++ * raak_k=1 == RAA/k=0 (antes del corner test); raak_k=3 == RAA/k=3 (antes del corner test).
+  */
+ inline int& knomial_max_k() {
+ 	static thread_local int k = 0;
+ 	return k;
+ }
+ 
++enum AffineMode { AFFINE_AF2 = 0, AFFINE_RAA = 1 };
++
++inline AffineMode& affine_mode() {
++	static thread_local AffineMode m = AFFINE_AF2;
++	return m;
++}
++
+ /** Bloque c * (u^T x)^2 de la reescritura. */
+ struct KNomialBlock {
+ 	double c;
+@@ -293,16 +314,16 @@ inline int knomial_rewrite(std::vector<double>& Q, const std::vector<double>& w,
+ 	return n_infeasible;
+ }
+ 
+-/** Contadores por hilo de la multiplicacion con modo >= 1 (diagnostico del prototipo). */
++/** Contadores por hilo de la cota cuadratica alternativa (RAA o k>=2; diagnostico del prototipo). */
+ struct KNomialStats {
+-	long products;           // productos de formas activas no degeneradas con modo >= 1
++	long products;           // productos de formas activas no degeneradas con RAA o k>=2
+ 	long calls;              // productos que pasaron el filtro y llegaron a knomial_quad_bound
+ 	long calls_with_blocks;  // productos en los que la reescritura extrajo al menos un bloque
+ 	long blocks;             // bloques extraidos en total
+ 	long calls_used;         // productos en los que la cota k-nomial reemplazo a la de fAF2
+ 	double rad_faf2;         // suma del radio cuadratico de fAF2 (Sx*Sy - Sxy/2) en los evaluados
+ 	double rad_used;         // suma del radio cuadratico k-nomial en los evaluados
+-	long sqr_products;       // cuadrados con modo >= 1
++	long sqr_products;       // cuadrados de formas compuestas con AFFINE_RAA
+ 	long sqr_used;           // cuadrados en los que la cota de un solo bloque reemplazo a la de fAF2
+ };
+ 

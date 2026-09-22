@@ -1,0 +1,16 @@
+instancia            variante       estado     celdas    ref_estado ref_celdas resultado
+easy/ex2_1_1         art            SUCCESS    6         SUCCESS    6         IDENTICA
+easy/ex2_1_1         compo          SUCCESS    6         SUCCESS    6         IDENTICA
+easy/ex2_1_2         art            SUCCESS    0         SUCCESS    0         IDENTICA
+easy/ex2_1_2         compo          SUCCESS    0         SUCCESS    0         IDENTICA
+easy/ex5_4_3         art            SUCCESS    44        SUCCESS    44        IDENTICA
+easy/ex5_4_3         compo          SUCCESS    44        SUCCESS    44        IDENTICA
+medium/bearing       art            SUCCESS    45894     SUCCESS    45894     IDENTICA
+medium/bearing       compo          SUCCESS    25704     SUCCESS    25704     IDENTICA
+medium/ex5_3_2       art            SUCCESS    186       SUCCESS    186       IDENTICA
+medium/ex5_3_2       compo          SUCCESS    54        SUCCESS    54        IDENTICA
+medium/ex7_3_4       art            SUCCESS    474       SUCCESS    474       IDENTICA
+medium/ex7_3_4       compo          SUCCESS    424       SUCCESS    424       IDENTICA
+medium/ex8_4_4bis    art            SUCCESS    120168    SUCCESS    120168    IDENTICA
+medium/ex8_4_4bis    compo          SUCCESS    83220     SUCCESS    83220     IDENTICA
+identicas=14 diferentes=0 ambas_timeout=0 nuevas=0 sin_ref=0

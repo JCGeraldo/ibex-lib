@@ -1,0 +1,6 @@
+raa_corner_test: 10000 pares (n de 1 a 6), 2000 muestras por par; saltados (forma no activa): 0
+violaciones_radio=0 violaciones_contencion=0 violaciones_itv=0 diferencias_bit_a_bit_sin_error=0
+  (max exceso de contencion: 0.000e+00; pares sin error: 2477, comparados con la referencia: 2477; RAA mas estrecho que AF2 en 3447 pares)
+termino de cruces (formula cerrada) sobre 7523 pares con error: E_RAA/E_fAF2 medio = 0.9358, E_RAA < E_fAF2 en 868 pares (reduccion media 6.5 %)
+biblioteca: corner_used/corner_products = 868/7114, cruces usados / fAF2 = 0.9740
+CORNER OK

@@ -1,0 +1,417 @@
+Parche 0008 (ibex-affine, sobre c219009c + 0001 + 0002 + 0004 + 0005 + 0006 + 0007) -- Fase 2, paso 2.1
+
+Que cambia
+  - ibex_AffineTrig.h (nuevo): interruptor por hilo trig_lin_mode() in {TRIG_AUTO, TRIG_CHEBYSHEV,
+    TRIG_MINRANGE, TRIG_LEGACY}, trig_lin_resolve() (AUTO sigue el modo Chebyshev/MinRange del
+    hilo), contadores trig_lin_stats() y trig_residual_range(is_sin, alpha, itv, residual): rango
+    con redondeo exterior de g(v) = f(v) - alpha v sobre itv, evaluando g en los extremos y en todos
+    los puntos criticos f'(v) = alpha (sin: +-acos(alpha) + 2k pi; cos: asin(-alpha) + 2k pi y
+    pi - asin(-alpha) + 2k pi). Es el mecanismo general de la Sec. 3.2 de [A] (pasos 1-3).
+  - ibex_AffineMain_trig_impl.h (nuevo): AffineMain<T>::Asin_CH / Acos_CH (pendiente de cuerda
+    alpha = (f(b) - f(a)) / (b - a), Ec. 12 de [A]), Asin_MR / Acos_MR (min-range: si f' se anula
+    en itv, alpha = 0 y la forma es el intervalo f(itv); si no, alpha = f' en el extremo con menor
+    |f'|) y el auxiliar Atrig_apply(alpha, residual) (*this <- alpha*(*this) + mid(residual) +-
+    rad(residual), mismo patron que Aexp_CH y el resto de unarias del plugin).
+  - ibex_AffineMain.h: declaraciones de las cinco funciones y #include del nuevo _trig_impl.h.
+  - ibex_AffineMain_impl.h: #include "ibex_AffineTrig.h" y, al comienzo de Asin y Acos, un switch
+    sobre trig_lin_resolve(mode == AF_Lin_MinRange): CHEBYSHEV -> *_CH, MINRANGE -> *_MR, LEGACY ->
+    sigue el codigo original, que no se toca.
+  - src/CMakeLists.txt: los dos headers nuevos en SRC (se instalan con los demas).
+
+Por que
+  El plugin tenia sin/cos con una unica linealizacion (pendiente de la cuadratura de Gauss de dos
+  puntos) que ignoraba el modo Chebyshev/MinRange del hilo y no coincide con la Sec. 3.2 de [A]
+  (RAA: cuerda + residuo exacto). Con este parche las tres aritmeticas (AF2, RAA, AA), que comparten
+  la plantilla, disponen de las dos formulas clasicas mas el mecanismo general de residuo exacto,
+  que hace validas las formas aunque el intervalo contenga extremos o puntos de inflexion. El
+  codigo original se conserva como TRIG_LEGACY para comparar. Por defecto (TRIG_AUTO, modo
+  Chebyshev del plugin) se usa la cuerda.
+
+Verificado
+  Ver raak/results/fase2-*/ (trig_lin_test: contencion en 4 funciones x 735 intervalos x 2
+  aritmeticas x 3 modos) y raak/docs/FASE2_TRIGONOMETRICAS.md.
+
+
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 421f4aa..da2f30a 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -12,6 +12,8 @@ list (APPEND SRC 	${CMAKE_CURRENT_SOURCE_DIR}/arithmetic/ibex_Affine2_fAF2.cpp
+ 	                ${CMAKE_CURRENT_SOURCE_DIR}/arithmetic/ibex_AffineVector.h
+ 	                ${CMAKE_CURRENT_SOURCE_DIR}/arithmetic/ibex_Affine.h
+ 	                ${CMAKE_CURRENT_SOURCE_DIR}/arithmetic/ibex_KNomial.h
++	                ${CMAKE_CURRENT_SOURCE_DIR}/arithmetic/ibex_AffineTrig.h
++	                ${CMAKE_CURRENT_SOURCE_DIR}/arithmetic/ibex_AffineMain_trig_impl.h
+ 	                ${CMAKE_CURRENT_SOURCE_DIR}/function/ibex_AffineEval.h
+ 	                ${CMAKE_CURRENT_SOURCE_DIR}/contractor/ibex_CtcAffineFwdBwd.cpp
+ 	                ${CMAKE_CURRENT_SOURCE_DIR}/contractor/ibex_CtcAffineFwdBwd.h
+diff --git a/src/arithmetic/ibex_AffineMain.h b/src/arithmetic/ibex_AffineMain.h
+index 0ba46cd..5361af1 100644
+--- a/src/arithmetic/ibex_AffineMain.h
++++ b/src/arithmetic/ibex_AffineMain.h
+@@ -540,6 +540,15 @@ private:
+ 	/** \brief MinRange linearization of the n^th root, for an odd n>=3 */
+ 	AffineMain<T>&  Aroot_MR(int n, const Interval& itv);
+ 
++	/* [raak local] Fase 2 (parche 0008): seno y coseno con pendiente de cuerda (Chebyshev de la
++	 * RAA de [A], Ec. 12) y min-range. Definidas en ibex_AffineMain_trig_impl.h; el modo se elige
++	 * con trig_lin_mode() (ibex_AffineTrig.h) y el despacho esta al comienzo de Asin / Acos. */
++	AffineMain<T>&  Atrig_apply(double alpha, const Interval& residual);
++	AffineMain<T>&  Asin_CH(const Interval& itv);
++	AffineMain<T>&  Acos_CH(const Interval& itv);
++	AffineMain<T>&  Asin_MR(const Interval& itv);
++	AffineMain<T>&  Acos_MR(const Interval& itv);
++
+ 
+ 	template<class A>   friend AffineMain<A> operator/(double d, const AffineMain<A>& x);
+ 	template<class A>   friend AffineMain<A> operator/(const Interval& x1, const AffineMain<A>& x2);
+@@ -967,6 +976,8 @@ AffineMain<AF_No>& AffineMain<AF_No>::Apow(int n, const Interval& itv);
+ 
+ #include "ibex_AffineMain_impl.h"
+ #include "ibex_AffineMain_operations_impl.h"
++// [raak local] Fase 2 (parche 0008): Asin_CH / Acos_CH / Asin_MR / Acos_MR
++#include "ibex_AffineMain_trig_impl.h"
+ 
+ 
+ #endif /* IBEX_AFFINEMAIN_H_ */
+diff --git a/src/arithmetic/ibex_AffineMain_impl.h b/src/arithmetic/ibex_AffineMain_impl.h
+index 5ff3e66..cd4db4a 100644
+--- a/src/arithmetic/ibex_AffineMain_impl.h
++++ b/src/arithmetic/ibex_AffineMain_impl.h
+@@ -14,6 +14,9 @@
+ 
+ #include <cmath>
+ 
++// [raak local] Fase 2 (parche 0008): interruptor trig_lin_mode() y auxiliares de sin/cos
++#include "ibex_AffineTrig.h"
++
+ namespace ibex {
+ 
+ template<class T> const double AffineMain<T>::AF_COMPAC_Tol = 1.e-6;
+@@ -638,6 +641,15 @@ AffineMain<T>& AffineMain<T>::Apow(const Interval& y, const Interval& itvx) {
+ 
+ template<class T>
+ AffineMain<T>& AffineMain<T>::Acos(const Interval& itv){
++	// [raak local] Fase 2 (parche 0008): despacho de la linealizacion de cos (ver ibex_AffineTrig.h).
++	// TRIG_AUTO sigue el modo del hilo (Chebyshev -> pendiente de cuerda, MinRange -> min-range);
++	// TRIG_LEGACY deja correr el codigo original de abajo, que no se modifica.
++	switch (trig_lin_resolve(mode == AF_Lin_MinRange)) {
++	case TRIG_CHEBYSHEV: return Acos_CH(itv);
++	case TRIG_MINRANGE:  return Acos_MR(itv);
++	default:             trig_lin_stats().cos_legacy++; break;
++	}
++
+ 	Interval res_itv = cos(itv);
+ 
+ 	// Particular case
+@@ -721,6 +733,15 @@ AffineMain<T>& AffineMain<T>::Acos(const Interval& itv){
+ 
+ template<class T>
+ AffineMain<T>& AffineMain<T>::Asin(const Interval& itv){
++	// [raak local] Fase 2 (parche 0008): despacho de la linealizacion de sin (ver ibex_AffineTrig.h).
++	// TRIG_AUTO sigue el modo del hilo (Chebyshev -> pendiente de cuerda, MinRange -> min-range);
++	// TRIG_LEGACY deja correr el codigo original de abajo, que no se modifica.
++	switch (trig_lin_resolve(mode == AF_Lin_MinRange)) {
++	case TRIG_CHEBYSHEV: return Asin_CH(itv);
++	case TRIG_MINRANGE:  return Asin_MR(itv);
++	default:             trig_lin_stats().sin_legacy++; break;
++	}
++
+ 	Interval res_itv = sin(itv);
+ 
+ 	// Particular case
+diff --git a/src/arithmetic/ibex_AffineMain_trig_impl.h b/src/arithmetic/ibex_AffineMain_trig_impl.h
+new file mode 100644
+index 0000000..f28f010
+--- /dev/null
++++ b/src/arithmetic/ibex_AffineMain_trig_impl.h
+@@ -0,0 +1,157 @@
++//============================================================================
++//                    ibex-affine -- rama local "raak"
++//
++// [raak local] Fase 2 (parche 0008): funciones miembro de AffineMain<T> para seno y coseno con
++// pendiente de cuerda (Asin_CH / Acos_CH) y min-range (Asin_MR / Acos_MR), mas el auxiliar
++// Atrig_apply. Se incluye desde ibex_AffineMain.h despues de ibex_AffineMain_operations_impl.h.
++// La teoria y el interruptor estan en ibex_AffineTrig.h. El codigo original del plugin
++// (AffineMain<T>::Asin / Acos en ibex_AffineMain_impl.h) no se modifica: solo se le antepone
++// un despacho hacia estas funciones.
++//============================================================================
++
++#ifndef IBEX_AFFINEMAIN_TRIG_IMPL_H_
++#define IBEX_AFFINEMAIN_TRIG_IMPL_H_
++
++#include "ibex_AffineTrig.h"
++
++namespace ibex {
++
++/*
++ * *this <- alpha * (*this) + beta +- ddelta, con [beta - ddelta, beta + ddelta] ⊇ residual.
++ * Es el paso final comun a todas las linealizaciones unarias del plugin (mismo patron y mismo
++ * orden de operaciones que Aexp_CH, Acos, etc.): beta = punto medio del residuo, ddelta = su
++ * radio con redondeo exterior. La multiplicacion por alpha y la suma de beta son las operaciones
++ * afines de la propia aritmetica (AF2 o AA), con su contabilidad de redondeo.
++ */
++template<class T>
++inline AffineMain<T>& AffineMain<T>::Atrig_apply(double alpha, const Interval& residual) {
++	const double beta = residual.mid();
++	const double t1 = (beta - residual).ub();
++	const double t2 = (residual - beta).ub();
++	const double ddelta = (t1 > t2) ? t1 : t2;
++
++	*this *= alpha;
++	*this += beta;
++	this->inflate(ddelta);
++	return *this;
++}
++
++/*
++ * Seno, pendiente de cuerda (Sec. 3.2 de [A], Ec. 12).
++ *
++ * Casos particulares (identicos a los del codigo original): forma no activa, sin(itv) vacio o no
++ * acotado, diam(itv) < AF_EC o diam(itv) >= 2 pi  ->  *this = sin(itv) (que en el ultimo caso es
++ * [-1,1]). En el caso general alpha = (sin b - sin a) / (b - a) y el residuo se calcula con
++ * trig_residual_range (extremos + puntos criticos), asi que la forma es valida aunque [a,b]
++ * contenga extremos o puntos de inflexion de sin.
++ */
++template<class T>
++AffineMain<T>& AffineMain<T>::Asin_CH(const Interval& itv) {
++	const Interval res_itv = sin(itv);
++	if (res_itv.is_empty() || res_itv.is_unbounded() || (!is_active()) ||
++	    (itv.diam() < AF_EC) || (itv.diam() >= Interval::two_pi().lb())) {
++		trig_lin_stats().fallback_itv++;
++		*this = res_itv;
++		return *this;
++	}
++	const double alpha = (std::sin(itv.ub()) - std::sin(itv.lb())) / itv.diam();
++	Interval residual;
++	if (!std::isfinite(alpha) || !trig_residual_range(true, alpha, itv, residual)) {
++		trig_lin_stats().fallback_itv++;
++		*this = res_itv;
++		return *this;
++	}
++	trig_lin_stats().sin_ch++;
++	return Atrig_apply(alpha, residual);
++}
++
++/* Coseno, pendiente de cuerda: alpha = (cos b - cos a) / (b - a). Ver Asin_CH. */
++template<class T>
++AffineMain<T>& AffineMain<T>::Acos_CH(const Interval& itv) {
++	const Interval res_itv = cos(itv);
++	if (res_itv.is_empty() || res_itv.is_unbounded() || (!is_active()) ||
++	    (itv.diam() < AF_EC) || (itv.diam() >= Interval::two_pi().lb())) {
++		trig_lin_stats().fallback_itv++;
++		*this = res_itv;
++		return *this;
++	}
++	const double alpha = (std::cos(itv.ub()) - std::cos(itv.lb())) / itv.diam();
++	Interval residual;
++	if (!std::isfinite(alpha) || !trig_residual_range(false, alpha, itv, residual)) {
++		trig_lin_stats().fallback_itv++;
++		*this = res_itv;
++		return *this;
++	}
++	trig_lin_stats().cos_ch++;
++	return Atrig_apply(alpha, residual);
++}
++
++/*
++ * Seno, min-range.
++ *
++ * f' = cos. Si cos(itv) contiene 0, [a,b] contiene (o toca) un extremo de sin: la forma de menor
++ * rango es el propio intervalo sin(itv) (alpha = 0). Si no, sin es monotona en [a,b] y se toma
++ * alpha = cos en el extremo donde |cos| es menor: g' = cos v - alpha no cambia de signo, g es
++ * monotona y la anchura de la forma es la del rango exacto |sin b - sin a|. El residuo se calcula
++ * igualmente con trig_residual_range (si el redondeo de alpha hiciera aparecer un punto critico
++ * en un extremo, queda cubierto).
++ */
++template<class T>
++AffineMain<T>& AffineMain<T>::Asin_MR(const Interval& itv) {
++	const Interval res_itv = sin(itv);
++	if (res_itv.is_empty() || res_itv.is_unbounded() || (!is_active()) ||
++	    (itv.diam() < AF_EC) || (itv.diam() >= Interval::two_pi().lb())) {
++		trig_lin_stats().fallback_itv++;
++		*this = res_itv;
++		return *this;
++	}
++	const Interval deriv = cos(itv);
++	if (deriv.contains(0.0)) {
++		trig_lin_stats().sin_mr_itv++;
++		*this = res_itv;
++		return *this;
++	}
++	const double da = std::cos(itv.lb()), db = std::cos(itv.ub());
++	const double alpha = (std::fabs(da) <= std::fabs(db)) ? da : db;
++	Interval residual;
++	if (!std::isfinite(alpha) || !trig_residual_range(true, alpha, itv, residual)) {
++		trig_lin_stats().fallback_itv++;
++		*this = res_itv;
++		return *this;
++	}
++	trig_lin_stats().sin_mr++;
++	return Atrig_apply(alpha, residual);
++}
++
++/* Coseno, min-range: f' = -sin; si sin(itv) contiene 0 -> intervalo; si no, alpha = -sin en el
++ * extremo donde |sin| es menor. Ver Asin_MR. */
++template<class T>
++AffineMain<T>& AffineMain<T>::Acos_MR(const Interval& itv) {
++	const Interval res_itv = cos(itv);
++	if (res_itv.is_empty() || res_itv.is_unbounded() || (!is_active()) ||
++	    (itv.diam() < AF_EC) || (itv.diam() >= Interval::two_pi().lb())) {
++		trig_lin_stats().fallback_itv++;
++		*this = res_itv;
++		return *this;
++	}
++	const Interval deriv = -sin(itv);
++	if (deriv.contains(0.0)) {
++		trig_lin_stats().cos_mr_itv++;
++		*this = res_itv;
++		return *this;
++	}
++	const double da = -std::sin(itv.lb()), db = -std::sin(itv.ub());
++	const double alpha = (std::fabs(da) <= std::fabs(db)) ? da : db;
++	Interval residual;
++	if (!std::isfinite(alpha) || !trig_residual_range(false, alpha, itv, residual)) {
++		trig_lin_stats().fallback_itv++;
++		*this = res_itv;
++		return *this;
++	}
++	trig_lin_stats().cos_mr++;
++	return Atrig_apply(alpha, residual);
++}
++
++} // end namespace ibex
++
++#endif /* IBEX_AFFINEMAIN_TRIG_IMPL_H_ */
+diff --git a/src/arithmetic/ibex_AffineTrig.h b/src/arithmetic/ibex_AffineTrig.h
+new file mode 100644
+index 0000000..30975ab
+--- /dev/null
++++ b/src/arithmetic/ibex_AffineTrig.h
+@@ -0,0 +1,126 @@
++//============================================================================
++//                    ibex-affine -- rama local "raak"
++//
++// [raak local] Fase 2 (parche 0008): linealizacion de seno y coseno.
++//
++// Interruptor por hilo trig_lin_mode(), contadores de diagnostico y la funcion auxiliar
++// trig_residual_range(), compartidos por AffineMain<T>::Asin_CH / Acos_CH (pendiente de cuerda:
++// el "Chebyshev" de la Sec. 3.2 de [A], Ec. 12) y Asin_MR / Acos_MR (min-range). Las funciones
++// miembro estan en ibex_AffineMain_trig_impl.h; el despacho, al comienzo de Asin/Acos en
++// ibex_AffineMain_impl.h. El codigo original del plugin (pendiente de Gauss de dos puntos) se
++// conserva intacto como modo TRIG_LEGACY.
++//
++// Alcance: solo sin y cos. Las tres aritmeticas del proyecto (AF2, RAA, AA) comparten estas
++// plantillas, asi que la eleccion vale para las seis variantes por igual.
++//
++// [A] Araya et al., "Extending Affine Arithmetic with Bilinear Operators and non-parallel Envelopes".
++//
++// C++11, solo cabecera. Solo depende de ibex_Interval.h.
++//============================================================================
++
++#ifndef __IBEX_AFFINE_TRIG_H__
++#define __IBEX_AFFINE_TRIG_H__
++
++#include "ibex_Interval.h"
++
++#include <cmath>
++#include <limits>
++
++namespace ibex {
++
++/**
++ * Modo de linealizacion de sin y cos (valor por hilo):
++ *
++ *   TRIG_AUTO       (por defecto) sigue el modo del hilo de AffineMain<T>: AF_Lin_Chebyshev (el
++ *                   valor por defecto del plugin) -> TRIG_CHEBYSHEV; AF_Lin_MinRange -> TRIG_MINRANGE.
++ *   TRIG_CHEBYSHEV  pendiente de cuerda alpha = (f(b) - f(a)) / (b - a) (Ec. 12 de [A]) y residuo
++ *                   exacto: g(v) = f(v) - alpha v evaluado en a, b y en todos los puntos criticos
++ *                   f'(v) = alpha de [a,b] (pasos 1-3 de la Sec. 3.2 de [A]). Es la aproximacion
++ *                   minimax cuando f es convexa o concava en [a,b]; si [a,b] contiene un punto de
++ *                   inflexion la cuerda ya no es minimax, pero el residuo sigue siendo exacto y la
++ *                   forma resultante es valida.
++ *   TRIG_MINRANGE   si f es monotona en [a,b] (f' no se anula): alpha = f' en el extremo donde |f'|
++ *                   es menor; entonces g' = f' - alpha no cambia de signo, g es monotona y la
++ *                   anchura de la forma es exactamente la del rango de f (la minima posible).
++ *                   Si [a,b] contiene un extremo de f (f' se anula): alpha = 0 y la forma es el
++ *                   intervalo f([a,b]), que es el min-range en ese caso.
++ *   TRIG_LEGACY     codigo original del plugin: pendiente de la cuadratura de Gauss de dos puntos
++ *                   (aproximacion de la recta de minimos cuadrados) con residuo exacto. No es
++ *                   ninguno de los dos criterios clasicos, pero es valido.
++ *
++ * Los modos no cambian los casos particulares del plugin (forma no activa, intervalo vacio, no
++ * acotado, diam < AF_EC, diam >= 2 pi): en todos ellos el resultado es el intervalo f([a,b]).
++ */
++enum TrigLinMode { TRIG_AUTO = 0, TRIG_CHEBYSHEV = 1, TRIG_MINRANGE = 2, TRIG_LEGACY = 3 };
++
++inline TrigLinMode& trig_lin_mode() {
++	static thread_local TrigLinMode m = TRIG_AUTO;
++	return m;
++}
++
++/** Modo efectivo: resuelve TRIG_AUTO con el modo (Chebyshev / MinRange) del hilo de la forma afin. */
++inline TrigLinMode trig_lin_resolve(bool affine_mode_is_minrange) {
++	const TrigLinMode m = trig_lin_mode();
++	if (m != TRIG_AUTO) return m;
++	return affine_mode_is_minrange ? TRIG_MINRANGE : TRIG_CHEBYSHEV;
++}
++
++/** Contadores por hilo (diagnostico; no afectan al calculo). */
++struct TrigLinStats {
++	long sin_ch,     cos_ch;       // linealizaciones con pendiente de cuerda
++	long sin_mr,     cos_mr;       // min-range con f monotona (pendiente no nula)
++	long sin_mr_itv, cos_mr_itv;   // min-range degenerado a intervalo (extremo de f dentro de [a,b])
++	long sin_legacy, cos_legacy;   // codigo original del plugin
++	long fallback_itv;             // casos particulares resueltos como intervalo (ver arriba)
++};
++
++inline TrigLinStats& trig_lin_stats() {
++	static thread_local TrigLinStats s = {0, 0, 0, 0, 0, 0, 0, 0, 0};
++	return s;
++}
++
++/**
++ * Rango (con redondeo exterior) del residuo g(v) = f(v) - alpha v sobre itv, con f = sin o cos.
++ *
++ * Evalua g en los extremos de itv y en todos los puntos criticos v de itv con f'(v) = alpha:
++ *   sin:  cos v = alpha   ->  v = +-acos(alpha) + 2k pi
++ *   cos:  -sin v = alpha  ->  v = asin(-alpha) + 2k pi  o  v = pi - asin(-alpha) + 2k pi
++ * Como g es diferenciable, su maximo y su minimo en [a,b] estan en los extremos o en un punto
++ * critico, asi que el hull de esas evaluaciones es el rango exacto de g (salvo el redondeo, que
++ * la aritmetica de intervalos deja del lado seguro). Con |alpha| > 1 no hay puntos criticos.
++ *
++ * Devuelve false si el numero de periodos de itv no cabe en un int (argumentos enormes): el
++ * llamador debe caer al intervalo f(itv). Mismo esquema de enumeracion que el codigo original
++ * del plugin (Asin/Acos), pero escrito una sola vez para sin y cos y para las variantes CH y MR.
++ */
++inline bool trig_residual_range(bool is_sin, double alpha, const Interval& itv, Interval& residual) {
++	const Interval a(itv.lb()), b(itv.ub());
++	residual  = (is_sin ? sin(a) : cos(a)) - alpha*a;
++	residual |= (is_sin ? sin(b) : cos(b)) - alpha*b;
++
++	const Interval alpha_dom = Interval(alpha) & Interval(-1.0, 1.0);
++	if (alpha_dom.is_empty()) return true;       // |alpha| > 1: g' = f' - alpha no se anula
++
++	// u = acos(alpha) en [0, pi] (sin) o u = asin(-alpha) en [-pi/2, pi/2] (cos)
++	const Interval u = is_sin ? acos(alpha_dom) : asin(-alpha_dom);
++
++	const Interval nb_period = itv / Interval::two_pi();
++	const double period_limit = (double) (std::numeric_limits<int>::max() - 2);
++	if (!std::isfinite(nb_period.lb()) || !std::isfinite(nb_period.ub()) ||
++	    nb_period.lb() < -period_limit || nb_period.ub() > period_limit) return false;
++
++	const int k1 = ((int) nb_period.lb()) - 2;
++	const int k2 = ((int) nb_period.ub()) + 2;
++	for (int k = k1; k <= k2; k++) {
++		const Interval shift = k*Interval::two_pi();
++		const Interval c1 = itv & (u + shift);
++		const Interval c2 = itv & ((is_sin ? -u : Interval::pi() - u) + shift);
++		if (!c1.is_empty()) residual |= (is_sin ? sin(c1) : cos(c1)) - alpha*c1;
++		if (!c2.is_empty()) residual |= (is_sin ? sin(c2) : cos(c2)) - alpha*c2;
++	}
++	return true;
++}
++
++} // namespace ibex
++
++#endif // __IBEX_AFFINE_TRIG_H__

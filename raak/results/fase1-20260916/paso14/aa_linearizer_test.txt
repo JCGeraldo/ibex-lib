@@ -1,0 +1,7 @@
+aa_linearizer_test: 200 polinomios (2-4 variables, grado 2-3), 1000 puntos por funcion; formas evaluadas: 200
+  AA k=0   violaciones=0 (max exceso 0.000e+00) formas_no_linearizables=0
+  AA k=3   violaciones=0 (max exceso 0.000e+00) formas_no_linearizables=0
+  AF2 k=0  violaciones=0 (max exceso 0.000e+00) formas_no_linearizables=0
+  Affine3 con rayos no-variable (extra > 0): 187 de 200; extra/(err+extra) medio = 1.000
+violaciones=0
+LINEARIZADOR AA OK

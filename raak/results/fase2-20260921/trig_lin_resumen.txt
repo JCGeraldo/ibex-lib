@@ -1,0 +1,27 @@
+func       arith mode           n   viol   gm_ratio gm_ratio_ext    lin_err lin_err_ext
+cos        AA   cheb         735      0     1.0937     1.1438     0.2766     0.5282
+cos        AA   legacy       735      0     1.2721     1.5132     0.3151     0.6007
+cos        AA   minrange     735      0     1.0001     1.0001     0.4206     0.7373
+cos        AF2  cheb         735      0     1.0937     1.1438     0.2766     0.5282
+cos        AF2  legacy       735      0     1.2721     1.5132     0.3151     0.6007
+cos        AF2  minrange     735      0     1.0001     1.0001     0.4206     0.7373
+sin*cos    AA   cheb         735      0     1.7091     2.3439     0.5345     0.9908
+sin*cos    AA   legacy       735      0     2.3071     4.2069      1.126      2.178
+sin*cos    AA   minrange     735      0     1.5979     1.8775     0.4905     0.8573
+sin*cos    AF2  cheb         735      0     1.5982     2.1917     0.4872     0.9121
+sin*cos    AF2  legacy       735      0     2.1259     3.8188      1.012      1.967
+sin*cos    AF2  minrange     735      0     1.5836     1.8775       0.49     0.8573
+sin        AA   cheb         735      0     1.0951     1.1503     0.2746     0.5391
+sin        AA   legacy       735      0     1.2790     1.5453     0.3139     0.6151
+sin        AA   minrange     735      0     1.0001     1.0001      0.422     0.7573
+sin        AF2  cheb         735      0     1.0951     1.1503     0.2746     0.5391
+sin        AF2  legacy       735      0     1.2790     1.5453     0.3139     0.6151
+sin        AF2  minrange     735      0     1.0001     1.0001      0.422     0.7573
+sin2+cos2  AA   cheb         735      0    -1.0000    -1.0000     0.6708      1.198
+sin2+cos2  AA   legacy       735      0    -1.0000    -1.0000      1.392      2.641
+sin2+cos2  AA   minrange     735      0    -1.0000    -1.0000     0.6055      1.002
+sin2+cos2  AF2  cheb         735      0    -1.0000    -1.0000      1.014      1.869
+sin2+cos2  AF2  legacy       735      0    -1.0000    -1.0000      2.118      4.083
+sin2+cos2  AF2  minrange     735      0    -1.0000    -1.0000     0.9786      1.701
+violaciones_totales=0
+TRIG OK: todas las envolventes contienen a la funcion

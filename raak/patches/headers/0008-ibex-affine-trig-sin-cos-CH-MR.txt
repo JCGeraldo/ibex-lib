@@ -1,0 +1,33 @@
+Parche 0008 (ibex-affine, sobre c219009c + 0001 + 0002 + 0004 + 0005 + 0006 + 0007) -- Fase 2, paso 2.1
+
+Que cambia
+  - ibex_AffineTrig.h (nuevo): interruptor por hilo trig_lin_mode() in {TRIG_AUTO, TRIG_CHEBYSHEV,
+    TRIG_MINRANGE, TRIG_LEGACY}, trig_lin_resolve() (AUTO sigue el modo Chebyshev/MinRange del
+    hilo), contadores trig_lin_stats() y trig_residual_range(is_sin, alpha, itv, residual): rango
+    con redondeo exterior de g(v) = f(v) - alpha v sobre itv, evaluando g en los extremos y en todos
+    los puntos criticos f'(v) = alpha (sin: +-acos(alpha) + 2k pi; cos: asin(-alpha) + 2k pi y
+    pi - asin(-alpha) + 2k pi). Es el mecanismo general de la Sec. 3.2 de [A] (pasos 1-3).
+  - ibex_AffineMain_trig_impl.h (nuevo): AffineMain<T>::Asin_CH / Acos_CH (pendiente de cuerda
+    alpha = (f(b) - f(a)) / (b - a), Ec. 12 de [A]), Asin_MR / Acos_MR (min-range: si f' se anula
+    en itv, alpha = 0 y la forma es el intervalo f(itv); si no, alpha = f' en el extremo con menor
+    |f'|) y el auxiliar Atrig_apply(alpha, residual) (*this <- alpha*(*this) + mid(residual) +-
+    rad(residual), mismo patron que Aexp_CH y el resto de unarias del plugin).
+  - ibex_AffineMain.h: declaraciones de las cinco funciones y #include del nuevo _trig_impl.h.
+  - ibex_AffineMain_impl.h: #include "ibex_AffineTrig.h" y, al comienzo de Asin y Acos, un switch
+    sobre trig_lin_resolve(mode == AF_Lin_MinRange): CHEBYSHEV -> *_CH, MINRANGE -> *_MR, LEGACY ->
+    sigue el codigo original, que no se toca.
+  - src/CMakeLists.txt: los dos headers nuevos en SRC (se instalan con los demas).
+
+Por que
+  El plugin tenia sin/cos con una unica linealizacion (pendiente de la cuadratura de Gauss de dos
+  puntos) que ignoraba el modo Chebyshev/MinRange del hilo y no coincide con la Sec. 3.2 de [A]
+  (RAA: cuerda + residuo exacto). Con este parche las tres aritmeticas (AF2, RAA, AA), que comparten
+  la plantilla, disponen de las dos formulas clasicas mas el mecanismo general de residuo exacto,
+  que hace validas las formas aunque el intervalo contenga extremos o puntos de inflexion. El
+  codigo original se conserva como TRIG_LEGACY para comparar. Por defecto (TRIG_AUTO, modo
+  Chebyshev del plugin) se usa la cuerda.
+
+Verificado
+  Ver raak/results/fase2-*/ (trig_lin_test: contencion en 4 funciones x 735 intervalos x 2
+  aritmeticas x 3 modos) y raak/docs/FASE2_TRIGONOMETRICAS.md.
+

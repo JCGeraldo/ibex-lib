@@ -1,0 +1,163 @@
+Parche 0005 (ibex-affine, sobre c219009c + 0001 + 0002 + 0004) -- Fase 1, paso 1.2
+
+Que cambia
+  - ibex_KNomial.h: raa_corner_cross(a, b, ex, ey, em) = max_s sum_i |ey a_i + s ex b_i| con
+    mayorante de redondeo (1+2em)^3 (1+4 em n); contadores corner_products, corner_used,
+    cross_faf2, cross_corner en KNomialStats.
+  - ibex_Affine2_fAF2.cpp, operator*=, solo con affine_mode()==AFFINE_RAA: los coeficientes de
+    ruido se copian siempre (no solo si x e y comparten >=2 simbolos) y el termino de cruces de
+    los errores con las partes lineales, ex*Sy + Sx*ey en fAF2, se reemplaza por el corner test
+    de la Ec. (16) de [A] (+ ex*ey) cuando mejora mas alla del margen (1 - 2 AF_EM (n+4)).
+    El error no lineal se escribe como cruces + cuadratico (k-nomial/simetrico, o fAF2) dentro de
+    qerr; |y0| ex y |x0| ey siguen en la expresion plana. Con ex = ey = 0 no actua nunca.
+
+Por que
+  Completar la RAA de [A]: la Sec. 3.2 (unarias) ya estaba en el plugin y 0002/0004 aportan la
+  parte cuadratica; faltaba la propagacion de los errores de los factores por esquinas.
+
+Verificado
+  raa_corner_test (10 000 pares, 2000 muestras): violaciones_radio=0 violaciones_contencion=0
+  violaciones_itv=0 diferencias_bit_a_bit_sin_error=0 (2477/2477); corner_used/products 868/7114;
+  AF2/k=0 identico a la referencia en 7 instancias x {art, compo}; 11/11 tests; knomial_golden igual.
+
+diff --git a/src/arithmetic/ibex_Affine2_fAF2.cpp b/src/arithmetic/ibex_Affine2_fAF2.cpp
+index b146bfe..57c8034 100644
+--- a/src/arithmetic/ibex_Affine2_fAF2.cpp
++++ b/src/arithmetic/ibex_Affine2_fAF2.cpp
+@@ -546,7 +546,10 @@ AffineMain<AF_fAF2>& AffineMain<AF_fAF2>::operator*=(const AffineMain<AF_fAF2>&
+ 					if (_elt._val[i] != 0.0 && y._elt._val[i] != 0.0) shared++;
+ 				kcand = (shared >= 2);
+ 			}
+-			if (kcand) {
++			// [raak local] con AFFINE_RAA los coeficientes se copian siempre: el corner test (0005)
++			// actua sobre los cruces con los errores aunque x e y no compartan simbolos.
++			const bool raa = (affine_mode() == AFFINE_RAA);
++			if (kcand || raa) {
+ 				qx.assign(_n_noise, 0.0);
+ 				qy.assign(_n_noise, 0.0);
+ 				for (int i = 1; i <= _n_noise; i++) {
+@@ -635,21 +638,50 @@ AffineMain<AF_fAF2>& AffineMain<AF_fAF2>::operator*=(const AffineMain<AF_fAF2>&
+ 			// Solo se usa la cota k-nomial si mejora la de fAF2 mas alla de su margen; si no,
+ 			// se sigue exactamente por la formula original y el resultado es identico a fAF2.
+ 			bool use_raak = false;
+-			double qerr = 0.0, qshift = 0.0;
++			double qerr = 0.0, qshift = 0.0, qrad = 0.0, qmargin = 0.0;
++			const double ex = _elt._err, ey = y._elt._err;
+ 			if (kcand) {
+-				double qrad = 0.0;
+ 				knomial_quad_bound(qx, qy, _n_noise, kmode, qshift, qrad);
+-				const double ex = _elt._err, ey = y._elt._err;
+-				const double qmargin = AF_EM * ((double) _n_noise * _n_noise + 4.0) * (std::fabs(qshift) + qrad + Sx*Sy);
++				qmargin = AF_EM * ((double) _n_noise * _n_noise + 4.0) * (std::fabs(qshift) + qrad + Sx*Sy);
+ 				use_raak = (qrad + qmargin) < (1- 2*AF_EM*(_n_noise + 4)) * (Sx*Sy - 0.5*Sxy);
+-				if (use_raak) {
+-					knomial_stats().calls_used++;
++				if (use_raak) knomial_stats().calls_used++;
++			}
++
++			// [raak local] corner test de la Ec. (16) de [A] (parche 0005, solo AFFINE_RAA): los cruces
++			// de los errores con las partes lineales, ex*Sy + Sx*ey en fAF2, se acotan por
++			// max_s sum_i |ey a_i + s ex b_i| (ver raa_corner_cross). Solo se usa si mejora a fAF2 mas
++			// alla del margen; si no, el termino es bit a bit el de fAF2. Con ex = ey = 0 nunca actua.
++			bool use_corner = false;
++			double corner = 0.0;
++			if (raa && (ex > 0.0 || ey > 0.0)) {
++				KNomialStats& kst = knomial_stats();
++				kst.corner_products++;
++				corner = raa_corner_cross(qx, qy, ex, ey, AF_EM);
++				const double cross_faf2 = ex*Sy + Sx*ey;
++				kst.cross_faf2 += cross_faf2;
++				use_corner = corner < (1- 2*AF_EM*(_n_noise + 4)) * cross_faf2;
++				if (use_corner) kst.corner_used++;
++				kst.cross_corner += (use_corner ? corner : cross_faf2);
++			}
++
++			// [raak local] error no lineal como suma explicita de cruces + cuadratico (los otros dos
++			// terminos, |y0| ex y |x0| ey, siguen en la expresion plana de abajo). Con use_raak y sin
++			// corner, qerr es exactamente la de 0002 (mismo orden de operaciones).
++			const bool use_alt = use_raak || use_corner;
++			if (use_alt) {
++				const double cruces = use_corner ? (corner + ex*ey) : (ex*ey + ex*Sy + Sx*ey);
++				if (use_raak)
+ 					qerr = (1+ 2*AF_EM) * (
+-							((1+ 2*AF_EM) * (ex*ey + ex*Sy + Sx*ey)) +
++							((1+ 2*AF_EM) * cruces) +
+ 							((1+ 2*AF_EM) * qrad) +
+ 							qmargin
+ 					);
+-				}
++				else
++					qerr = (1+ 2*AF_EM) * (
++							((1+ 2*AF_EM) * cruces) +
++							((1+ 2*AF_EM) * (Sx*Sy)) +
++							((1- 2*AF_EM) * (-0.5) * Sxy)
++					);
+ 			}
+ 			if (use_raak) {
+ 				eee = 0.0;
+@@ -677,8 +709,8 @@ AffineMain<AF_fAF2>& AffineMain<AF_fAF2>::operator*=(const AffineMain<AF_fAF2>&
+ 			_elt._err = (1+ 2*AF_EM) * (
+ 					((1+ 2*AF_EM) *std::fabs(y._elt._val[0]) * _elt._err)  +
+ 					((1+ 2*AF_EM) *std::fabs(xVal0) * y._elt._err)  +
+-					(use_raak ?qerr : (1+ 2*AF_EM) *(tmp * ppp)) +
+-					(use_raak ?0.0 : (1- 2*AF_EM) *(-0.5) *  Sxy)  +
++					(use_alt ?qerr : (1+ 2*AF_EM) *(tmp * ppp)) +
++					(use_alt ?0.0 : (1- 2*AF_EM) *(-0.5) *  Sxy)  +
+ 					(AF_EE * (ttt))  +
+ 					(AF_EE * sss)
+ 			);
+diff --git a/src/arithmetic/ibex_KNomial.h b/src/arithmetic/ibex_KNomial.h
+index bbb797b..732aeab 100644
+--- a/src/arithmetic/ibex_KNomial.h
++++ b/src/arithmetic/ibex_KNomial.h
+@@ -61,6 +61,34 @@ inline AffineMode& affine_mode() {
+ 	return m;
+ }
+ 
++/**
++ * [raak local] Corner test de la Ec. (16) de [A] en coordenadas de ruido (parche 0005).
++ *
++ * Para x = x0 + a^T eps + ex h, y = y0 + b^T eps + ey g (h, g en [-1,1]) los cruces de los errores
++ * con las partes lineales son ey g (a^T eps) + ex h (b^T eps). Maximizando en eps queda
++ * sum_i |ey g a_i + ex h b_i|, convexa en (h, g): el maximo esta en una esquina de [-1,1]^2.
++ * Como |-z| = |z|, la esquina (-s1,-s2) vale lo mismo que (s1,s2): bastan (+,+) y (+,-).
++ * fAF2 usa ex Sy + Sx ey, que siempre es >= por la desigualdad triangular.
++ *
++ * Devuelve max_{s} sum_i |ey a_i + s ex b_i| mayorado por el redondeo: cada termino tiene 2
++ * productos y 1 suma, y la acumulacion n sumas; con un factor (1 + 2 em) por operacion (patron
++ * de ibex_Affine2_fAF2.cpp, em = AF_EM) se usa (1+2em)^3 (1 + 4 em n) >= (1+2em)^(n+3), valido
++ * mientras 2 em n <= 1. No incluye el termino ex*ey (lo suma el llamador). Mayorante razonado,
++ * no riguroso en el sentido de F6.
++ */
++inline double raa_corner_cross(const std::vector<double>& a, const std::vector<double>& b,
++                               double ex, double ey, double em) {
++	const size_t n = std::min(a.size(), b.size());
++	double corner_pp = 0.0, corner_pm = 0.0;
++	for (size_t i = 0; i < n; i++) {
++		const double p = ey * a[i], q = ex * b[i];
++		corner_pp += std::fabs(p + q);
++		corner_pm += std::fabs(p - q);
++	}
++	const double f = (1 + 2*em) * (1 + 2*em) * (1 + 2*em) * (1 + 4*em*(double) n);
++	return f * std::max(corner_pp, corner_pm);
++}
++
+ /** Bloque c * (u^T x)^2 de la reescritura. */
+ struct KNomialBlock {
+ 	double c;
+@@ -325,10 +353,14 @@ struct KNomialStats {
+ 	double rad_used;         // suma del radio cuadratico k-nomial en los evaluados
+ 	long sqr_products;       // cuadrados de formas compuestas con AFFINE_RAA
+ 	long sqr_used;           // cuadrados en los que la cota de un solo bloque reemplazo a la de fAF2
++	long corner_products;    // productos con AFFINE_RAA y algun factor con error (candidatos al corner test)
++	long corner_used;        // productos en los que el corner test reemplazo a ex*Sy + Sx*ey
++	double cross_faf2;       // suma de ex*Sy + Sx*ey en los candidatos
++	double cross_corner;     // suma del termino de cruces usado (corner o fAF2) en los candidatos
+ };
+ 
+ inline KNomialStats& knomial_stats() {
+-	static thread_local KNomialStats s = {0, 0, 0, 0, 0, 0.0, 0.0, 0, 0};
++	static thread_local KNomialStats s = {0, 0, 0, 0, 0, 0.0, 0.0, 0, 0, 0, 0, 0.0, 0.0};
+ 	return s;
+ }
+ 

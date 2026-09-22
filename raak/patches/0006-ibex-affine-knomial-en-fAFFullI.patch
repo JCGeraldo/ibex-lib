@@ -1,0 +1,134 @@
+Parche 0006 (ibex-affine, sobre c219009c + 0001 + 0002 + 0004 + 0005) -- Fase 1, paso 1.3
+
+Que cambia
+  - ibex_KNomial.h: knomial_quad_bound_sparse(rx, ry, max_k, shift, rad) (plantilla sobre el tipo
+    del id): union ordenada de ids de dos listas (id, coef) -> qx, qy densos -> knomial_quad_bound.
+    Contadores aa_products, aa_used en KNomialStats. #include <list>.
+  - ibex_Affine3_fAFFullI.cpp, AffineMain<AF_fAFFullI>::operator*=(const AffineMain&): con
+    knomial_max_k() >= 2, la parte no lineal (a^T eps + gx)(b^T eps + gy) se acota por
+    [shift - rad - qmargin, shift + rad + qmargin] + Sa[-1,1] gy + gx Sb[-1,1] + gx gy (los cruces
+    con los _garbage en aritmetica de intervalos, rigurosa) en lugar de rad(x)*rad(y), solo si
+    estrecha el intervalo; el rayo nuevo lo sigue creando operator+(Interval). Con k<2 o cuando
+    no mejora, el codigo es bit a bit el original. qmargin es el heuristico de 0002 (no riguroso).
+
+Por que
+  Variante AA + k-nomial de la tabla de la Fase 1: la reescritura k-nomial sobre la aritmetica
+  afin tradicional (Stolfi), con cuadrados de Chebyshev que AF_fAFFullI ya tenia.
+
+Verificado
+  aa_knomial_test (3000 productos Affine3 con rayos id>=50, 300 muestras): violaciones_contencion=0
+  violaciones_radio=0 diferencias_k0=0 (3000/3000 bit a bit frente a la biblioteca previa,
+  reconstruida en un worktree con 0001+0002+0004+0005); aa_used/aa_products 2984/2986, radio k3/k0
+  medio 0.909; 11/11 tests; knomial_golden igual; raa_corner_test igual; AF2/k=0 identico 14/14.
+
+diff --git a/src/arithmetic/ibex_Affine3_fAFFullI.cpp b/src/arithmetic/ibex_Affine3_fAFFullI.cpp
+index a4a589a..15332c0 100644
+--- a/src/arithmetic/ibex_Affine3_fAFFullI.cpp
++++ b/src/arithmetic/ibex_Affine3_fAFFullI.cpp
+@@ -12,6 +12,7 @@
+ #include "ibex_Affine3_fAFFullI.h"
+ #include "ibex_AffineMain.h"
+ #include "ibex_AffineVar.h"
++#include "ibex_KNomial.h"
+ 
+ #include <cassert>
+ #include <cmath>
+@@ -518,7 +519,38 @@ AffineMain<AF_fAFFullI>& AffineMain<AF_fAFFullI>::operator*=(const AffineMain<AF
+ 			double y0 = y._elt._center;
+ 			ax._elt._center = 0.0;
+ 
+-			*this = (((y*(this->_elt._center)) + (ax*y0) )+ ( ax.itv() * (y.itv() - y._elt._center)));
++			// [raak local] parche 0006: parte no lineal (a^T eps + gx)(b^T eps + gy), con gx, gy los
++			// intervalos _garbage. Original: producto de intervalos rad(x)*rad(y). Con knomial_max_k()>=2
++			// la parte (a^T eps)(b^T eps) se acota con knomial_quad_bound sobre la union de ids de los
++			// rayos (forma simetrica + reescritura k-nomial) y los cruces con gx, gy se suman con
++			// aritmetica de intervalos (rigurosa). El margen qmargin de la reescritura es el heuristico
++			// de 0002 (no riguroso; fase F6). Solo se usa si estrecha el intervalo; si no, el codigo es
++			// bit a bit el original. El rayo nuevo lo crea el operator+(Interval) de abajo.
++			Interval quad = ax.itv() * (y.itv() - y._elt._center);
++			if (knomial_max_k() >= 2 && !ax._elt._rays.empty() && !y._elt._rays.empty()) {
++				KNomialStats& kst = knomial_stats();
++				kst.aa_products++;
++				double shift = 0.0, rad = 0.0;
++				knomial_quad_bound_sparse(ax._elt._rays, y._elt._rays, knomial_max_k(), shift, rad);
++				Interval Sa(0.0), Sb(0.0);
++				std::list<std::pair<af3_int,double> >::const_iterator it;
++				for (it = ax._elt._rays.begin(); it != ax._elt._rays.end(); ++it) Sa += Interval(std::fabs(it->second));
++				for (it = y._elt._rays.begin(); it != y._elt._rays.end(); ++it) Sb += Interval(std::fabs(it->second));
++				const double nu = (double) (ax._elt._rays.size() + y._elt._rays.size());
++				const double qmargin = AF_EM * (nu * nu + 4.0) * (std::fabs(shift) + rad + Sa.ub() * Sb.ub());
++				const Interval& gx = ax._elt._garbage;
++				const Interval& gy = y._elt._garbage;
++				Interval knom = Interval(shift - rad - qmargin, shift + rad + qmargin)
++				              + Interval(-Sa.ub(), Sa.ub()) * gy
++				              + gx * Interval(-Sb.ub(), Sb.ub())
++				              + gx * gy;
++				if (knom.diam() < quad.diam()) {
++					kst.aa_used++;
++					quad = knom;
++				}
++			}
++
++			*this = (((y*(this->_elt._center)) + (ax*y0) )+ quad);
+ 		}
+ 	} else {// y is not a valid Affine Form. So we multiply y.itv() such as an interval
+ 		*this = itv() * y.itv();
+diff --git a/src/arithmetic/ibex_KNomial.h b/src/arithmetic/ibex_KNomial.h
+index 732aeab..393712f 100644
+--- a/src/arithmetic/ibex_KNomial.h
++++ b/src/arithmetic/ibex_KNomial.h
+@@ -17,6 +17,7 @@
+ #include <cmath>
+ #include <deque>
+ #include <iterator>
++#include <list>
+ #include <map>
+ #include <queue>
+ #include <set>
+@@ -357,10 +358,12 @@ struct KNomialStats {
+ 	long corner_used;        // productos en los que el corner test reemplazo a ex*Sy + Sx*ey
+ 	double cross_faf2;       // suma de ex*Sy + Sx*ey en los candidatos
+ 	double cross_corner;     // suma del termino de cruces usado (corner o fAF2) en los candidatos
++	long aa_products;        // productos AF_fAFFullI de formas compuestas con k>=2 (parche 0006)
++	long aa_used;            // productos AF_fAFFullI en los que la cota k-nomial reemplazo a rad(x)*rad(y)
+ };
+ 
+ inline KNomialStats& knomial_stats() {
+-	static thread_local KNomialStats s = {0, 0, 0, 0, 0, 0.0, 0.0, 0, 0, 0, 0, 0.0, 0.0};
++	static thread_local KNomialStats s = {0, 0, 0, 0, 0, 0.0, 0.0, 0, 0, 0, 0, 0.0, 0.0, 0, 0};
+ 	return s;
+ }
+ 
+@@ -435,6 +438,32 @@ inline int knomial_quad_bound(const std::vector<double>& x_all, const std::vecto
+ 	return (int) blocks.size();
+ }
+ 
++/**
++ * [raak local] Version dispersa para AF_fAFFullI (parche 0006). rx, ry son listas de pares
++ * (id de simbolo, coeficiente) ordenadas por id creciente, como _rays. Se construye la union
++ * ordenada de ids, se forman qx, qy densos sobre ella y se llama a knomial_quad_bound: en
++ * Affine3 cada rayo tambien es coeficiente * eps_id con eps_id en [-1,1], asi que la cota de la
++ * parte cuadratica (a^T eps)(b^T eps) es la misma. Plantilla sobre el tipo del id (af3_int) para
++ * que esta cabecera siga sin depender de ibex_Affine3_fAFFullI.h.
++ */
++template<class Id>
++inline int knomial_quad_bound_sparse(const std::list<std::pair<Id, double> >& rx,
++                                     const std::list<std::pair<Id, double> >& ry,
++                                     int max_k, double& shift, double& rad) {
++	std::vector<double> qx, qy;
++	typename std::list<std::pair<Id, double> >::const_iterator ix = rx.begin(), iy = ry.begin();
++	while (ix != rx.end() || iy != ry.end()) {
++		if (iy == ry.end() || (ix != rx.end() && ix->first < iy->first)) {
++			qx.push_back(ix->second); qy.push_back(0.0); ++ix;
++		} else if (ix == rx.end() || iy->first < ix->first) {
++			qx.push_back(0.0); qy.push_back(iy->second); ++iy;
++		} else {
++			qx.push_back(ix->second); qy.push_back(iy->second); ++ix; ++iy;
++		}
++	}
++	return knomial_quad_bound(qx, qy, (int) qx.size(), max_k, shift, rad);
++}
++
+ } // namespace ibex
+ 
+ #endif // __IBEX_KNOMIAL_H__

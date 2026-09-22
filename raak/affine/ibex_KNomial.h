@@ -17,6 +17,7 @@
 #include <cmath>
 #include <deque>
 #include <iterator>
+#include <list>
 #include <map>
 #include <queue>
 #include <set>
@@ -27,17 +28,66 @@
 namespace ibex {
 
 /**
- * Modo de la multiplicacion de formas afines AF_fAF2 (valor por hilo):
- *   0     multiplicacion original de fAF2 (valor por defecto)
- *   1     parte cuadratica de la RAA de [A]: productos simetrizados y linealizados termino a
- *         termino (Chebyshev en x_i^2, envolvente plana en x_i x_j) y cuadrados de formas
- *         compuestas por Chebyshev. Los errores de los factores se propagan como en fAF2
- *         (no se usa el corner test de [A]).
- *   k>=2  lo anterior + reescritura k-nomial SDSOS con cliques de hasta k variables (RAA-K)
+ * [raak local] Dos interruptores independientes, ambos por hilo (Fase 1, parche 0004):
+ *
+ *   affine_mode()   AFFINE_AF2 (por defecto) o AFFINE_RAA. Solo afecta a AffineMain<AF_fAF2>.
+ *   knomial_max_k() 0 (por defecto) = sin reescritura k-nomial; k>=2 = reescritura SDSOS con
+ *                   cliques de hasta k variables. El valor 1 ya no es un modo: su significado
+ *                   anterior (parte cuadratica de la RAA de [A]) es ahora AFFINE_RAA con k=0.
+ *
+ *   Aritmetica  k-nomial  Productos (operator*=)              Asqr compuestas   Errores factores
+ *   AF2  k=0    no        fAF2 original (bit a bit)           fAF2              fAF2
+ *   AF2  k>=2   si        knomial_quad_bound con bloques;     fAF2              fAF2
+ *                         residuo termino a termino (Lemma 3
+ *                         de [A]); solo si mejora a fAF2
+ *   RAA  k=0    no        forma simetrica termino a termino   Chebyshev         corner test (0005)
+ *                         (= knomial_quad_bound con max_k<2)  [0,(Sx+e)^2]
+ *   RAA  k>=2   si        knomial_quad_bound con bloques      Chebyshev         corner test (0005)
+ *   AA   k=0    no        AF_fAFFullI original (bit a bit)    Chebyshev (ya)    rayo nuevo
+ *   AA   k>=2   si        ruta simetrica sobre la union de    Chebyshev         rayo nuevo
+ *                         rayos (parche 0006)
+ *
+ * Equivalencias con los modos del prototipo (bit a bit): raak_k=0 == AF2/k=0;
+ * raak_k=1 == RAA/k=0 (antes del corner test); raak_k=3 == RAA/k=3 (antes del corner test).
  */
 inline int& knomial_max_k() {
 	static thread_local int k = 0;
 	return k;
+}
+
+enum AffineMode { AFFINE_AF2 = 0, AFFINE_RAA = 1 };
+
+inline AffineMode& affine_mode() {
+	static thread_local AffineMode m = AFFINE_AF2;
+	return m;
+}
+
+/**
+ * [raak local] Corner test de la Ec. (16) de [A] en coordenadas de ruido (parche 0005).
+ *
+ * Para x = x0 + a^T eps + ex h, y = y0 + b^T eps + ey g (h, g en [-1,1]) los cruces de los errores
+ * con las partes lineales son ey g (a^T eps) + ex h (b^T eps). Maximizando en eps queda
+ * sum_i |ey g a_i + ex h b_i|, convexa en (h, g): el maximo esta en una esquina de [-1,1]^2.
+ * Como |-z| = |z|, la esquina (-s1,-s2) vale lo mismo que (s1,s2): bastan (+,+) y (+,-).
+ * fAF2 usa ex Sy + Sx ey, que siempre es >= por la desigualdad triangular.
+ *
+ * Devuelve max_{s} sum_i |ey a_i + s ex b_i| mayorado por el redondeo: cada termino tiene 2
+ * productos y 1 suma, y la acumulacion n sumas; con un factor (1 + 2 em) por operacion (patron
+ * de ibex_Affine2_fAF2.cpp, em = AF_EM) se usa (1+2em)^3 (1 + 4 em n) >= (1+2em)^(n+3), valido
+ * mientras 2 em n <= 1. No incluye el termino ex*ey (lo suma el llamador). Mayorante razonado,
+ * no riguroso en el sentido de F6.
+ */
+inline double raa_corner_cross(const std::vector<double>& a, const std::vector<double>& b,
+                               double ex, double ey, double em) {
+	const size_t n = std::min(a.size(), b.size());
+	double corner_pp = 0.0, corner_pm = 0.0;
+	for (size_t i = 0; i < n; i++) {
+		const double p = ey * a[i], q = ex * b[i];
+		corner_pp += std::fabs(p + q);
+		corner_pm += std::fabs(p - q);
+	}
+	const double f = (1 + 2*em) * (1 + 2*em) * (1 + 2*em) * (1 + 4*em*(double) n);
+	return f * std::max(corner_pp, corner_pm);
 }
 
 /** Bloque c * (u^T x)^2 de la reescritura. */
@@ -293,21 +343,27 @@ inline int knomial_rewrite(std::vector<double>& Q, const std::vector<double>& w,
 	return n_infeasible;
 }
 
-/** Contadores por hilo de la multiplicacion con modo >= 1 (diagnostico del prototipo). */
+/** Contadores por hilo de la cota cuadratica alternativa (RAA o k>=2; diagnostico del prototipo). */
 struct KNomialStats {
-	long products;           // productos de formas activas no degeneradas con modo >= 1
+	long products;           // productos de formas activas no degeneradas con RAA o k>=2
 	long calls;              // productos que pasaron el filtro y llegaron a knomial_quad_bound
 	long calls_with_blocks;  // productos en los que la reescritura extrajo al menos un bloque
 	long blocks;             // bloques extraidos en total
 	long calls_used;         // productos en los que la cota k-nomial reemplazo a la de fAF2
 	double rad_faf2;         // suma del radio cuadratico de fAF2 (Sx*Sy - Sxy/2) en los evaluados
 	double rad_used;         // suma del radio cuadratico k-nomial en los evaluados
-	long sqr_products;       // cuadrados con modo >= 1
+	long sqr_products;       // cuadrados de formas compuestas con AFFINE_RAA
 	long sqr_used;           // cuadrados en los que la cota de un solo bloque reemplazo a la de fAF2
+	long corner_products;    // productos con AFFINE_RAA y algun factor con error (candidatos al corner test)
+	long corner_used;        // productos en los que el corner test reemplazo a ex*Sy + Sx*ey
+	double cross_faf2;       // suma de ex*Sy + Sx*ey en los candidatos
+	double cross_corner;     // suma del termino de cruces usado (corner o fAF2) en los candidatos
+	long aa_products;        // productos AF_fAFFullI de formas compuestas con k>=2 (parche 0006)
+	long aa_used;            // productos AF_fAFFullI en los que la cota k-nomial reemplazo a rad(x)*rad(y)
 };
 
 inline KNomialStats& knomial_stats() {
-	static thread_local KNomialStats s = {0, 0, 0, 0, 0, 0.0, 0.0, 0, 0};
+	static thread_local KNomialStats s = {0, 0, 0, 0, 0, 0.0, 0.0, 0, 0, 0, 0, 0.0, 0.0, 0, 0};
 	return s;
 }
 
@@ -380,6 +436,32 @@ inline int knomial_quad_bound(const std::vector<double>& x_all, const std::vecto
 	st.rad_faf2 += Sx * Sy - 0.5 * Sxy;
 	st.rad_used += rad;
 	return (int) blocks.size();
+}
+
+/**
+ * [raak local] Version dispersa para AF_fAFFullI (parche 0006). rx, ry son listas de pares
+ * (id de simbolo, coeficiente) ordenadas por id creciente, como _rays. Se construye la union
+ * ordenada de ids, se forman qx, qy densos sobre ella y se llama a knomial_quad_bound: en
+ * Affine3 cada rayo tambien es coeficiente * eps_id con eps_id en [-1,1], asi que la cota de la
+ * parte cuadratica (a^T eps)(b^T eps) es la misma. Plantilla sobre el tipo del id (af3_int) para
+ * que esta cabecera siga sin depender de ibex_Affine3_fAFFullI.h.
+ */
+template<class Id>
+inline int knomial_quad_bound_sparse(const std::list<std::pair<Id, double> >& rx,
+                                     const std::list<std::pair<Id, double> >& ry,
+                                     int max_k, double& shift, double& rad) {
+	std::vector<double> qx, qy;
+	typename std::list<std::pair<Id, double> >::const_iterator ix = rx.begin(), iy = ry.begin();
+	while (ix != rx.end() || iy != ry.end()) {
+		if (iy == ry.end() || (ix != rx.end() && ix->first < iy->first)) {
+			qx.push_back(ix->second); qy.push_back(0.0); ++ix;
+		} else if (ix == rx.end() || iy->first < ix->first) {
+			qx.push_back(0.0); qy.push_back(iy->second); ++iy;
+		} else {
+			qx.push_back(ix->second); qy.push_back(iy->second); ++ix; ++iy;
+		}
+	}
+	return knomial_quad_bound(qx, qy, (int) qx.size(), max_k, shift, rad);
 }
 
 } // namespace ibex
