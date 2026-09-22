@@ -64,6 +64,9 @@ run_one () {
   # shellcheck disable=SC2086
   timeout "$(( TLIM * 2 + 120 ))" "$BIN" $argstr -t "$TLIM" "$BENCHS/$inst.bch" > "$log" 2>&1
   local code=$?
+  # corrida interrumpida desde fuera (SIGTERM 143 / SIGKILL 137, p. ej. al detener la cadena): no se
+  # escribe fila, para que al reanudar se rehaga en vez de quedar registrada como ERROR
+  if [ "$code" -eq 143 ] || [ "$code" -eq 137 ]; then echo "[INTERRUMPIDA] $inst $label (exit $code)"; return 0; fi
   local wall; wall=$(awk -v a="$t0" -v b="$(date +%s.%N)" 'BEGIN{printf "%.2f", b-a}')
   local clean; clean="$(sed -r 's/\x1b\[[0-9;]*m//g' "$log")"
   local status
