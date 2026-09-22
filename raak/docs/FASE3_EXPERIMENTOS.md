@@ -119,4 +119,68 @@ estrechos / más anchos por par). Tabla completa en `analisis/nivel1_tabla.md`.
 
 ## Resultados del nivel 2
 
-*(se completa al terminar las etapas; parciales con `wsl_fase3_status.sh`)*
+### Etapa A — `easy` + `medium`, relajación `compo` (132 instancias × 7 configuraciones, `-t 1800`)
+
+`results/fase3-20260921/A_easy_medium_compo/`. Todas las configuraciones terminan con el mismo
+estado en las 132 instancias: 125 `SUCCESS`, 1 `INFEASIBLE`, 1 `NO_FEASIBLE_FOUND`, 4 `UNBOUNDED_OBJ`
+y 1 `UNREACHED_PREC` (`medium/ex6_2_6`: el B&B agota las cajas sin alcanzar la precisión; de 508 s
+con RAA+k a 1249 s con AA). Nadie resuelve algo que otro no resuelva. Óptimos compatibles en todas.
+
+| variante | celdas gana / empata / pierde | celdas media geom. | CPU gana / empata / pierde | CPU media geom. | CPU total (h) |
+|---|---|---|---|---|---|
+| AF2 (base) | — | 1 | — | 1 | 0.35 |
+| AF2 + k-nomial | 7 / 113 / 2 | 0.994 | 17 / 91 / 18 | 0.990 | 0.34 |
+| RAA | 5 / 111 / 6 | 0.984 | 22 / 81 / 23 | 0.990 | 0.31 |
+| RAA + k-nomial | 8 / 109 / 5 | 0.982 | 18 / 73 / 35 | 1.000 | 0.30 |
+| AA | 27 / 63 / 32 | 0.946 | 23 / 30 / 73 | 1.039 | 0.50 |
+| **AA + k-nomial** | **27 / 74 / 21** | **0.905** | 25 / 27 / 74 | 1.009 | 0.37 |
+| X-Taylor (control) | 19 / 42 / 61 | 1.443 | 56 / 14 / 56 | 1.272 | 0.55 |
+
+(122 instancias resueltas por ambas; gana = cociente < 0.95, pierde = > 1.05; media geométrica del
+cociente variante / base)
+
+| efecto | comparación | celdas gana / empata / pierde | celdas media geom. | CPU media geom. |
+|---|---|---|---|---|
+| aritmética | RAA / AF2 | 5 / 111 / 6 | 0.984 | 0.990 |
+| aritmética | AA / AF2 | 27 / 63 / 32 | 0.946 | 1.039 |
+| k-nomial | AF2+k / AF2 | 7 / 113 / 2 | 0.994 | 0.990 |
+| k-nomial | RAA+k / RAA | 4 / 116 / 2 | 0.998 | 1.011 |
+| k-nomial | **AA+k / AA** | **24 / 83 / 15** | **0.957** | **0.971** |
+| total | RAA+k / AF2 | 8 / 109 / 5 | 0.982 | 1.000 |
+| total | AA+k / AF2 | 27 / 74 / 21 | 0.905 | 1.009 |
+
+Lecturas:
+
+1. **Las tres aritméticas afines dominan al control X-Taylor** (celdas ×0.69, CPU ×0.79 frente a
+   `xn`): la relajación afín aporta, como ya se sabía.
+2. **RAA frente a AF2 es casi neutra en `easy`+`medium`** (celdas 0.984, 5 gana / 6 pierde). Sus
+   dos mejoras grandes históricas se mantienen (`ex8_4_4bis`: 83 220 → 8 618 celdas y 127 → 15 s;
+   `bearing`: 25 704 → 15 210 celdas), ambas por los cuadrados de Chebyshev; AA, que ya tenía ese
+   cuadrado, también resuelve `ex8_4_4bis` en 8 560 celdas. En el resto RAA = AF2 (Prop. 1 de [A]:
+   los benchmarks son mayormente productos de variables sueltas) y las diferencias restantes son
+   ruido del recorrido del B&B.
+3. **AA tradicional es la más distinta**: gana en 27 instancias y pierde en 32 (media 0.946 en
+   celdas), pero cuesta más CPU (1.039; sus listas dispersas son ~15 veces más lentas por
+   evaluación, aunque el LP y la propagación diluyen ese coste en el B&B).
+4. **El k-nomial actúa poco sobre AF2/RAA y mucho sobre AA.** Sobre AF2/RAA solo entra en la
+   familia `ex14_2_*` (5 instancias con bloques; efecto 0.994 / 0.998, pero sin perder: 7–4 gana,
+   2 pierde). Sobre AA actúa en 63 instancias (los rayos que AA crea en cada operación dan a los
+   factores símbolos comunes) y **mejora las celdas en 24, empeora en 15, media geométrica 0.957,
+   y baja la CPU (0.971)**: es la única combinación en la que el k-nomial reduce a la vez celdas y
+   tiempo. La mejor variante en celdas de la etapa es **AA + k-nomial (0.905 frente a AF2)**, con
+   CPU equivalente a AF2 (1.009).
+5. `ex6_2_6` (la única no resuelta): AF2 894 164 celdas → AF2+k 822 338 → AA+k 857 482, frente a
+   AA 1 596 408 y `xn` 1 834 760: el k-nomial reduce el trabajo en la instancia más dura en las tres
+   aritméticas.
+
+Gráficos: `analisis/nivel2_perfil_compo.png` (perfiles de desempeño en CPU y celdas),
+`analisis/nivel2_dispersion_compo.png` (celdas y CPU de cada variante frente a AF2, log-log).
+Tablas completas y consolidada por instancia: `analisis/nivel2_tabla.md`.
+
+### Etapa B — `easy` + `medium`, relajación `art`
+
+*(en curso)*
+
+### Etapas C y D — `hard` + `others`
+
+*(en curso)*
