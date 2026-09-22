@@ -177,9 +177,45 @@ Gráficos: `analisis/nivel2_perfil_compo.png` (perfiles de desempeño en CPU y c
 `analisis/nivel2_dispersion_compo.png` (celdas y CPU de cada variante frente a AF2, log-log).
 Tablas completas y consolidada por instancia: `analisis/nivel2_tabla.md`.
 
-### Etapa B — `easy` + `medium`, relajación `art`
+### Etapa B — `easy` + `medium`, relajación `art` (132 instancias × 6 variantes, `-t 1800`)
 
-*(en curso)*
+`results/fase3-20260921/B_easy_medium_art/`. Mismos estados en las seis variantes (125 `SUCCESS`,
+1 `INFEASIBLE`, 1 `NO_FEASIBLE_FOUND`, 4 `UNBOUNDED_OBJ`); `ex6_2_6` agota los 1800 s en todas
+(con `art` sola es más dura que con `compo`: 3.8 M de celdas frente a 0.9 M en la etapa A).
+
+| variante | celdas gana / empata / pierde | celdas media geom. | CPU gana / empata / pierde | CPU media geom. |
+|---|---|---|---|---|
+| AF2 (base) | — | 1 | — | 1 |
+| AF2 + k-nomial | 2 / 115 / 5 | 1.002 | 27 / 79 / 20 | 0.996 |
+| RAA | 5 / 113 / 4 | 0.979 | 27 / 79 / 20 | **0.969** |
+| RAA + k-nomial | 4 / 113 / 5 | 0.984 | 30 / 67 / 29 | 0.986 |
+| AA | 18 / 64 / 40 | 1.029 | 18 / 32 / 76 | 1.159 |
+| AA + k-nomial | 19 / 79 / 24 | 0.975 | 19 / 25 / 82 | 1.132 |
+
+| efecto | comparación | celdas gana / empata / pierde | celdas media geom. | CPU media geom. |
+|---|---|---|---|---|
+| aritmética | RAA / AF2 | 5 / 113 / 4 | 0.979 | 0.969 |
+| aritmética | AA / AF2 | 18 / 64 / 40 | 1.029 | 1.159 |
+| k-nomial | AF2+k / AF2 | 2 / 115 / 5 | 1.002 | 0.996 |
+| k-nomial | RAA+k / RAA | 3 / 116 / 3 | 1.005 | 1.017 |
+| k-nomial | **AA+k / AA** | **29 / 86 / 7** | **0.948** | **0.977** |
+
+Lecturas:
+
+1. Con la relajación afín sola, **RAA es la mejor variante**: celdas 0.979 y CPU 0.969 frente a
+   AF2, sin perder en casi ninguna instancia (5 gana / 4 pierde; las dos grandes son otra vez
+   `ex8_4_4bis` y `bearing`).
+2. **AA sola empeora** frente a AF2 (celdas 1.029, CPU 1.159): sin la intersección con X-Taylor, la
+   pérdida de correlación de sus rayos nuevos en cadenas largas pesa más que su ganancia en
+   productos con residuo. El k-nomial la rescata en parte (0.975 en celdas, y es la comparación con
+   más victorias: 29 gana / 7 pierde dentro de AA), pero sigue costando un 13 % más de CPU.
+3. **El k-nomial sobre AF2 y RAA es neutro con `art`** (1.002 y 1.005), coherente con el trabajo
+   previo (§14: "con `art` sola, empeora" se reduce aquí a ruido: 2–5 instancias en cada sentido).
+4. Coincidencia con la etapa A: en las dos relajaciones, el k-nomial solo produce un efecto
+   consistente sobre AA (0.957 con `compo`, 0.948 con `art`), y RAA es al menos tan buena como AF2.
+
+Gráficos y tablas: `analisis/nivel2_perfil_art.png`, `analisis/nivel2_dispersion_art.png`,
+`analisis/nivel2_tabla.md`.
 
 ### Etapas C y D — `hard` + `others`
 
