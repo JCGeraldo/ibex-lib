@@ -29,7 +29,7 @@ grep -q aa_products "$HDR_INST" && fail "la cabecera instalada ya tiene el 0006:
 g++ -std=c++11 -O2 -msse3 -frounding-math "$TESTS/aa_knomial_test.cpp" $CFL -o "$TESTS/aa_knomial_test_pre" $LFL || fail "build aa_knomial_test (pre)"
 "$TESTS/aa_knomial_test_pre" --dump "$REF/aa_ref.txt" || fail "dump"
 echo "   lineas en aa_ref.txt: $(wc -l < "$REF/aa_ref.txt")  md5: $(md5sum "$REF/aa_ref.txt" | cut -c1-12)"
-cp "$REF/aa_ref.txt" "$REPO/raak/results/fase1-ref/aa_ref.txt"
+cp "$REF/aa_ref.txt" "$REPO/raak/results/04-fase1-validacion/fase1-ref/aa_ref.txt"
 
 echo "== B. ibex-affine: make ($(date +%T))"
 make -C "$ROOT/ibex-affine/build" -j12 > "$ROOT/logs/p13-make.log" 2>&1 || { tail -40 "$ROOT/logs/p13-make.log"; fail "make"; }
@@ -60,7 +60,7 @@ OUT="$OUTDIR/regresion_af2" TLIM=300 P=4 REF="$REF/ref_merged.csv" \
 VARIANTS="art=--lr=art --arith=af2 --knomial_k=0;compo=--lr=compo --arith=af2 --knomial_k=0" \
 MAP="art=art,;compo=compo," bash "$S/wsl_fase1_runs.sh" | tail -17
 
-mkdir -p "$REPO/raak/results/fase1-$STAMP/paso13/regresion_af2"
-cp "$OUTDIR/aa_knomial_test.txt" "$REPO/raak/results/fase1-$STAMP/paso13/"
-cp "$OUTDIR/regresion_af2"/{runs.csv,comparacion.txt,meta.txt} "$REPO/raak/results/fase1-$STAMP/paso13/regresion_af2/"
+mkdir -p "$REPO/raak/results/04-fase1-validacion/fase1-$STAMP/paso13/regresion_af2"
+cp "$OUTDIR/aa_knomial_test.txt" "$REPO/raak/results/04-fase1-validacion/fase1-$STAMP/paso13/"
+cp "$OUTDIR/regresion_af2"/{runs.csv,comparacion.txt,meta.txt} "$REPO/raak/results/04-fase1-validacion/fase1-$STAMP/paso13/regresion_af2/"
 echo "== listo ($(date +%T))"

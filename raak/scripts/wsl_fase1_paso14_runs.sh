@@ -30,6 +30,6 @@ if [ "$which" != regresion ]; then
   echo "   stats aa_used/aa_products por corrida:"
   for f in "$OUTDIR/$which"/logs/*.log; do printf "   %-40s %s\n" "$(basename "$f" .log)" "$(grep -oE 'aa_products=[0-9]+ aa_used=[0-9]+' "$f")"; done
 fi
-mkdir -p "$REPO/raak/results/fase1-$STAMP/paso14/$which"
-cp "$OUTDIR/$which"/{runs.csv,comparacion.txt,meta.txt} "$REPO/raak/results/fase1-$STAMP/paso14/$which/" 2>/dev/null || cp "$OUTDIR/$which"/{runs.csv,meta.txt} "$REPO/raak/results/fase1-$STAMP/paso14/$which/"
+mkdir -p "$REPO/raak/results/04-fase1-validacion/fase1-$STAMP/paso14/$which"
+cp "$OUTDIR/$which"/{runs.csv,comparacion.txt,meta.txt} "$REPO/raak/results/04-fase1-validacion/fase1-$STAMP/paso14/$which/" 2>/dev/null || cp "$OUTDIR/$which"/{runs.csv,meta.txt} "$REPO/raak/results/04-fase1-validacion/fase1-$STAMP/paso14/$which/"
 echo "== $which listo ($(date +%T))"

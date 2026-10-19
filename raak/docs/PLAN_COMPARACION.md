@@ -42,7 +42,7 @@ el archivo `CAMBIOS_CODIGO.md` lista cada función agregada. Un commit local por
    0 violaciones, bit a bit con la referencia sin error; `aa_knomial_test` 3000 productos Affine3,
    0 violaciones, k=0 bit a bit; `aa_linearizer_test` 200 polinomios × 1000 puntos, 0 violaciones;
    `make check` 11/11. Regresiones del B&B: 7 instancias × {xn, art, compo} idénticas a la
-   referencia (`results/fase1-20260916/paso14/regresion/comparacion.txt`).
+   referencia (`results/04-fase1-validacion/fase1-20260916/paso14/regresion/comparacion.txt`).
 
 Pendiente conocido (heredado): el margen de redondeo de la reescritura k-nomial es heurístico
 (fase de rigor F6, fuera de este plan).
@@ -56,7 +56,7 @@ Pendiente conocido (heredado): el margen de redondeo de la reescritura k-nomial 
    original se conserva como `legacy`. Justificación en `FASE2_TRIGONOMETRICAS.md`.
 2. Evaluación (`tests/trig_lin_test.cpp`): 4 funciones × 735 intervalos (centros en [−π, π],
    anchos de 0.01 a 2π) × 2 aritméticas × 3 modos: contención por muestreo, sobreestimación
-   respecto del rango exacto, error de linealización, tiempo. Resultados en `results/fase2-*/`.
+   respecto del rango exacto, error de linealización, tiempo. Resultados en `results/05-fase2-trigonometria/fase2-*/`.
 
 ## Fase 3 — Evaluación experimental  ✅ (nivel 1 2026-09-21; nivel 2 etapas A–D 2026-09-22)
 
@@ -74,7 +74,7 @@ Pendiente conocido (heredado): el margen de redondeo de la reescritura k-nomial 
 ## Fase 4 — Resultados  ✅ (nivel 1 y etapas A–D)
 
 Gráficos (perfiles de desempeño, dispersión log-log de tiempos y celdas, calidad de sin/cos) y
-tabla consolidada (`results/fase3-20260921/RESUMEN.md`, `resumen_medias_geom.png`), con
+tabla consolidada (`results/07-fase3-nivel2-solver/fase3-20260921/RESUMEN.md`, `resumen_medias_geom.png`), con
 `README.md` en la carpeta de resultados que explica cada gráfico. Conclusiones en
 `FASE3_EXPERIMENTOS.md`.
 

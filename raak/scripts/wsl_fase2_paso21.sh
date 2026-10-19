@@ -78,7 +78,7 @@ bash "$S/wsl_save_patch.sh" ibex-affine 0008-ibex-affine-trig-sin-cos-CH-MR.patc
   0004-ibex-affine-separar-affine_mode-y-knomial_k.patch 0005-ibex-affine-RAA-corner-test-ec16.patch \
   0006-ibex-affine-knomial-en-fAFFullI.patch 0007-ibex-affine-LinearizerAffineT-Affine3.patch | tail -6
 
-mkdir -p "$REPO/raak/results/fase2-$STAMP"
-cp "$OUTDIR"/trig_lin.csv "$OUTDIR"/trig_lin_resumen.txt "$REPO/raak/results/fase2-$STAMP/"
-for d in regresion trig_instancias; do mkdir -p "$REPO/raak/results/fase2-$STAMP/$d"; cp "$OUTDIR/$d"/{runs.csv,meta.txt} "$REPO/raak/results/fase2-$STAMP/$d/"; cp "$OUTDIR/$d"/comparacion.txt "$REPO/raak/results/fase2-$STAMP/$d/" 2>/dev/null; done
+mkdir -p "$REPO/raak/results/05-fase2-trigonometria/fase2-$STAMP"
+cp "$OUTDIR"/trig_lin.csv "$OUTDIR"/trig_lin_resumen.txt "$REPO/raak/results/05-fase2-trigonometria/fase2-$STAMP/"
+for d in regresion trig_instancias; do mkdir -p "$REPO/raak/results/05-fase2-trigonometria/fase2-$STAMP/$d"; cp "$OUTDIR/$d"/{runs.csv,meta.txt} "$REPO/raak/results/05-fase2-trigonometria/fase2-$STAMP/$d/"; cp "$OUTDIR/$d"/comparacion.txt "$REPO/raak/results/05-fase2-trigonometria/fase2-$STAMP/$d/" 2>/dev/null; done
 echo "== listo ($(date +%T))"

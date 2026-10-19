@@ -53,7 +53,7 @@ awk -F, 'NR==FNR { if (FNR>1) t[$1","$2","$3]=$0; next }
          { k=$1","$2","$3; if (k in t) { print t[k]; delete t[k] } else if ($4!="TIME_OUT") print }
          END { for (k in t) print t[k] }' "$REF/ref_t300.csv" "$REF/ref.csv" > "$REF/ref_merged.csv"
 echo "   filas: $(( $(wc -l < "$REF/ref_merged.csv") - 1 )) (TIME_OUT restantes: $(grep -c TIME_OUT "$REF/ref_merged.csv" || true))"
-cp "$REF/ref_merged.csv" "$REPO/raak/results/fase1-ref/"
+cp "$REF/ref_merged.csv" "$REPO/raak/results/04-fase1-validacion/fase1-ref/"
 
 echo "== 8. corridas ($(date +%T))"
 OUT="$OUTDIR" TLIM=300 P=4 REF="$REF/ref_merged.csv" \
@@ -66,6 +66,6 @@ grep -hE "^\[compat\]|^arith=|^affine_mode=" "$OUTDIR/logs/easy__ex5_4_3__alias_
 echo "== 9. stats de art_af2_k3 (variante nueva)"
 grep -h "RAA-K stats" "$OUTDIR"/logs/*__art_af2_k3.log | sed 's/^/   /'
 
-mkdir -p "$REPO/raak/results/fase1-$STAMP/paso11"
-cp "$OUTDIR"/runs.csv "$OUTDIR"/comparacion.txt "$OUTDIR"/meta.txt "$REPO/raak/results/fase1-$STAMP/paso11/"
+mkdir -p "$REPO/raak/results/04-fase1-validacion/fase1-$STAMP/paso11"
+cp "$OUTDIR"/runs.csv "$OUTDIR"/comparacion.txt "$OUTDIR"/meta.txt "$REPO/raak/results/04-fase1-validacion/fase1-$STAMP/paso11/"
 echo "== listo ($(date +%T))"

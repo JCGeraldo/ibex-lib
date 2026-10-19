@@ -34,7 +34,7 @@ g++ -std=c++11 -O2 -msse3 -frounding-math "$TESTS/aa_knomial_test.cpp" $(pkg-con
     -o "$TESTS/aa_knomial_test_pre" $(pkg-config --libs ibex-affine ibex) || fail "build pre"
 LD_LIBRARY_PATH="$PRE/lib:${LD_LIBRARY_PATH:-}" "$TESTS/aa_knomial_test_pre" --dump "$REF/aa_ref.txt" || fail "dump pre"
 echo "   lineas en aa_ref.txt: $(wc -l < "$REF/aa_ref.txt")  md5: $(md5sum "$REF/aa_ref.txt" | cut -c1-12)"
-cp "$REF/aa_ref.txt" "$REF/aa_ref_v1.txt" "$REPO/raak/results/fase1-ref/"
+cp "$REF/aa_ref.txt" "$REF/aa_ref_v1.txt" "$REPO/raak/results/04-fase1-validacion/fase1-ref/"
 
 echo "== 3. compilar contra prefix (0006) y comparar"
 export PKG_CONFIG_PATH="$PREFIX/share/pkgconfig:$PREFIX/lib/pkgconfig"
@@ -42,5 +42,5 @@ grep -q aa_products "$PREFIX/include/ibex-affine/ibex_KNomial.h" || fail "prefix
 g++ -std=c++11 -O2 -msse3 -frounding-math -DRAA_AA_STATS "$TESTS/aa_knomial_test.cpp" $(pkg-config --cflags ibex-affine ibex) \
     -o "$TESTS/aa_knomial_test" $(pkg-config --libs ibex-affine ibex) || fail "build post"
 "$TESTS/aa_knomial_test" --compare "$REF/aa_ref.txt" | tee "$OUTDIR/aa_knomial_test.txt"
-mkdir -p "$REPO/raak/results/fase1-$STAMP/paso13"; cp "$OUTDIR/aa_knomial_test.txt" "$REPO/raak/results/fase1-$STAMP/paso13/"
+mkdir -p "$REPO/raak/results/04-fase1-validacion/fase1-$STAMP/paso13"; cp "$OUTDIR/aa_knomial_test.txt" "$REPO/raak/results/04-fase1-validacion/fase1-$STAMP/paso13/"
 echo "== listo"

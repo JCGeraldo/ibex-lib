@@ -50,5 +50,5 @@ echo "== 3. aa_linearizer_test"
 g++ -std=c++11 -O2 -msse3 -frounding-math "$TESTS/aa_linearizer_test.cpp" $CFL -o "$TESTS/aa_linearizer_test" $LFL 2> "$ROOT/logs/p14-lintest-build.log" \
   || { grep -E "error" -A3 "$ROOT/logs/p14-lintest-build.log" | head -40; fail "build aa_linearizer_test"; }
 "$TESTS/aa_linearizer_test" | tee "$OUTDIR/aa_linearizer_test.txt"
-mkdir -p "$REPO/raak/results/fase1-$STAMP/paso14"; cp "$OUTDIR/aa_linearizer_test.txt" "$REPO/raak/results/fase1-$STAMP/paso14/"
+mkdir -p "$REPO/raak/results/04-fase1-validacion/fase1-$STAMP/paso14"; cp "$OUTDIR/aa_linearizer_test.txt" "$REPO/raak/results/04-fase1-validacion/fase1-$STAMP/paso14/"
 echo "== listo ($(date +%T))"

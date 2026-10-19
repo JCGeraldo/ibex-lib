@@ -29,8 +29,8 @@ tail -3 "$OUT/range_log.txt"; echo "   filas: $(( $(wc -l < "$OUT/range.csv") - 
 echo "== analisis ($(date +%T))"
 python3 "$ROOT/analysis/analyze_range.py" "$OUT/range.csv" "$OUT/analisis" && head -30 "$OUT/analisis/nivel1_tabla.md"
 
-mkdir -p "$REPO/raak/results/fase3-$STAMP/nivel1"
-cp "$OUT"/meta.txt "$OUT"/range_log.txt "$REPO/raak/results/fase3-$STAMP/nivel1/"
-gzip -c "$OUT/range.csv" > "$REPO/raak/results/fase3-$STAMP/nivel1/range.csv.gz"
-cp -r "$OUT/analisis" "$REPO/raak/results/fase3-$STAMP/nivel1/"
+mkdir -p "$REPO/raak/results/06-fase3-nivel1-rangos/nivel1"
+cp "$OUT"/meta.txt "$OUT"/range_log.txt "$REPO/raak/results/06-fase3-nivel1-rangos/nivel1/"
+gzip -c "$OUT/range.csv" > "$REPO/raak/results/06-fase3-nivel1-rangos/nivel1/range.csv.gz"
+cp -r "$OUT/analisis" "$REPO/raak/results/06-fase3-nivel1-rangos/nivel1/"
 echo "== listo ($(date +%T))"

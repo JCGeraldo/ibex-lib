@@ -39,5 +39,5 @@ for v in xn art compo raak:0 raak:1 raak:3 raakcompo:0; do echo "medium/bearing 
 xargs -P "$P" -L 1 bash -c 'run_one "$0" "$1"' < "$TASKS"
 echo "instancia,lr,raak_k,estado,celdas,f_lb,f_ub" > "$OUT/ref_t300.csv"
 cat "$OUT/rows300"/*.csv | sort >> "$OUT/ref_t300.csv"
-cp "$OUT/ref_t300.csv" "$REPO/raak/results/fase1-ref/ref_t300.csv"
+cp "$OUT/ref_t300.csv" "$REPO/raak/results/04-fase1-validacion/fase1-ref/ref_t300.csv"
 echo; echo "### ref_t300.csv"; cat "$OUT/ref_t300.csv"

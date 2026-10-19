@@ -1,7 +1,7 @@
 # Fase 2 — Seno y coseno en la aritmética afín
 
 Fecha: 2026-09-21. Parche `0008-ibex-affine-trig-sin-cos-CH-MR.patch`. Resultados en
-`results/fase2-20260921/` (`trig_lin.csv`, `analisis/`).
+`results/05-fase2-trigonometria/fase2-20260921/` (`trig_lin.csv`, `analisis/`).
 
 ## 2.1 Qué había y qué se implementó
 

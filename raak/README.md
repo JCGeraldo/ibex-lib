@@ -29,7 +29,7 @@ sin reducción k-nomial (seis variantes), primero en rangos y luego dentro del s
 
 CLI (`ibexopt-raak`): `--lr=xn|art|compo --arith=af2|raa|aa --knomial_k=0|3 --trig=auto|cheb|minrange|legacy`.
 Parches: `0004` separa aritmética y k-nomial, `0005` corner test de la RAA, `0006` k-nomial en AA,
-`0007` linearizador para AA, `0008` seno/coseno. Resultados en `results/fase1-*`, `fase2-*`, `fase3-*`
+`0007` linearizador para AA, `0008` seno/coseno. Resultados en `results/`, una subcarpeta por tipo de experimento (ver `results/README.md`)
 y análisis/gráficos con `analysis/*.py`.
 
 ## Resultados en una línea (prototipo RAA-K, septiembre 2026)
@@ -57,7 +57,7 @@ Todo el detalle, con tablas y controles, está en [`docs/REPORTE_IBEX_BASELINE.m
 | `cli/` | `ibexopt-raak`: subclase de `Optimizer04Config` que habilita `--lr=art\|compo\|raak\|raakcompo` y el flag `--raak_k` |
 | `scripts/` | Clonado, compilación, barridos, medición de tiempos y guardado de parches (pensados para WSL/Ubuntu) |
 | `tests/` | Prueba dorada contra Python, prueba aritmética (contención, pendientes, radio) y el evaluador de QPLIB |
-| `results/` | CSV de cada barrido, con su `meta.txt`. Los logs por corrida no se incluyen por tamaño |
+| `results/` | Todos los experimentos y sus resultados, en subcarpetas numeradas por tipo (línea base, prototipo, QPLIB, validación, trigonometría, rangos, solver, gráficos, informes); cada barrido lleva su `meta.txt`. Índice en `results/README.md`. Los logs por corrida no se incluyen por tamaño |
 
 ## El cambio en este repo
 

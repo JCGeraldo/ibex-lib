@@ -24,7 +24,7 @@ BENCHS="$ROOT/ibex-lib/benchs/optim"
 : "${OUT:?falta OUT}"
 SETS="${SETS:-easy medium}"; LRS="${LRS:-compo}"; TLIM="${TLIM:-1800}"; P="${P:-12}"; TRIG="${TRIG:-auto}"
 WITH_XN="${WITH_XN:-1}"; ONLY="${ONLY:-}"
-ORDER="${ORDER:-$REPO/raak/results/baseline-20260913-193306/results.csv}"
+ORDER="${ORDER:-$REPO/raak/results/01-linea-base/baseline-20260913-193306/results.csv}"
 mkdir -p "$OUT/logs" "$OUT/rows"
 export BIN BENCHS TLIM OUT
 

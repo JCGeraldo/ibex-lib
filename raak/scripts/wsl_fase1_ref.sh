@@ -66,8 +66,8 @@ xargs -P "$P" -L 1 bash -c 'run_one "$0" "$1"' < "$TASKS"
 
 echo "instancia,lr,raak_k,estado,celdas,f_lb,f_ub" > "$OUT/ref.csv"
 cat "$OUT/rows"/*.csv | sort >> "$OUT/ref.csv"
-mkdir -p "$REPO/raak/results/fase1-ref"
-cp "$OUT/ref.csv" "$REPO/raak/results/fase1-ref/ref.csv"
+mkdir -p "$REPO/raak/results/04-fase1-validacion/fase1-ref"
+cp "$OUT/ref.csv" "$REPO/raak/results/04-fase1-validacion/fase1-ref/ref.csv"
 echo
 echo "### ref.csv ($(( $(wc -l < "$OUT/ref.csv") - 1 )) filas)"
 cat "$OUT/ref.csv"

@@ -33,7 +33,7 @@ g++ -std=c++11 -O2 -msse3 -frounding-math "$TESTS/raa_corner_test.cpp" $(pkg-con
     -o "$TESTS/raa_corner_test_pre" $(pkg-config --libs ibex-affine ibex) || fail "build raa_corner_test (pre)"
 "$TESTS/raa_corner_test_pre" --dump "$REF/corner_ref.txt" || fail "dump"
 echo "   lineas en corner_ref.txt: $(wc -l < "$REF/corner_ref.txt")  md5: $(md5sum "$REF/corner_ref.txt" | cut -c1-12)"
-cp "$REF/corner_ref.txt" "$REPO/raak/results/fase1-ref/corner_ref.txt"
+cp "$REF/corner_ref.txt" "$REPO/raak/results/04-fase1-validacion/fase1-ref/corner_ref.txt"
 
 echo "== B. ibex-affine: make ($(date +%T))"
 make -C "$ROOT/ibex-affine/build" -j12 > "$ROOT/logs/p12-make.log" 2>&1 || { tail -30 "$ROOT/logs/p12-make.log"; fail "make"; }
@@ -69,7 +69,7 @@ MAP="raak_1=raak,1;raak_3=raak,3;raakcompo_1=raakcompo,1;raakcompo_3=raakcompo,3
 echo "   stats:"; grep -h "RAA-K stats" "$OUTDIR"/corner/logs/*.log | sed 's/^/   /'
 for f in "$OUTDIR"/corner/logs/*.log; do printf "   %-45s %s\n" "$(basename "$f" .log)" "$(grep -oE 'corner_products=[0-9]+ corner_used=[0-9]+ cruces_vs_fAF2=[0-9.]+' "$f")"; done
 
-mkdir -p "$REPO/raak/results/fase1-$STAMP/paso12"
-cp "$OUTDIR/raa_corner_test.txt" "$REPO/raak/results/fase1-$STAMP/paso12/"
-for d in regresion_af2 corner; do mkdir -p "$REPO/raak/results/fase1-$STAMP/paso12/$d"; cp "$OUTDIR/$d"/{runs.csv,comparacion.txt,meta.txt} "$REPO/raak/results/fase1-$STAMP/paso12/$d/"; done
+mkdir -p "$REPO/raak/results/04-fase1-validacion/fase1-$STAMP/paso12"
+cp "$OUTDIR/raa_corner_test.txt" "$REPO/raak/results/04-fase1-validacion/fase1-$STAMP/paso12/"
+for d in regresion_af2 corner; do mkdir -p "$REPO/raak/results/04-fase1-validacion/fase1-$STAMP/paso12/$d"; cp "$OUTDIR/$d"/{runs.csv,comparacion.txt,meta.txt} "$REPO/raak/results/04-fase1-validacion/fase1-$STAMP/paso12/$d/"; done
 echo "== listo ($(date +%T))"

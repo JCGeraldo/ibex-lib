@@ -29,7 +29,7 @@ cajas que ve el B&B. Métricas por (instancia, función, caja, variante): anchur
 anchura del rango muestreado (200 puntos + centro: aproximación *interior* del rango real),
 sobreestimación = cociente de ambas, parte no lineal `rad(itv) − Σ|aᵢ|` (comparable entre AF2 y AA),
 violaciones de contención puntual, si la variante llegó a reemplazar alguna cota (`k_used`) y el
-tiempo. Resultados: `results/fase3-<fecha>/nivel1/` (`range.csv.gz`, `analisis/nivel1_tabla.md`,
+tiempo. Resultados: `results/06-fase3-nivel1-rangos/nivel1/` (`range.csv.gz`, `analisis/nivel1_tabla.md`,
 gráficos). Ver la sección de resultados más abajo.
 
 ## Nivel 2 — solver (`scripts/wsl_fase3_sweep.sh`)
@@ -60,7 +60,7 @@ instancias resueltas por ambas; separación de efectos; perfiles de desempeño (
 celdas; dispersión log-log por instancia; tabla consolidada. Cada carpeta de resultados lleva un
 `README.md` que explica sus archivos.
 
-## Resultados del nivel 1 (`results/fase3-20260921/nivel1/`)
+## Resultados del nivel 1 (`results/06-fase3-nivel1-rangos/nivel1/`)
 
 380 instancias cargadas (de 390; 10 no se pudieron parsear), 20 608 ternas (instancia, función,
 caja), 124 674 evaluaciones afines. **Contención: 0 violaciones** puntuales y 0 de intervalo, en las
@@ -121,7 +121,7 @@ estrechos / más anchos por par). Tabla completa en `analisis/nivel1_tabla.md`.
 
 ### Etapa A — `easy` + `medium`, relajación `compo` (132 instancias × 7 configuraciones, `-t 1800`)
 
-`results/fase3-20260921/A_easy_medium_compo/`. Todas las configuraciones terminan con el mismo
+`results/07-fase3-nivel2-solver/fase3-20260921/A_easy_medium_compo/`. Todas las configuraciones terminan con el mismo
 estado en las 132 instancias: 125 `SUCCESS`, 1 `INFEASIBLE`, 1 `NO_FEASIBLE_FOUND`, 4 `UNBOUNDED_OBJ`
 y 1 `UNREACHED_PREC` (`medium/ex6_2_6`: el B&B agota las cajas sin alcanzar la precisión; de 508 s
 con RAA+k a 1249 s con AA). Nadie resuelve algo que otro no resuelva. Óptimos compatibles en todas.
@@ -179,7 +179,7 @@ Tablas completas y consolidada por instancia: `analisis/nivel2_tabla.md`.
 
 ### Etapa B — `easy` + `medium`, relajación `art` (132 instancias × 6 variantes, `-t 1800`)
 
-`results/fase3-20260921/B_easy_medium_art/`. Mismos estados en las seis variantes (125 `SUCCESS`,
+`results/07-fase3-nivel2-solver/fase3-20260921/B_easy_medium_art/`. Mismos estados en las seis variantes (125 `SUCCESS`,
 1 `INFEASIBLE`, 1 `NO_FEASIBLE_FOUND`, 4 `UNBOUNDED_OBJ`); `ex6_2_6` agota los 1800 s en todas
 (con `art` sola es más dura que con `compo`: 3.8 M de celdas frente a 0.9 M en la etapa A).
 
@@ -219,7 +219,7 @@ Gráficos y tablas: `analisis/nivel2_perfil_art.png`, `analisis/nivel2_dispersio
 
 ### Etapa C — `hard` + `others`, relajación `compo` (15 instancias × 7 configuraciones, `-t 1800`)
 
-`results/fase3-20260921/C_hard_others_compo/`. 15 instancias: 11 se resuelven con AF2/RAA,
+`results/07-fase3-nivel2-solver/fase3-20260921/C_hard_others_compo/`. 15 instancias: 11 se resuelven con AF2/RAA,
 `polygon25` agota el tiempo en todas las configuraciones, `ship` es `NO_FEASIBLE_FOUND` y las dos
 `test_infinity*` no acotadas.
 
@@ -253,7 +253,7 @@ Lecturas (con la cautela de que son 11 instancias):
 
 ### Etapa D — `hard` + `others`, relajación `art` (15 instancias × 6 variantes, `-t 1800`)
 
-`results/fase3-20260921/D_hard_others_art/`. La etapa se detuvo a petición del usuario tras la C y
+`results/07-fase3-nivel2-solver/fase3-20260921/D_hard_others_art/`. La etapa se detuvo a petición del usuario tras la C y
 se reanudó al día siguiente; las 12 corridas interrumpidas (`chem`, `chem-1`) se rehicieron desde
 cero (el script ya no registra fila para una corrida interrumpida).
 
@@ -275,7 +275,7 @@ efecto es celdas 0.563 y CPU 0.606 (5 gana / 4 empata / 0 pierde). El k-nomial s
 0 / 11 / 0.
 
 Regenerar cualquier etapa: `python3 raak/analysis/analyze_sweep.py <etapa>/runs.csv <etapa>/analisis --tlim 1800`;
-consolidado: `python3 raak/analysis/consolidate.py raak/results/fase3-20260921`.
+consolidado: `python3 raak/analysis/consolidate.py raak/results/07-fase3-nivel2-solver/fase3-20260921`.
 
 ## Conclusiones (nivel 1 + las cuatro etapas del nivel 2)
 
@@ -284,7 +284,7 @@ de 11 sin resolver, en las dos relajaciones) y el k-nomial se lo devuelve por co
 0.56–0.78 dentro de AA; RAA gana otra instancia grande (`ex8_4_5bis`, 8–11× menos celdas) sin
 perder ninguna. Las conclusiones de abajo, escritas con A y B, se mantienen y se refuerzan.
 
-Tabla consolidada: `results/fase3-20260921/RESUMEN.md`; gráfico: `resumen_medias_geom.png`.
+Tabla consolidada: `results/07-fase3-nivel2-solver/fase3-20260921/RESUMEN.md`; gráfico: `resumen_medias_geom.png`.
 
 1. **Cotas más ajustadas (nivel 1).** RAA nunca es más ancha que AF2 y la mejora en el 3 % de los
    casos (hasta −10 % en las funciones densas de `benchs-unconstrainedoptim`); AA gana y pierde a
