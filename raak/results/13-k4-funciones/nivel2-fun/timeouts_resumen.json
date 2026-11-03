@@ -1,0 +1,15 @@
+{
+ "n_instancias_con_algun_timeout":2.0,
+ "las_4_agotan":1.0,
+ "k2_mejor_cota_que_k0":1.0,
+ "brecha_gm_k2_vs_k0":0.954,
+ "celdas_gm_k2_vs_k0_en_1800s":0.954,
+ "k3_mejor_cota_que_k0":1.0,
+ "brecha_gm_k3_vs_k0":0.987,
+ "celdas_gm_k3_vs_k0_en_1800s":0.988,
+ "k4_mejor_cota_que_k0":1.0,
+ "brecha_gm_k4_vs_k0":0.969,
+ "celdas_gm_k4_vs_k0_en_1800s":0.958,
+ "resuelta_solo_con_knomial":1.0,
+ "resuelta_solo_con_base":0.0
+}

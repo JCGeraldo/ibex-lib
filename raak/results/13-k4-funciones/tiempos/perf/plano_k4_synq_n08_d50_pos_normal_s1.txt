@@ -1,0 +1,40 @@
+     6.69%  [.] void ibex::CompiledFunction::forward<ibex::Eval>(ibex::Eval const&, int) const                                                                  
+     6.28%  [.] malloc                                                                                                                                          
+     5.92%  [.] ibex::knomial_rewrite(vec<double>&, vec<double> const&, int, int, std::vector<ibex::KNomialBlock>&, double) [clone .isra.0]                     
+     4.15%  [.] gaol::interval::operator*=(gaol::interval const&)                                                                                               
+     4.14%  [.] cfree                                                                                                                                           
+     3.47%  [.] void ibex::CompiledFunction::forward<ibex::AffineEval<ibex::AF_fAF2> >(ibex::AffineEval<ibex::AF_fAF2> const&, int) const                       
+     2.38%  [.] fegetenv                                                                                                                                        
+     1.75%  [.] gaol::interval::operator+=(gaol::interval const&)                                                                                               
+     1.73%  [.] void ibex::CompiledFunction::backward<ibex::HC4Revise>(ibex::HC4Revise const&, int) const                                                       
+     1.53%  [.] 0x00000000000abf50                                                                                                                              
+     1.53%  [.] times                                                                                                                                           
+     1.39%  [.] ibex::AffineMain<ibex::AF_fAF2>::operator*=(ibex::AffineMain<ibex::AF_fAF2> const&)                                                             
+     1.35%  [.] ibex::AffineMain<ibex::AF_fAF2>::operator*=(double)                                                                                             
+     1.29%  [.] std::_Rb_tree_increment(std::_Rb_tree_node_base const*)                                                                                         
+     1.17%  [.] ibex::AffineMain<ibex::AF_fAF2>::itv() const                                                                                                    
+     1.11%  [.] operator new(unsigned long)                                                                                                                     
+     1.00%  [.] ibex::AffineMain<ibex::AF_fAF2>::operator+=(ibex::AffineMain<ibex::AF_fAF2> const&)                                                             
+     0.93%  [.] void ibex::CompiledFunction::backward<ibex::Gradient>(ibex::Gradient const&, int) const                                                         
+     0.91%  [.] gaol::div_rel(gaol::interval const&, gaol::interval const&, gaol::interval const&)                                                              
+     0.86%  [.] void ibex::CompiledFunction::forward<ibex::Gradient>(ibex::Gradient const&, int) const                                                          
+     0.84%  [.] ibex::AffineMain<ibex::AF_fAF2>::operator=(ibex::AffineMain<ibex::AF_fAF2> const&)                                                              
+     0.83%  [.] fesetround                                                                                                                                      
+     0.81%  [.] ibex::Eval::eval(ibex::IntervalVector const&, ibex::BitSet const&)                                                                              
+     0.73%  [.] soplex::SPxMainSM::simplifyRows(soplex::SPxLPBase<double>&, bool&)                                                                              
+     0.68%  [.] realloc                                                                                                                                         
+     0.67%  [.] std::_Rb_tree<int, int, std::_Identity<int>, std::less<int>>::_M_erase(std::_Rb_tree_node<int>*) [clone .isra.0]                                
+     0.66%  [.] 0x00000000000abf7b                                                                                                                              
+     0.65%  [.] 0x00000000000a9ce6                                                                                                                              
+     0.64%  [.] ibex::knomial_detail::bfs_signs(std::vector<int> const&, vec<double> const&, int, double, std::map<int, double, std::less<int>> >&, double)     
+     0.63%  [.] 0x00000000000ab758                                                                                                                              
+     0.60%  [.] ibex::AffineMain<ibex::AF_fAF2>::AffineMain(ibex::AffineMain<ibex::AF_fAF2> const&)                                                             
+     0.56%  [.] std::_Rb_tree<int, std::pair<int const, double>, std::_Select1st<std::pair<int const, double> >, std::less<int>> >::_M_erase(std::_Rb_tree_node<
+     0.53%  [.] std::_Rb_tree_insert_and_rebalance(bool, std::_Rb_tree_node_base*, std::_Rb_tree_node_base*, std::_Rb_tree_node_base&)                          
+     0.52%  [.] ibex::Eval::eval(ibex::IntervalVector const&)                                                                                                   
+     0.52%  [.] 0x00000000000aba60                                                                                                                              
+     0.46%  [.] std::_Rb_tree_node<std::pair<int const, double> >* std::_Rb_tree<int, std::pair<int const, double>, std::_Select1st<std::pair<int const, double>
+     0.42%  [.] soplex::CLUFactor::forestUpdate(int, double*, int, int*)                                                                                        
+     0.42%  [.] malloc@plt                                                                                                                                      
+     0.39%  [.] 0x00000000000ab2dc                                                                                                                              
+     0.38%  [.] std::_Rb_tree_node<int>* std::_Rb_tree<int, int, std::_Identity<int>, std::less<int>>::_M_copy<false, std::_Rb_tree<int, int, std::_Identity<int

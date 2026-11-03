@@ -1,0 +1,60 @@
+    99.74%     0.00%  [.] __libc_start_main                                                                                                                     
+    99.74%     0.00%  [.] _start                                                                                                                                
+    99.74%     0.00%  [.] main                                                                                                                                  
+    99.74%     0.00%  [.] 0x0000710464a2a1c9                                                                                                                    
+    99.45%     0.02%  [.] ibex::Optimizer::optimize()                                                                                                           
+    92.99%     0.04%  [.] ibex::Optimizer::contract_and_bound(ibex::Cell&)                                                                                      
+    80.01%     0.07%  [.] ibex::CtcCompo::contract(ibex::IntervalVector&, ibex::ContractContext&)                                                               
+    72.95%     0.03%  [.] ibex::CtcFixPoint::contract(ibex::IntervalVector&, ibex::ContractContext&)                                                            
+    67.95%     0.01%  [.] ibex::CtcPolytopeHull::contract(ibex::IntervalVector&, ibex::ContractContext&)                                                        
+    39.69%     0.10%  [.] ibex::LinearizerAffineT<ibex::AF_fAF2>::linearize(ibex::IntervalVector const&, ibex::LPSolver&)                                       
+    37.66%     0.44%  [.] ibex::AffineEval<ibex::AF_fAF2>::eval(ibex::IntervalVector const&, ibex::AffineVarMainVector<ibex::AF_fAF2> const&)                   
+    36.50%     3.64%  [.] void ibex::CompiledFunction::forward<ibex::AffineEval<ibex::AF_fAF2> >(ibex::AffineEval<ibex::AF_fAF2> const&, int) const             
+    32.12%     0.12%  [.] ibex::LPSolver::minimize()                                                                                                            
+    28.07%     0.11%  [.] ibex::CtcPolytopeHull::optimizer(ibex::IntervalVector&)                                                                               
+    27.78%     0.09%  [.] soplex::SoPlex::optimize()                                                                                                            
+    27.41%     0.01%  [.] soplex::SoPlex::_optimizeReal()                                                                                                       
+    24.73%     0.11%  [.] soplex::SoPlex::_preprocessAndSolveReal(bool)                                                                                         
+    21.46%     1.52%  [.] ibex::AffineMain<ibex::AF_fAF2>::operator*=(ibex::AffineMain<ibex::AF_fAF2> const&)                                                   
+    17.80%     0.12%  [.] soplex::SoPlex::_solveRealLPAndRecordStatistics()                                                                                     
+    17.03%     4.37%  [.] ibex::knomial_rewrite(vec<double>&, vec<double> const&, int, int, std::vector<ibex::KNomialBlock>&, double) [clone .isra.0]           
+    16.87%     0.31%  [.] soplex::SPxSolver::solve()                                                                                                            
+    12.87%     0.01%  [.] ibex::Optimizer::update_loup(ibex::IntervalVector const&, ibex::BoxProperties&)                                                       
+    12.70%     0.00%  [.] ibex::LoupFinderDefault::find(ibex::IntervalVector const&, ibex::IntervalVector const&, double, ibex::BoxProperties&)                 
+    10.32%     0.35%  [.] ibex::CtcPropag::contract(ibex::IntervalVector&, ibex::ContractContext&)                                                              
+     9.81%     4.81%  [.] malloc                                                                                                                                
+     9.69%     8.03%  [.] void ibex::CompiledFunction::forward<ibex::Eval>(ibex::Eval const&, int) const                                                        
+     8.72%     1.02%  [.] operator new(unsigned long)                                                                                                           
+     8.29%     0.21%  [.] ibex::CtcFwdBwd::contract(ibex::IntervalVector&, ibex::ContractContext&)                                                              
+     7.99%     0.08%  [.] ibex::HC4Revise::proj(ibex::TemplateDomain<ibex::Interval> const&, ibex::IntervalVector&)                                             
+     7.66%     0.00%  [.] ibex::LoupFinderXTaylor::find(ibex::IntervalVector const&, ibex::IntervalVector const&, double, ibex::BoxProperties&)                 
+     7.35%     3.35%  [.] cfree                                                                                                                                 
+     7.08%     0.35%  [.] ibex::Eval::eval(ibex::IntervalVector const&)                                                                                         
+     6.37%     0.29%  [.] ibex::Gradient::jacobian(ibex::IntervalVector const&, ibex::IntervalMatrix&, ibex::BitSet const&, int)                                
+     6.27%     0.01%  [.] ibex::SmearFunction::choose_var(ibex::Cell const&)                                                                                    
+     6.12%     0.09%  [.] soplex::SPxSolver::init()                                                                                                             
+     5.15%     0.07%  [.] soplex::SPxMainSM::simplify(soplex::SPxLPBase<double>&, double, double, double, bool)                                                 
+     4.70%     0.06%  [.] ibex::LoupFinderInHC4::find(ibex::IntervalVector const&, ibex::IntervalVector const&, double, ibex::BoxProperties&)                   
+     4.65%     1.39%  [.] ibex::AffineMain<ibex::AF_fAF2>::itv() const                                                                                          
+     4.58%     4.58%  [.] gaol::interval::operator*=(gaol::interval const&)                                                                                     
+     4.50%     0.03%  [.] ibex::LSmear::var_to_bisect(ibex::IntervalMatrix&, ibex::IntervalVector const&) const                                                 
+     4.28%     0.27%  [.] soplex::SPxSolver::leave(int, bool)                                                                                                   
+     4.23%     0.79%  [.] ibex::Eval::eval(ibex::IntervalVector const&, ibex::BitSet const&)                                                                    
+     3.99%     0.03%  [.] ibex::CtcAcid::contract(ibex::IntervalVector&, ibex::ContractContext&)                                                                
+     3.95%     0.31%  [.] ibex::LPSolver::neumaier_shcherbina_postprocessing()                                                                                  
+     3.83%     0.03%  [.] ibex::LinearizerXTaylor::linearize(ibex::IntervalVector const&, ibex::LPSolver&, ibex::BoxProperties&)                                
+     3.63%     0.11%  [.] ibex::HC4Revise::backward(ibex::TemplateDomain<ibex::Interval> const&)                                                                
+     3.54%     0.02%  [.] ibex::LinearizerXTaylor::linear_restrict(ibex::IntervalVector const&, ibex::BitSet const&)                                            
+     3.52%     2.18%  [.] void ibex::CompiledFunction::backward<ibex::HC4Revise>(ibex::HC4Revise const&, int) const                                             
+     3.48%     0.03%  [.] ibex::LSmear::getdual(ibex::IntervalMatrix&, ibex::IntervalVector const&, ibex::Vector&) const                                        
+     3.30%     0.21%  [.] gaol::interval::midpoint() const                                                                                                      
+     2.96%     0.02%  [.] ibex::Fnc::hansen_matrix(ibex::IntervalVector const&, ibex::IntervalVector const&, ibex::IntervalMatrix&, ibex::BitSet const&) const  
+     2.90%     0.08%  [.] soplex::SPxBasis::factorize()                                                                                                         
+     2.80%     0.10%  [.] soplex::SLUFactor::load(soplex::SVectorBase<double> const**, int)                                                                     
+     2.79%     0.01%  [.] ibex::Ctc3BCid::var3BCID_slices(ibex::IntervalVector&, int, int, double, ibex::Interval&)                                             
+     2.75%     0.00%  [.] ibex::Ctc3BCid::update_and_contract(ibex::IntervalVector&, int)                                                                       
+     2.62%     0.03%  [.] ibex::LPSolver::rows_transposed() const                                                                                               
+     2.58%     0.45%  [.] ibex::AffineMain<ibex::AF_fAF2>::operator=(ibex::Interval const&)                                                                     
+     2.50%     2.50%  [.] fegetenv                                                                                                                              
+     2.27%     0.01%  [.] soplex::SPxSolver::factorize()                                                                                                        
+     2.22%     1.09%  [.] void ibex::CompiledFunction::backward<ibex::Gradient>(ibex::Gradient const&, int) const                                               

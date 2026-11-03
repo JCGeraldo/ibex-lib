@@ -1,0 +1,464 @@
+{
+ "sinteticas-log": {
+  "n_instancias": 24,
+  "resueltas_base": 24,
+  "art_raa_k2": {
+   "resueltas": 24,
+   "comparables": 24,
+   "celdas_identicas": 10,
+   "celdas_gm": 0.9185938089970601,
+   "celdas_gana": 10,
+   "celdas_empata": 12,
+   "celdas_pierde": 1,
+   "celdas_total_base": 173240.0,
+   "celdas_total": 147136.0,
+   "cpu_gm": 1.1089948891525647,
+   "cpu_gana": 8,
+   "cpu_empata": 7,
+   "cpu_pierde": 9,
+   "cpu_total_base_s": 1117.2566490032543,
+   "cpu_total_s": 1124.4985680032537
+  },
+  "art_raa_k3": {
+   "resueltas": 24,
+   "comparables": 24,
+   "celdas_identicas": 9,
+   "celdas_gm": 0.8608077619356852,
+   "celdas_gana": 11,
+   "celdas_empata": 10,
+   "celdas_pierde": 2,
+   "celdas_total_base": 173240.0,
+   "celdas_total": 130404.0,
+   "cpu_gm": 0.9694344031639675,
+   "cpu_gana": 9,
+   "cpu_empata": 9,
+   "cpu_pierde": 6,
+   "cpu_total_base_s": 1117.2566490032543,
+   "cpu_total_s": 1038.4427820041526
+  },
+  "art_raa_k4": {
+   "resueltas": 24,
+   "comparables": 24,
+   "celdas_identicas": 9,
+   "celdas_gm": 0.8420753258604334,
+   "celdas_gana": 11,
+   "celdas_empata": 10,
+   "celdas_pierde": 2,
+   "celdas_total_base": 173240.0,
+   "celdas_total": 118232.0,
+   "cpu_gm": 1.019058697077327,
+   "cpu_gana": 7,
+   "cpu_empata": 10,
+   "cpu_pierde": 7,
+   "cpu_total_base_s": 1117.2566490032543,
+   "cpu_total_s": 1060.6984010041526
+  },
+  "k3_vs_k2": {
+   "comparables": 24,
+   "celdas_identicas": 12,
+   "celdas_gm": 0.9370929278040019,
+   "celdas_gana": 6,
+   "celdas_pierde": 1
+  },
+  "k4_vs_k3": {
+   "comparables": 24,
+   "celdas_identicas": 14,
+   "celdas_gm": 0.9782385372163369,
+   "celdas_gana": 5,
+   "celdas_pierde": 1
+  }
+ },
+ "todas": {
+  "n_instancias": 24,
+  "resueltas_base": 24,
+  "art_raa_k2": {
+   "resueltas": 24,
+   "comparables": 24,
+   "celdas_identicas": 10,
+   "celdas_gm": 0.9185938089970601,
+   "celdas_gana": 10,
+   "celdas_empata": 12,
+   "celdas_pierde": 1,
+   "celdas_total_base": 173240.0,
+   "celdas_total": 147136.0,
+   "cpu_gm": 1.1089948891525647,
+   "cpu_gana": 8,
+   "cpu_empata": 7,
+   "cpu_pierde": 9,
+   "cpu_total_base_s": 1117.2566490032543,
+   "cpu_total_s": 1124.4985680032537
+  },
+  "art_raa_k3": {
+   "resueltas": 24,
+   "comparables": 24,
+   "celdas_identicas": 9,
+   "celdas_gm": 0.8608077619356852,
+   "celdas_gana": 11,
+   "celdas_empata": 10,
+   "celdas_pierde": 2,
+   "celdas_total_base": 173240.0,
+   "celdas_total": 130404.0,
+   "cpu_gm": 0.9694344031639675,
+   "cpu_gana": 9,
+   "cpu_empata": 9,
+   "cpu_pierde": 6,
+   "cpu_total_base_s": 1117.2566490032543,
+   "cpu_total_s": 1038.4427820041526
+  },
+  "art_raa_k4": {
+   "resueltas": 24,
+   "comparables": 24,
+   "celdas_identicas": 9,
+   "celdas_gm": 0.8420753258604334,
+   "celdas_gana": 11,
+   "celdas_empata": 10,
+   "celdas_pierde": 2,
+   "celdas_total_base": 173240.0,
+   "celdas_total": 118232.0,
+   "cpu_gm": 1.019058697077327,
+   "cpu_gana": 7,
+   "cpu_empata": 10,
+   "cpu_pierde": 7,
+   "cpu_total_base_s": 1117.2566490032543,
+   "cpu_total_s": 1060.6984010041526
+  },
+  "k3_vs_k2": {
+   "comparables": 24,
+   "celdas_identicas": 12,
+   "celdas_gm": 0.9370929278040019,
+   "celdas_gana": 6,
+   "celdas_pierde": 1
+  },
+  "k4_vs_k3": {
+   "comparables": 24,
+   "celdas_identicas": 14,
+   "celdas_gm": 0.9782385372163369,
+   "celdas_gana": 5,
+   "celdas_pierde": 1
+  }
+ },
+ "instancias_que_cambian": [
+  {
+   "instancia": "sinteticas-log/synl_n03_d90_s3",
+   "base": 6,
+   "k2": 4,
+   "k3": 4,
+   "k4": 4,
+   "ratio_k2": 0.6666666666666666,
+   "ratio_k3": 0.6666666666666666,
+   "ratio_k4": 0.6666666666666666,
+   "k3_con_bloques": 20
+  },
+  {
+   "instancia": "sinteticas-log/synl_n08_d50_s2",
+   "base": 12,
+   "k2": 12,
+   "k3": 14,
+   "k4": 14,
+   "ratio_k2": 1.0,
+   "ratio_k3": 1.1666666666666667,
+   "ratio_k4": 1.1666666666666667,
+   "k3_con_bloques": 224
+  },
+  {
+   "instancia": "sinteticas-log/synl_n05_d50_s3",
+   "base": 58,
+   "k2": 36,
+   "k3": 28,
+   "k4": 30,
+   "ratio_k2": 0.6206896551724138,
+   "ratio_k3": 0.4827586206896552,
+   "ratio_k4": 0.5172413793103449,
+   "k3_con_bloques": 380
+  },
+  {
+   "instancia": "sinteticas-log/synl_n05_d90_s2",
+   "base": 66,
+   "k2": 48,
+   "k3": 48,
+   "k4": 46,
+   "ratio_k2": 0.7272727272727273,
+   "ratio_k3": 0.7272727272727273,
+   "ratio_k4": 0.696969696969697,
+   "k3_con_bloques": 801
+  },
+  {
+   "instancia": "sinteticas-log/synl_n05_d90_s3",
+   "base": 104,
+   "k2": 88,
+   "k3": 84,
+   "k4": 84,
+   "ratio_k2": 0.8461538461538461,
+   "ratio_k3": 0.8076923076923077,
+   "ratio_k4": 0.8076923076923077,
+   "k3_con_bloques": 1467
+  },
+  {
+   "instancia": "sinteticas-log/synl_n10_d50_s3",
+   "base": 224,
+   "k2": 216,
+   "k3": 204,
+   "k4": 210,
+   "ratio_k2": 0.9642857142857143,
+   "ratio_k3": 0.9107142857142857,
+   "ratio_k4": 0.9375,
+   "k3_con_bloques": 8563
+  },
+  {
+   "instancia": "sinteticas-log/synl_n10_d50_s1",
+   "base": 238,
+   "k2": 228,
+   "k3": 228,
+   "k4": 228,
+   "ratio_k2": 0.957983193277311,
+   "ratio_k3": 0.957983193277311,
+   "ratio_k4": 0.957983193277311,
+   "k3_con_bloques": 9758
+  },
+  {
+   "instancia": "sinteticas-log/synl_n08_d90_s3",
+   "base": 428,
+   "k2": 1062,
+   "k3": 534,
+   "k4": 540,
+   "ratio_k2": 2.4813084112149535,
+   "ratio_k3": 1.2476635514018692,
+   "ratio_k4": 1.2616822429906542,
+   "k3_con_bloques": 25559
+  },
+  {
+   "instancia": "sinteticas-log/synl_n08_d50_s3",
+   "base": 792,
+   "k2": 680,
+   "k3": 652,
+   "k4": 652,
+   "ratio_k2": 0.8585858585858586,
+   "ratio_k3": 0.8232323232323232,
+   "ratio_k4": 0.8232323232323232,
+   "k3_con_bloques": 22784
+  },
+  {
+   "instancia": "sinteticas-log/synl_n08_d90_s1",
+   "base": 1718,
+   "k2": 1272,
+   "k3": 1230,
+   "k4": 1050,
+   "ratio_k2": 0.740395809080326,
+   "ratio_k3": 0.7159487776484285,
+   "ratio_k4": 0.6111757857974389,
+   "k3_con_bloques": 66592
+  },
+  {
+   "instancia": "sinteticas-log/synl_n08_d90_s2",
+   "base": 2016,
+   "k2": 1746,
+   "k3": 1446,
+   "k4": 1370,
+   "ratio_k2": 0.8660714285714286,
+   "ratio_k3": 0.7172619047619048,
+   "ratio_k4": 0.6795634920634921,
+   "k3_con_bloques": 88706
+  },
+  {
+   "instancia": "sinteticas-log/synl_n10_d90_s1",
+   "base": 12018,
+   "k2": 10048,
+   "k3": 9790,
+   "k4": 8734,
+   "ratio_k2": 0.836079214511566,
+   "ratio_k3": 0.8146114162090198,
+   "ratio_k4": 0.726743218505575,
+   "k3_con_bloques": 765643
+  },
+  {
+   "instancia": "sinteticas-log/synl_n10_d50_s2",
+   "base": 23608,
+   "k2": 23112,
+   "k3": 23268,
+   "k4": 22542,
+   "ratio_k2": 0.9789901728227719,
+   "ratio_k3": 0.9855981023381905,
+   "ratio_k4": 0.9548458149779736,
+   "k3_con_bloques": 1226968
+  },
+  {
+   "instancia": "sinteticas-log/synl_n10_d90_s3",
+   "base": 34510,
+   "k2": 20622,
+   "k3": 17418,
+   "k4": 15866,
+   "ratio_k2": 0.5975659229208925,
+   "ratio_k3": 0.5047232686177919,
+   "ratio_k4": 0.4597507968704723,
+   "k3_con_bloques": 1127589
+  },
+  {
+   "instancia": "sinteticas-log/synl_n10_d90_s2",
+   "base": 97244,
+   "k2": 87764,
+   "k3": 75258,
+   "k4": 66664,
+   "ratio_k2": 0.9025132655999342,
+   "ratio_k3": 0.7739089301139402,
+   "ratio_k4": 0.6855332976841759,
+   "k3_con_bloques": 6728062
+  }
+ ],
+ "instancias_con_bloques_k3": [
+  {
+   "instancia": "sinteticas-log/synl_n10_d90_s2",
+   "productos": 6738460,
+   "con_bloques": 6728062,
+   "bloques": 18630498,
+   "usados": 6738208
+  },
+  {
+   "instancia": "sinteticas-log/synl_n10_d50_s2",
+   "productos": 2199570,
+   "con_bloques": 1226968,
+   "bloques": 1403395,
+   "usados": 1626029
+  },
+  {
+   "instancia": "sinteticas-log/synl_n10_d90_s3",
+   "productos": 1127650,
+   "con_bloques": 1127589,
+   "bloques": 3129022,
+   "usados": 1127650
+  },
+  {
+   "instancia": "sinteticas-log/synl_n10_d90_s1",
+   "productos": 774720,
+   "con_bloques": 765643,
+   "bloques": 2011432,
+   "usados": 774720
+  },
+  {
+   "instancia": "sinteticas-log/synl_n08_d90_s2",
+   "productos": 90664,
+   "con_bloques": 88706,
+   "bloques": 189696,
+   "usados": 90604
+  },
+  {
+   "instancia": "sinteticas-log/synl_n08_d90_s1",
+   "productos": 66728,
+   "con_bloques": 66592,
+   "bloques": 143436,
+   "usados": 66728
+  },
+  {
+   "instancia": "sinteticas-log/synl_n08_d90_s3",
+   "productos": 25696,
+   "con_bloques": 25559,
+   "bloques": 53086,
+   "usados": 25688
+  },
+  {
+   "instancia": "sinteticas-log/synl_n08_d50_s3",
+   "productos": 36896,
+   "con_bloques": 22784,
+   "bloques": 25104,
+   "usados": 26355
+  },
+  {
+   "instancia": "sinteticas-log/synl_n10_d50_s1",
+   "productos": 15810,
+   "con_bloques": 9758,
+   "bloques": 10962,
+   "usados": 12268
+  },
+  {
+   "instancia": "sinteticas-log/synl_n10_d50_s3",
+   "productos": 14430,
+   "con_bloques": 8563,
+   "bloques": 10537,
+   "usados": 11503
+  },
+  {
+   "instancia": "sinteticas-log/synl_n05_d90_s3",
+   "productos": 1495,
+   "con_bloques": 1467,
+   "bloques": 2609,
+   "usados": 1493
+  },
+  {
+   "instancia": "sinteticas-log/synl_n08_d50_s1",
+   "productos": 3208,
+   "con_bloques": 1033,
+   "bloques": 1128,
+   "usados": 1647
+  },
+  {
+   "instancia": "sinteticas-log/synl_n05_d90_s2",
+   "productos": 850,
+   "con_bloques": 801,
+   "bloques": 1044,
+   "usados": 840
+  },
+  {
+   "instancia": "sinteticas-log/synl_n05_d90_s1",
+   "productos": 805,
+   "con_bloques": 578,
+   "bloques": 792,
+   "usados": 760
+  },
+  {
+   "instancia": "sinteticas-log/synl_n05_d50_s3",
+   "productos": 730,
+   "con_bloques": 380,
+   "bloques": 380,
+   "usados": 471
+  },
+  {
+   "instancia": "sinteticas-log/synl_n08_d50_s2",
+   "productos": 616,
+   "con_bloques": 224,
+   "bloques": 224,
+   "usados": 362
+  },
+  {
+   "instancia": "sinteticas-log/synl_n03_d90_s2",
+   "productos": 327,
+   "con_bloques": 143,
+   "bloques": 143,
+   "usados": 297
+  },
+  {
+   "instancia": "sinteticas-log/synl_n05_d50_s1",
+   "productos": 255,
+   "con_bloques": 43,
+   "bloques": 43,
+   "usados": 96
+  },
+  {
+   "instancia": "sinteticas-log/synl_n03_d90_s3",
+   "productos": 33,
+   "con_bloques": 20,
+   "bloques": 20,
+   "usados": 20
+  },
+  {
+   "instancia": "sinteticas-log/synl_n05_d50_s2",
+   "productos": 90,
+   "con_bloques": 8,
+   "bloques": 8,
+   "usados": 27
+  },
+  {
+   "instancia": "sinteticas-log/synl_n03_d90_s1",
+   "productos": 9,
+   "con_bloques": 4,
+   "bloques": 4,
+   "usados": 8
+  },
+  {
+   "instancia": "sinteticas-log/synl_n03_d50_s1",
+   "productos": 3,
+   "con_bloques": 1,
+   "bloques": 1,
+   "usados": 1
+  }
+ ],
+ "no_success": []
+}

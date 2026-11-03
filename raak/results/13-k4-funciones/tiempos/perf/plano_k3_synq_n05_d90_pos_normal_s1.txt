@@ -1,0 +1,40 @@
+     6.07%  [.] malloc                                                                                                                                          
+     5.13%  [.] void ibex::CompiledFunction::forward<ibex::Eval>(ibex::Eval const&, int) const                                                                  
+     4.19%  [.] cfree                                                                                                                                           
+     3.25%  [.] gaol::interval::operator*=(gaol::interval const&)                                                                                               
+     3.04%  [.] fegetenv                                                                                                                                        
+     3.04%  [.] ibex::knomial_rewrite(vec<double>&, vec<double> const&, int, int, std::vector<ibex::KNomialBlock>&, double) [clone .isra.0]                     
+     2.96%  [.] times                                                                                                                                           
+     1.81%  [.] gaol::interval::operator+=(gaol::interval const&)                                                                                               
+     1.66%  [.] void ibex::CompiledFunction::forward<ibex::AffineEval<ibex::AF_fAF2> >(ibex::AffineEval<ibex::AF_fAF2> const&, int) const                       
+     1.59%  [.] ibex::AffineMain<ibex::AF_fAF2>::itv() const                                                                                                    
+     1.59%  [.] ibex::AffineMain<ibex::AF_fAF2>::operator*=(ibex::AffineMain<ibex::AF_fAF2> const&)                                                             
+     1.52%  [.] ibex::AffineMain<ibex::AF_fAF2>::operator*=(double)                                                                                             
+     1.45%  [.] void ibex::CompiledFunction::backward<ibex::HC4Revise>(ibex::HC4Revise const&, int) const                                                       
+     1.16%  [.] realloc                                                                                                                                         
+     1.08%  [.] ibex::AffineMain<ibex::AF_fAF2>::operator+=(ibex::AffineMain<ibex::AF_fAF2> const&)                                                             
+     0.87%  [.] operator new(unsigned long)                                                                                                                     
+     0.87%  [.] soplex::SPxMainSM::simplifyRows(soplex::SPxLPBase<double>&, bool&)                                                                              
+     0.87%  [.] void ibex::CompiledFunction::backward<ibex::Gradient>(ibex::Gradient const&, int) const                                                         
+     0.80%  [.] fesetround                                                                                                                                      
+     0.80%  [.] void ibex::CompiledFunction::forward<ibex::Gradient>(ibex::Gradient const&, int) const                                                          
+     0.72%  [.] ibex::LPSolver::neumaier_shcherbina_postprocessing()                                                                                            
+     0.72%  [.] ibex::knomial_detail::bfs_signs(std::vector<int> const&, vec<double> const&, int, double, std::map<int, double, std::less<int>> >&, double)     
+     0.58%  [.] gaol::div_rel(gaol::interval const&, gaol::interval const&, gaol::interval const&)                                                              
+     0.58%  [.] ibex::AffineMain<ibex::AF_fAF2>::operator=(ibex::AffineMain<ibex::AF_fAF2> const&)                                                              
+     0.58%  [.] ibex::Gradient::jacobian(ibex::IntervalVector const&, ibex::IntervalMatrix&, ibex::BitSet const&, int)                                          
+     0.58%  [.] soplex::UserTimer::time() const                                                                                                                 
+     0.51%  [.] malloc@plt                                                                                                                                      
+     0.51%  [.] operator delete(void*)                                                                                                                          
+     0.51%  [.] soplex::SPxMainSM::simplifyDual(soplex::SPxLPBase<double>&, bool&)                                                                              
+     0.51%  [.] soplex::UserTimer::start()                                                                                                                      
+     0.51%  [.] soplex::UserTimer::stop()                                                                                                                       
+     0.43%  [.] ibex::AffineEval<ibex::AF_fAF2>::eval(ibex::IntervalVector const&, ibex::AffineVarMainVector<ibex::AF_fAF2> const&)                             
+     0.43%  [.] ibex::Vector::operator=(ibex::Vector const&)                                                                                                    
+     0.43%  [.] soplex::SPxMainSM::duplicateRows(soplex::SPxLPBase<double>&, bool&)                                                                             
+     0.43%  [.] soplex::SPxSolver::setupPupdate()                                                                                                               
+     0.43%  [.] soplex::SPxSolver::unShift()                                                                                                                    
+     0.43%  [.] 0x00000000000a9ce6                                                                                                                              
+     0.43%  [.] 0x00000000000ab250                                                                                                                              
+     0.36%  [.] _Unwind_Find_FDE                                                                                                                                
+     0.36%  [.] gaol::pow(gaol::interval const&, int)                                                                                                           

@@ -1,0 +1,446 @@
+{
+ "sinteticas-fun": {
+  "n_instancias": 24,
+  "resueltas_base": 22,
+  "art_raa_k2": {
+   "resueltas": 22,
+   "comparables": 22,
+   "celdas_identicas": 9,
+   "celdas_gm": 0.9935451825657697,
+   "celdas_gana": 4,
+   "celdas_empata": 14,
+   "celdas_pierde": 4,
+   "celdas_total_base": 446760.0,
+   "celdas_total": 426376.0,
+   "cpu_gm": 1.126267660793828,
+   "cpu_gana": 4,
+   "cpu_empata": 9,
+   "cpu_pierde": 9,
+   "cpu_total_base_s": 3368.3281020223335,
+   "cpu_total_s": 3675.2718820223336
+  },
+  "art_raa_k3": {
+   "resueltas": 23,
+   "comparables": 22,
+   "celdas_identicas": 9,
+   "celdas_gm": 0.9302803711971703,
+   "celdas_gana": 8,
+   "celdas_empata": 11,
+   "celdas_pierde": 3,
+   "celdas_total_base": 446760.0,
+   "celdas_total": 309106.0,
+   "cpu_gm": 1.0602459796105237,
+   "cpu_gana": 5,
+   "cpu_empata": 8,
+   "cpu_pierde": 9,
+   "cpu_total_base_s": 3368.3281020223335,
+   "cpu_total_s": 2879.1568480223336
+  },
+  "art_raa_k4": {
+   "resueltas": 23,
+   "comparables": 22,
+   "celdas_identicas": 9,
+   "celdas_gm": 0.9191341687105515,
+   "celdas_gana": 8,
+   "celdas_empata": 12,
+   "celdas_pierde": 2,
+   "celdas_total_base": 446760.0,
+   "celdas_total": 298340.0,
+   "cpu_gm": 1.0355343966935737,
+   "cpu_gana": 3,
+   "cpu_empata": 9,
+   "cpu_pierde": 10,
+   "cpu_total_base_s": 3368.3281020223335,
+   "cpu_total_s": 3142.6748420223335
+  },
+  "k3_vs_k2": {
+   "comparables": 22,
+   "celdas_identicas": 10,
+   "celdas_gm": 0.936324172791798,
+   "celdas_gana": 7,
+   "celdas_pierde": 1
+  },
+  "k4_vs_k3": {
+   "comparables": 22,
+   "celdas_identicas": 13,
+   "celdas_gm": 0.9880184481671103,
+   "celdas_gana": 4,
+   "celdas_pierde": 1
+  }
+ },
+ "todas": {
+  "n_instancias": 24,
+  "resueltas_base": 22,
+  "art_raa_k2": {
+   "resueltas": 22,
+   "comparables": 22,
+   "celdas_identicas": 9,
+   "celdas_gm": 0.9935451825657697,
+   "celdas_gana": 4,
+   "celdas_empata": 14,
+   "celdas_pierde": 4,
+   "celdas_total_base": 446760.0,
+   "celdas_total": 426376.0,
+   "cpu_gm": 1.126267660793828,
+   "cpu_gana": 4,
+   "cpu_empata": 9,
+   "cpu_pierde": 9,
+   "cpu_total_base_s": 3368.3281020223335,
+   "cpu_total_s": 3675.2718820223336
+  },
+  "art_raa_k3": {
+   "resueltas": 23,
+   "comparables": 22,
+   "celdas_identicas": 9,
+   "celdas_gm": 0.9302803711971703,
+   "celdas_gana": 8,
+   "celdas_empata": 11,
+   "celdas_pierde": 3,
+   "celdas_total_base": 446760.0,
+   "celdas_total": 309106.0,
+   "cpu_gm": 1.0602459796105237,
+   "cpu_gana": 5,
+   "cpu_empata": 8,
+   "cpu_pierde": 9,
+   "cpu_total_base_s": 3368.3281020223335,
+   "cpu_total_s": 2879.1568480223336
+  },
+  "art_raa_k4": {
+   "resueltas": 23,
+   "comparables": 22,
+   "celdas_identicas": 9,
+   "celdas_gm": 0.9191341687105515,
+   "celdas_gana": 8,
+   "celdas_empata": 12,
+   "celdas_pierde": 2,
+   "celdas_total_base": 446760.0,
+   "celdas_total": 298340.0,
+   "cpu_gm": 1.0355343966935737,
+   "cpu_gana": 3,
+   "cpu_empata": 9,
+   "cpu_pierde": 10,
+   "cpu_total_base_s": 3368.3281020223335,
+   "cpu_total_s": 3142.6748420223335
+  },
+  "k3_vs_k2": {
+   "comparables": 22,
+   "celdas_identicas": 10,
+   "celdas_gm": 0.936324172791798,
+   "celdas_gana": 7,
+   "celdas_pierde": 1
+  },
+  "k4_vs_k3": {
+   "comparables": 22,
+   "celdas_identicas": 13,
+   "celdas_gm": 0.9880184481671103,
+   "celdas_gana": 4,
+   "celdas_pierde": 1
+  }
+ },
+ "instancias_que_cambian": [
+  {
+   "instancia": "sinteticas-fun/synt_n05_d50_s1",
+   "base": 162,
+   "k2": 188,
+   "k3": 188,
+   "k4": 188,
+   "ratio_k2": 1.1604938271604939,
+   "ratio_k3": 1.1604938271604939,
+   "ratio_k4": 1.1604938271604939,
+   "k3_con_bloques": 760
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n05_d90_s3",
+   "base": 270,
+   "k2": 246,
+   "k3": 234,
+   "k4": 220,
+   "ratio_k2": 0.9111111111111111,
+   "ratio_k3": 0.8666666666666667,
+   "ratio_k4": 0.8148148148148148,
+   "k3_con_bloques": 3823
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n05_d90_s2",
+   "base": 414,
+   "k2": 396,
+   "k3": 370,
+   "k4": 352,
+   "ratio_k2": 0.9565217391304348,
+   "ratio_k3": 0.893719806763285,
+   "ratio_k4": 0.8502415458937198,
+   "k3_con_bloques": 6103
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n08_d50_s2",
+   "base": 1134,
+   "k2": 1108,
+   "k3": 1144,
+   "k4": 1144,
+   "ratio_k2": 0.9770723104056437,
+   "ratio_k3": 1.0088183421516754,
+   "ratio_k4": 1.0088183421516754,
+   "k3_con_bloques": 17085
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n08_d90_s2",
+   "base": 1442,
+   "k2": 1282,
+   "k3": 1258,
+   "k4": 1256,
+   "ratio_k2": 0.8890429958391124,
+   "ratio_k3": 0.8723994452149791,
+   "ratio_k4": 0.871012482662968,
+   "k3_con_bloques": 59812
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n08_d50_s1",
+   "base": 1760,
+   "k2": 1902,
+   "k3": 1812,
+   "k4": 1812,
+   "ratio_k2": 1.080681818181818,
+   "ratio_k3": 1.0295454545454545,
+   "ratio_k4": 1.0295454545454545,
+   "k3_con_bloques": 50507
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n10_d50_s1",
+   "base": 2408,
+   "k2": 2336,
+   "k3": 2642,
+   "k4": 2636,
+   "ratio_k2": 0.9700996677740864,
+   "ratio_k3": 1.0971760797342194,
+   "ratio_k4": 1.0946843853820598,
+   "k3_con_bloques": 104228
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n08_d50_s3",
+   "base": 10360,
+   "k2": 10050,
+   "k3": 9374,
+   "k4": 9374,
+   "ratio_k2": 0.9700772200772201,
+   "ratio_k3": 0.9048262548262548,
+   "ratio_k4": 0.9048262548262548,
+   "k3_con_bloques": 242401
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n08_d90_s1",
+   "base": 12078,
+   "k2": 15548,
+   "k3": 9632,
+   "k4": 9100,
+   "ratio_k2": 1.2872992217254513,
+   "ratio_k3": 0.7974830269912238,
+   "ratio_k4": 0.7534359993376387,
+   "k3_con_bloques": 533174
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n10_d50_s2",
+   "base": 19980,
+   "k2": 27182,
+   "k3": 25172,
+   "k4": 19878,
+   "ratio_k2": 1.3604604604604604,
+   "ratio_k3": 1.2598598598598598,
+   "ratio_k4": 0.9948948948948949,
+   "k3_con_bloques": 995097
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n08_d90_s3",
+   "base": 45936,
+   "k2": 28180,
+   "k3": 26028,
+   "k4": 33494,
+   "ratio_k2": 0.6134622082897945,
+   "ratio_k3": 0.5666144200626959,
+   "ratio_k4": 0.7291448972483455,
+   "k3_con_bloques": 1426422
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n10_d90_s1",
+   "base": 150098,
+   "k2": 132426,
+   "k3": 119750,
+   "k4": 107328,
+   "ratio_k2": 0.882263587789311,
+   "ratio_k3": 0.7978120960972165,
+   "ratio_k4": 0.7150528321496622,
+   "k3_con_bloques": 9384637
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n10_d90_s3",
+   "base": 200640,
+   "k2": 205454,
+   "k3": 111424,
+   "k4": 111480,
+   "ratio_k2": 1.02399322169059,
+   "ratio_k3": 0.5553429027113238,
+   "ratio_k4": 0.555622009569378,
+   "k3_con_bloques": 9202272
+  }
+ ],
+ "instancias_con_bloques_k3": [
+  {
+   "instancia": "sinteticas-fun/synt_n10_d90_s2",
+   "productos": 15283880,
+   "con_bloques": 15264771,
+   "bloques": 40184488,
+   "usados": 15271061
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n10_d50_s3",
+   "productos": 14920980,
+   "con_bloques": 9568259,
+   "bloques": 11288521,
+   "usados": 12515649
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n10_d90_s1",
+   "productos": 9398380,
+   "con_bloques": 9384637,
+   "bloques": 24910095,
+   "usados": 9389150
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n10_d90_s3",
+   "productos": 9222220,
+   "con_bloques": 9202272,
+   "bloques": 25361478,
+   "usados": 9206496
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n08_d90_s3",
+   "productos": 1430232,
+   "con_bloques": 1426422,
+   "bloques": 3157642,
+   "usados": 1429271
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n10_d50_s2",
+   "productos": 1534810,
+   "con_bloques": 995097,
+   "bloques": 1148274,
+   "usados": 1113969
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n08_d90_s1",
+   "productos": 536480,
+   "con_bloques": 533174,
+   "bloques": 1158082,
+   "usados": 536227
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n08_d50_s3",
+   "productos": 480904,
+   "con_bloques": 242401,
+   "bloques": 270759,
+   "usados": 303955
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n10_d50_s1",
+   "productos": 176930,
+   "con_bloques": 104228,
+   "bloques": 124359,
+   "usados": 135689
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n08_d90_s2",
+   "productos": 60592,
+   "con_bloques": 59812,
+   "bloques": 126624,
+   "usados": 59842
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n08_d50_s1",
+   "productos": 103272,
+   "con_bloques": 50507,
+   "bloques": 53548,
+   "usados": 60741
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n08_d50_s2",
+   "productos": 60472,
+   "con_bloques": 17085,
+   "bloques": 17085,
+   "usados": 30515
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n05_d90_s2",
+   "productos": 7220,
+   "con_bloques": 6103,
+   "bloques": 7165,
+   "usados": 7116
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n05_d90_s3",
+   "productos": 3950,
+   "con_bloques": 3823,
+   "bloques": 5334,
+   "usados": 3911
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n05_d50_s1",
+   "productos": 2820,
+   "con_bloques": 760,
+   "bloques": 760,
+   "usados": 1324
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n05_d90_s1",
+   "productos": 335,
+   "con_bloques": 231,
+   "bloques": 310,
+   "usados": 304
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n05_d50_s2",
+   "productos": 135,
+   "con_bloques": 23,
+   "bloques": 23,
+   "usados": 25
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n03_d90_s1",
+   "productos": 51,
+   "con_bloques": 13,
+   "bloques": 13,
+   "usados": 47
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n05_d50_s3",
+   "productos": 65,
+   "con_bloques": 11,
+   "bloques": 11,
+   "usados": 11
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n03_d90_s2",
+   "productos": 15,
+   "con_bloques": 9,
+   "bloques": 9,
+   "usados": 13
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n03_d90_s3",
+   "productos": 9,
+   "con_bloques": 9,
+   "bloques": 9,
+   "usados": 9
+  }
+ ],
+ "no_success": [
+  {
+   "instancia": "sinteticas-fun/synt_n10_d50_s3",
+   "estado": "TIME_OUT",
+   "variante": "art_raa_k0,art_raa_k2,art_raa_k3,art_raa_k4"
+  },
+  {
+   "instancia": "sinteticas-fun/synt_n10_d90_s2",
+   "estado": "TIME_OUT",
+   "variante": "art_raa_k0,art_raa_k2"
+  }
+ ]
+}

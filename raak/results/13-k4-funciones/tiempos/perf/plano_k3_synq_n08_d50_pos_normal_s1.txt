@@ -1,0 +1,40 @@
+     7.38%  [.] void ibex::CompiledFunction::forward<ibex::Eval>(ibex::Eval const&, int) const                                                                  
+     5.03%  [.] malloc                                                                                                                                          
+     4.78%  [.] gaol::interval::operator*=(gaol::interval const&)                                                                                               
+     4.21%  [.] ibex::knomial_rewrite(vec<double>&, vec<double> const&, int, int, std::vector<ibex::KNomialBlock>&, double) [clone .isra.0]                     
+     3.77%  [.] void ibex::CompiledFunction::forward<ibex::AffineEval<ibex::AF_fAF2> >(ibex::AffineEval<ibex::AF_fAF2> const&, int) const                       
+     3.73%  [.] cfree                                                                                                                                           
+     2.76%  [.] fegetenv                                                                                                                                        
+     2.09%  [.] gaol::interval::operator+=(gaol::interval const&)                                                                                               
+     2.01%  [.] void ibex::CompiledFunction::backward<ibex::HC4Revise>(ibex::HC4Revise const&, int) const                                                       
+     1.78%  [.] times                                                                                                                                           
+     1.62%  [.] ibex::AffineMain<ibex::AF_fAF2>::operator*=(ibex::AffineMain<ibex::AF_fAF2> const&)                                                             
+     1.57%  [.] 0x00000000000abf50                                                                                                                              
+     1.53%  [.] ibex::AffineMain<ibex::AF_fAF2>::operator*=(double)                                                                                             
+     1.25%  [.] ibex::AffineMain<ibex::AF_fAF2>::operator+=(ibex::AffineMain<ibex::AF_fAF2> const&)                                                             
+     1.24%  [.] ibex::AffineMain<ibex::AF_fAF2>::itv() const                                                                                                    
+     1.15%  [.] gaol::div_rel(gaol::interval const&, gaol::interval const&, gaol::interval const&)                                                              
+     1.04%  [.] fesetround                                                                                                                                      
+     1.03%  [.] void ibex::CompiledFunction::backward<ibex::Gradient>(ibex::Gradient const&, int) const                                                         
+     0.99%  [.] void ibex::CompiledFunction::forward<ibex::Gradient>(ibex::Gradient const&, int) const                                                          
+     0.97%  [.] operator new(unsigned long)                                                                                                                     
+     0.93%  [.] std::_Rb_tree_increment(std::_Rb_tree_node_base const*)                                                                                         
+     0.86%  [.] ibex::Eval::eval(ibex::IntervalVector const&, ibex::BitSet const&)                                                                              
+     0.82%  [.] soplex::SPxMainSM::simplifyRows(soplex::SPxLPBase<double>&, bool&)                                                                              
+     0.80%  [.] ibex::AffineMain<ibex::AF_fAF2>::operator=(ibex::AffineMain<ibex::AF_fAF2> const&)                                                              
+     0.70%  [.] 0x00000000000abf7b                                                                                                                              
+     0.67%  [.] ibex::AffineMain<ibex::AF_fAF2>::AffineMain(ibex::AffineMain<ibex::AF_fAF2> const&)                                                             
+     0.65%  [.] realloc                                                                                                                                         
+     0.63%  [.] 0x00000000000a9ce6                                                                                                                              
+     0.51%  [.] soplex::SPxSolver::computePvec()                                                                                                                
+     0.51%  [.] 0x00000000000ab758                                                                                                                              
+     0.50%  [.] soplex::CLUFactor::forestUpdate(int, double*, int, int*)                                                                                        
+     0.47%  [.] std::_Rb_tree<int, int, std::_Identity<int>, std::less<int>>::_M_erase(std::_Rb_tree_node<int>*) [clone .isra.0]                                
+     0.43%  [.] std::_Rb_tree_insert_and_rebalance(bool, std::_Rb_tree_node_base*, std::_Rb_tree_node_base*, std::_Rb_tree_node_base&)                          
+     0.41%  [.] soplex::UserTimer::stop()                                                                                                                       
+     0.41%  [.] soplex::CLUFactor::initFactorMatrix(soplex::SVectorBase<double> const**, double)                                                                
+     0.41%  [.] std::_Rb_tree_node<int>* std::_Rb_tree<int, int, std::_Identity<int>, std::less<int>>::_M_copy<false, std::_Rb_tree<int, int, std::_Identity<int
+     0.40%  [.] 0x00000000000aba60                                                                                                                              
+     0.40%  [.] ibex::knomial_detail::bfs_signs(std::vector<int> const&, vec<double> const&, int, double, std::map<int, double, std::less<int>> >&, double)     
+     0.38%  [.] soplex::SPxSolver::setupPupdate()                                                                                                               
+     0.38%  [.] ibex::AffineMain<ibex::AF_fAF2>::operator=(ibex::Interval const&)                                                                               
