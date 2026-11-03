@@ -1,0 +1,11 @@
+instance,origen,set_origen,motivo
+ex6_2_6.bch,benchs/optim,medium,k-nomial con material en nivel 1 y efecto en celdas (fase 3)
+ex6_2_8.bch,benchs/optim,medium,k-nomial con material en nivel 1 y efecto en celdas (fase 3)
+ex6_2_9.bch,benchs/optim,medium,k-nomial con material en nivel 1 y efecto en celdas (fase 3)
+ex6_2_10.bch,benchs/optim,hard,k-nomial con material en nivel 1 y efecto en celdas (fase 3)
+ex6_2_11.bch,benchs/optim,medium,k-nomial con material en nivel 1 y efecto en celdas (fase 3)
+ex6_2_12.bch,benchs/optim,medium,k-nomial con material en nivel 1 y efecto en celdas (fase 3)
+ex6_2_14.bch,benchs/optim,medium,k-nomial con material en nivel 1 y efecto en celdas (fase 3)
+3pk-borne.bch,coconutbenchmark-library2 (carpeta All),coconut,k-nomial con material en nivel 1 (11-filtro-instancias)
+mistake.bch,coconutbenchmark-library2 (carpeta All),coconut,k-nomial con material en nivel 1 (11-filtro-instancias)
+s365mod.bch,coconutbenchmark-library2 (carpeta All),coconut,k-nomial con material en nivel 1 (11-filtro-instancias)
