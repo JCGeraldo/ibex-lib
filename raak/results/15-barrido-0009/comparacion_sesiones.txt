@@ -1,0 +1,91 @@
+
+== reales: 10 instancias; corridas 40; timeouts ahora 16 / antes 16
+  celdas distintas entre sesiones (ambas SUCCESS): 0 de 24
+  resueltas por las 4: 6
+   k2: celdas gm 0.977  cpu gm 0.976  gana/empata/pierde celdas 5/1/0  cpu gana/pierde 5/1
+   k3: celdas gm 0.966  cpu gm 0.962  gana/empata/pierde celdas 5/1/0  cpu gana/pierde 5/1
+   k4: celdas gm 0.966  cpu gm 0.959  gana/empata/pierde celdas 5/1/0  cpu gana/pierde 5/1
+   k4/k3: celdas gm 1.000 cpu gm 0.997
+  instancias con timeout en las 4: 4; con timeout en alguna: 4
+   gap medio por variante: {'art_raa_k0': inf, 'art_raa_k2': inf, 'art_raa_k3': inf, 'art_raa_k4': inf}
+   mejor cota inferior (k4 > k3): 1 k4<k3: 1 k3>k0: 2
+
+== synq: 78 instancias; corridas 312; timeouts ahora 66 / antes 73
+  celdas distintas entre sesiones (ambas SUCCESS): 0 de 239
+  ahora se resuelven y antes no:                                instancia   variante  celdas_n     cpu_s_n
+   sinteticas/synq_n08_d20_pos_normal_s3 art_raa_k4   1068324 1676.843157
+   sinteticas/synq_n08_d90_pos_normal_s2 art_raa_k0    792088 1121.551865
+sinteticas/synq_n10_d20_posneg_normal_s2 art_raa_k0    501406 1574.883277
+sinteticas/synq_n10_d20_posneg_normal_s2 art_raa_k2    446506 1441.309426
+sinteticas/synq_n10_d20_posneg_normal_s2 art_raa_k3    368706 1185.149007
+sinteticas/synq_n10_d50_posneg_normal_s1 art_raa_k0    525624 1548.110980
+sinteticas/synq_n10_d90_posneg_normal_s2 art_raa_k4    562978 1625.635236
+  resueltas por las 4: 61
+   k2: celdas gm 0.778  cpu gm 0.810  gana/empata/pierde celdas 54/5/2  cpu gana/pierde 53/8
+   k3: celdas gm 0.646  cpu gm 0.682  gana/empata/pierde celdas 56/4/1  cpu gana/pierde 55/6
+   k4: celdas gm 0.588  cpu gm 0.620  gana/empata/pierde celdas 56/4/1  cpu gana/pierde 58/3
+   k4/k3: celdas gm 0.910 cpu gm 0.909
+  instancias con timeout en las 4: 15; con timeout en alguna: 17
+   gap medio por variante: {'art_raa_k0': 16.866, 'art_raa_k2': 16.062, 'art_raa_k3': 14.823, 'art_raa_k4': 13.72}
+   mejor cota inferior (k4 > k3): 14 k4<k3: 1 k3>k0: 13
+
+== synl: 24 instancias; corridas 96; timeouts ahora 0 / antes 0
+  celdas distintas entre sesiones (ambas SUCCESS): 0 de 96
+  resueltas por las 4: 24
+   k2: celdas gm 0.919  cpu gm 0.884  gana/empata/pierde celdas 13/10/1  cpu gana/pierde 18/6
+   k3: celdas gm 0.861  cpu gm 0.927  gana/empata/pierde celdas 13/9/2  cpu gana/pierde 18/6
+   k4: celdas gm 0.842  cpu gm 0.847  gana/empata/pierde celdas 13/9/2  cpu gana/pierde 20/4
+   k4/k3: celdas gm 0.978 cpu gm 0.914
+  instancias con timeout en las 4: 0; con timeout en alguna: 0
+
+== synt: 24 instancias; corridas 96; timeouts ahora 4 / antes 6
+  celdas distintas entre sesiones (ambas SUCCESS): 0 de 90
+  ahora se resuelven y antes no:                      instancia   variante  celdas_n     cpu_s_n
+sinteticas-fun/synt_n10_d90_s2 art_raa_k0    270498 1631.620893
+sinteticas-fun/synt_n10_d90_s2 art_raa_k2    248460 1562.215882
+  resueltas por las 4: 23
+   k2: celdas gm 0.990  cpu gm 0.991  gana/empata/pierde celdas 9/9/5  cpu gana/pierde 10/13
+   k3: celdas gm 0.922  cpu gm 0.878  gana/empata/pierde celdas 9/9/5  cpu gana/pierde 16/7
+   k4: celdas gm 0.904  cpu gm 0.873  gana/empata/pierde celdas 10/9/4  cpu gana/pierde 14/9
+   k4/k3: celdas gm 0.981 cpu gm 0.994
+  instancias con timeout en las 4: 1; con timeout en alguna: 1
+   gap medio por variante: {'art_raa_k0': 3.622, 'art_raa_k2': 3.576, 'art_raa_k3': 3.837, 'art_raa_k4': 3.276}
+   mejor cota inferior (k4 > k3): 1 k4<k3: 0 k3>k0: 1
+
+== CPU nueva sesion / sesion anterior (misma instancia, ambas SUCCESS; k4 de reales/synq venia del 28-10):
+familia   variante  n  cpu_nuevo_sobre_viejo_gm  cpu_nuevo_s  cpu_viejo_s
+ reales art_raa_k0  6                     0.869        176.0        192.0
+ reales art_raa_k2  6                     0.827        170.0        194.0
+ reales art_raa_k3  6                     0.800        169.0        190.0
+ reales art_raa_k4  6                     1.015        169.0        121.0
+   synq art_raa_k0 58                     0.658       5814.0       8441.0
+   synq art_raa_k2 60                     0.595       6736.0      10620.0
+   synq art_raa_k3 60                     0.580       5090.0       8861.0
+   synq art_raa_k4 61                     0.877       5396.0       8198.0
+   synl art_raa_k0 24                     0.704        689.0       1117.0
+   synl art_raa_k2 24                     0.561        634.0       1124.0
+   synl art_raa_k3 24                     0.644        552.0       1038.0
+   synl art_raa_k4 24                     0.559        510.0       1061.0
+   synt art_raa_k0 22                     0.654       2312.0       3368.0
+   synt art_raa_k2 22                     0.576       2320.0       3675.0
+   synt art_raa_k3 23                     0.552       2668.0       4576.0
+   synt art_raa_k4 23                     0.562       2379.0       4782.0
+
+== tiempos nivel 1 (us/evaluacion, media por n): nuevo vs 28-10
+  af2_k0  nuevo [5.4, 13.2, 22.9, 30.6]  viejo [7.9, 16.5, 37.8, 51.0]  cociente [0.68, 0.8, 0.61, 0.6]
+  raa_k0  nuevo [4.8, 12.0, 21.6, 29.5]  viejo [7.0, 14.9, 33.4, 44.6]  cociente [0.69, 0.81, 0.65, 0.66]
+  raa_k2  nuevo [5.9, 13.9, 24.7, 34.6]  viejo [10.1, 23.6, 57.0, 79.4]  cociente [0.58, 0.59, 0.43, 0.44]
+  raa_k3  nuevo [5.1, 12.4, 23.9, 33.0]  viejo [8.9, 21.7, 55.5, 80.2]  cociente [0.57, 0.57, 0.43, 0.41]
+  raa_k4  nuevo [5.3, 13.3, 25.2, 36.6]  viejo [9.7, 24.0, 69.9, 124.2]  cociente [0.55, 0.55, 0.36, 0.29]
+  aa_k0   nuevo [15.9, 39.5, 62.3, 81.0]  viejo [20.2, 44.9, 96.9, 125.5]  cociente [0.79, 0.88, 0.64, 0.65]
+  aa_k3   nuevo [15.0, 36.1, 63.0, 84.2]  viejo [22.2, 51.9, 113.0, 152.6]  cociente [0.68, 0.7, 0.56, 0.55]
+  relativo a raa_k0 nuevo:
+ n         3     5     8     10
+raa_k2  1.11  1.14  1.17  1.18
+raa_k3  1.04  1.02  1.03  1.04
+raa_k4  1.06  1.04  1.05  1.06
+  relativo a raa_k0 viejo:
+ n         3     5     8     10
+raa_k2  1.46  1.46  1.47  1.49
+raa_k3  1.25  1.23  1.31  1.31
+raa_k4  1.23  1.28  1.42  1.49

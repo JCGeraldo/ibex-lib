@@ -1,0 +1,2 @@
+inicio 2026-10-29T09:40:10-03:00 subboxes=2 samples=200 maquina en reposo, un solo proceso, binario con parche 0009
+fin 2026-10-29T09:40:17-03:00 rc=0

@@ -1,0 +1,46 @@
+corridas: 268; resueltas por ambos binarios: 268; celdas distintas: 0
+estados distintos: ninguno
+
+CPU 0009 / CPU pre0009, media geometrica por variante (misma instancia, mismas celdas):
+             n     gm  mediana    min    max    cpu_pre    cpu_new
+variante                                                          
+art_raa_k0  67  0.993    0.983  0.716  1.612  10111.776  10361.707
+art_raa_k2  67  0.954    0.931  0.612  1.507   9247.817   8413.162
+art_raa_k3  67  0.916    0.914  0.469  1.647   7584.088   6609.609
+art_raa_k4  67  0.896    0.902  0.607  1.714   7328.996   5713.975
+
+por variante y n (synq):
+n            3.0    5.0    8.0    10.0
+variante                              
+art_raa_k0  0.983  0.970  0.988  1.132
+art_raa_k2  0.978  0.961  0.884  0.992
+art_raa_k3  0.945  0.936  0.820  1.000
+art_raa_k4  0.987  0.908  0.748  0.865
+
+reales:
+variante      art_raa_k0  art_raa_k2  art_raa_k3  art_raa_k4
+instancia                                                   
+cmp/ex6_2_10       1.011       0.964       0.973       0.972
+cmp/ex6_2_11       0.983       0.816       0.948       0.988
+cmp/ex6_2_12       0.944       0.955       0.804       1.064
+cmp/ex6_2_14       1.455       1.282       1.089       1.189
+cmp/ex6_2_8        1.002       0.960       0.955       0.985
+cmp/ex6_2_9        0.912       1.151       0.955       0.992
+
+pre0009: k/k0 sobre 67 instancias resueltas por ambos y las 4:
+  k2: celdas 0.794  cpu 0.879
+  k3: celdas 0.670  cpu 0.765
+  k4: celdas 0.614  cpu 0.725
+
+0009: k/k0 sobre 67 instancias resueltas por ambos y las 4:
+  k2: celdas 0.794  cpu 0.844
+  k3: celdas 0.670  cpu 0.706
+  k4: celdas 0.614  cpu 0.655
+
+solo corridas con CPU pre >= 10 s (86):
+            size     gm  median
+variante                       
+art_raa_k0    21  1.017   0.995
+art_raa_k2    22  0.912   0.892
+art_raa_k3    22  0.870   0.826
+art_raa_k4    21  0.791   0.755

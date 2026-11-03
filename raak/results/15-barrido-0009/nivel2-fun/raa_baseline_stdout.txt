@@ -1,0 +1,5 @@
+instancias: 29 | cambian: 19 | con bloques k3: 31
+RAA k=2 (binomial): gm celdas 0.987 (6/19/4), identicas 10/29; gm cpu 0.988
+RAA k=3 (k-nomial): gm celdas 0.931 (10/16/3), identicas 10/29; gm cpu 0.895
+RAA k=4 (k-nomial): gm celdas 0.917 (10/17/2), identicas 10/29; gm cpu 0.890
+salida: ibex-lib/raak/results/15-barrido-0009/nivel2-fun

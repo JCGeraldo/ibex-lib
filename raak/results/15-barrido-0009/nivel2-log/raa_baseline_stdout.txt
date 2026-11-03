@@ -1,0 +1,5 @@
+instancias: 30 | cambian: 20 | con bloques k3: 32
+RAA k=2 (binomial): gm celdas 0.930 (11/17/1), identicas 11/30; gm cpu 0.902
+RAA k=3 (k-nomial): gm celdas 0.882 (12/15/2), identicas 10/30; gm cpu 0.934
+RAA k=4 (k-nomial): gm celdas 0.866 (12/15/2), identicas 10/30; gm cpu 0.869
+salida: ibex-lib/raak/results/15-barrido-0009/nivel2-log

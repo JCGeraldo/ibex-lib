@@ -1,0 +1,2 @@
+instancia,n,dens,diag,fuerza,estado_raa_k0,f_lb_raa_k0,f_ub_raa_k0,celdas_raa_k0,estado_raa_k2,f_lb_raa_k2,f_ub_raa_k2,celdas_raa_k2,estado_raa_k3,f_lb_raa_k3,f_ub_raa_k3,celdas_raa_k3,estado_raa_k4,f_lb_raa_k4,f_ub_raa_k4,celdas_raa_k4,brecha_raa_k0,brecha_raa_k2,brecha_raa_k3,brecha_raa_k4
+synt_n10_d50_s3,10,0.5,-,-,TIME_OUT,-8.91495181462,-5.2933924903,284688.0,TIME_OUT,-8.65206975291,-5.07577625833,285256.0,TIME_OUT,-8.91232212956,-5.07577777339,283366.0,TIME_OUT,-8.65648206049,-5.38035662111,282708.0,3.5346,3.2717,3.532,3.2761
