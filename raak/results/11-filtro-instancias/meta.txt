@@ -1,0 +1,4 @@
+sets=coconut easy medium hard others subboxes=2 samples=200 trig=auto instancias=236
+ibex-affine: c219009 + parches 0001-0008; ibex-lib: 67d8565d (raak-experimentos)
+inicio: 2026-10-20T19:02:26-03:00
+fin: 2026-10-20T19:04:34-03:00 exit=0

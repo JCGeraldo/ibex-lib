@@ -1,0 +1,5 @@
+n,instancias,resueltas_por_las_3,resueltas_raa_k0,resueltas_raa_k2,resueltas_raa_k3,celdas_gm_raa_k2,gana_raa_k2,pierde_raa_k2,cpu_gm_raa_k2,celdas_gm_raa_k3,gana_raa_k3,pierde_raa_k3,cpu_gm_raa_k3
+3,18,18,18,18,18,0.861,10,1,1.002,0.819,12,1,0.95
+5,24,24,24,24,24,0.744,23,1,0.837,0.594,24,0,0.694
+8,18,14,14,15,15,0.734,14,0,0.88,0.562,14,0,0.723
+10,18,2,2,3,3,0.771,2,0,0.871,0.578,2,0,0.734

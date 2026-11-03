@@ -1,0 +1,11 @@
+{
+ "n_instancias_con_algun_timeout":20.0,
+ "las_3_agotan":18.0,
+ "k3_mejor_cota_que_k0":16.0,
+ "k2_mejor_cota_que_k0":17.0,
+ "brecha_gm_k3_vs_k0":0.871,
+ "brecha_gm_k2_vs_k0":0.94,
+ "celdas_gm_k3_vs_k0_en_1800s":0.802,
+ "resuelta_solo_con_knomial":2.0,
+ "resuelta_solo_con_base":0.0
+}
