@@ -1,0 +1,5 @@
+sets=benchs-unconstrainedoptim unsolved blowup benchs-minlp subboxes=2 samples=200 trig=auto instancias=270
+ibex-affine: c219009 + parches 0001-0008; ibex-lib: raak-experimentos
+inicio: 2026-10-29T03:04:32-03:00
+fin: 2026-10-29T03:07:57-03:00 exit=0
+NIVEL1_RESTO_LISTO
