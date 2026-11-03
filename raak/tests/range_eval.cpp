@@ -28,11 +28,16 @@ using namespace ibex;
 static const double BIG = 1e4;
 
 struct Variant { const char* name; const char* arith; int k; bool aa; AffineMode mode; };
-static const Variant VARS[6] = {
+static const Variant VARS[10] = {
 	{"af2_k0", "af2", 0, false, AFFINE_AF2}, {"af2_k3", "af2", 3, false, AFFINE_AF2},
 	{"raa_k0", "raa", 0, false, AFFINE_RAA}, {"raa_k3", "raa", 3, false, AFFINE_RAA},
 	{"aa_k0",  "aa",  0, true,  AFFINE_AF2}, {"aa_k3",  "aa",  3, true,  AFFINE_AF2},
+	// [raak local] 28-10: k=2 (binomial, paper [B]) y k=4 sobre RAA, para el experimento de k
+	{"raa_k2", "raa", 2, false, AFFINE_RAA}, {"raa_k4", "raa", 4, false, AFFINE_RAA},
+	// [raak local] 02-11: k=5 y k=6 para medir hasta donde llega el tamano de clique disponible (punto 2, to-do fin de octubre)
+	{"raa_k5", "raa", 5, false, AFFINE_RAA}, {"raa_k6", "raa", 6, false, AFFINE_RAA},
 };
+static const int NVARS = 10;
 
 struct AffRes { bool active, lin; int nc; double mid, rad; vector<double> a; };
 
@@ -84,7 +89,7 @@ int main(int argc, char** argv) {
 	mt19937_64 rng(seed);
 	uniform_real_distribution<double> U(0.0, 1.0);
 
-	printf("instance,set,func,box_id,scale,variant,arith,k,n,clipped,active,w_itv,w_sample,w_aff,nl_err,ratio_aff,ratio_itv,viol,k_used,us,viol_itv,max_exc,lin,nc\n");
+	printf("instance,set,func,box_id,scale,variant,arith,k,n,clipped,active,w_itv,w_sample,w_aff,nl_err,ratio_aff,ratio_itv,viol,k_used,us,viol_itv,max_exc,lin,nc,b2,b3,b4,b5,b6,b7p\n");
 	long rows = 0, skipped_vec = 0, total_viol = 0, inactive = 0;
 
 	for (size_t fi = 0; fi < files.size(); fi++) {
@@ -156,14 +161,16 @@ int main(int argc, char** argv) {
 				const double w_sample = hull.diam();
 				const double w_itv = iv.diam();
 
-				for (int vi = 0; vi < 6; vi++) {
+				for (int vi = 0; vi < NVARS; vi++) {
 					const Variant& V = VARS[vi];
 					affine_mode() = V.mode; knomial_max_k() = V.k;
 					const long ku0 = k_used_total();
+					long bs0[6]; for (int q = 0; q < 6; q++) bs0[q] = knomial_stats().blocks_by_size[q];
 					auto t0 = chrono::steady_clock::now();
 					AffRes r = V.aa ? eval_aff<AF_fAFFullI>(ev3, B) : eval_aff<AF_fAF2>(ev2, B);
 					const double us = chrono::duration<double, micro>(chrono::steady_clock::now() - t0).count();
 					const long ku = k_used_total() - ku0;
+					long bs[6]; for (int q = 0; q < 6; q++) bs[q] = knomial_stats().blocks_by_size[q] - bs0[q];
 					affine_mode() = AFFINE_AF2; knomial_max_k() = 0;
 
 					// viol: puntos fuera de la envolvente puntual mid + sum a_i eps_i +- nl (la comprobacion fuerte);
@@ -183,11 +190,11 @@ int main(int argc, char** argv) {
 						}
 					} else { inactive++; w_aff = INFINITY; nl = INFINITY; }
 					total_viol += viol; rows++;
-					printf("%s,%s,%s,%zu,%g,%s,%s,%d,%d,%d,%d,%.10g,%.10g,%.10g,%.10g,%.6g,%.6g,%ld,%ld,%.1f,%ld,%.3g,%d,%d\n",
+					printf("%s,%s,%s,%zu,%g,%s,%s,%d,%d,%d,%d,%.10g,%.10g,%.10g,%.10g,%.6g,%.6g,%ld,%ld,%.1f,%ld,%.3g,%d,%d,%ld,%ld,%ld,%ld,%ld,%ld\n",
 					       inst.c_str(), set.c_str(), funcs[k].first.c_str(), bi, boxes[bi].second, V.name, V.arith, V.k, n, clipped,
 					       r.active ? 1 : 0, w_itv, w_sample, w_aff, nl,
 					       (w_sample > 1e-15 && r.active) ? w_aff / w_sample : -1.0,
-					       (w_sample > 1e-15) ? w_itv / w_sample : -1.0, viol, ku, us, viol_itv, max_exc, r.lin ? 1 : 0, r.nc);
+					       (w_sample > 1e-15) ? w_itv / w_sample : -1.0, viol, ku, us, viol_itv, max_exc, r.lin ? 1 : 0, r.nc, bs[0], bs[1], bs[2], bs[3], bs[4], bs[5]);
 				}
 			}
 		}

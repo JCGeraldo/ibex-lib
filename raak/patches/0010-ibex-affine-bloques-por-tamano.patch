@@ -1,0 +1,32 @@
+Parche 0010 (ibex-affine, sobre c219009c + 0001 + 0002 + 0004..0009) -- diagnostico: bloques por tamano de clique
+
+Que cambia
+  - ibex_KNomial.h: KNomialStats gana blocks_by_size[6] (bloques extraidos con 2, 3, 4, 5, 6 y 7+ simbolos),
+    actualizado en knomial_quad_bound contando los coeficientes no nulos de u en cada bloque.
+  No cambia ninguna cota ni ningun resultado: solo contadores. tests/range_eval.cpp (raak) lo usa para las
+  columnas b2..b7p y anade las variantes raa_k5 y raa_k6 (punto 2 del to-do de fin de octubre: mejor k segun densidad).
+
+diff --git a/src/arithmetic/ibex_KNomial.h b/src/arithmetic/ibex_KNomial.h
+index c3d04b9..bc5a9f5 100644
+--- a/src/arithmetic/ibex_KNomial.h
++++ b/src/arithmetic/ibex_KNomial.h
+@@ -418,6 +418,7 @@ struct KNomialStats {
+ 	double cross_corner;     // suma del termino de cruces usado (corner o fAF2) en los candidatos
+ 	long aa_products;        // productos AF_fAFFullI de formas compuestas con k>=2 (parche 0006)
+ 	long aa_used;            // productos AF_fAFFullI en los que la cota k-nomial reemplazo a rad(x)*rad(y)
++	long blocks_by_size[6];  // [raak local, 0010] bloques extraidos por tamano de clique: indice 0 = 2 simbolos, ..., 5 = 7 o mas
+ };
+ 
+ inline KNomialStats& knomial_stats() {
+@@ -511,6 +512,11 @@ inline int knomial_quad_bound(const std::vector<double>& x_all, const std::vecto
+ 	st.calls++;
+ 	if (!blocks.empty()) st.calls_with_blocks++;
+ 	st.blocks += (long) blocks.size();
++	for (size_t b = 0; b < blocks.size(); b++) {
++		int sz = 0;
++		for (int i = 0; i < n; i++) if (blocks[b].u[i] != 0.0) sz++;
++		st.blocks_by_size[std::min(5, std::max(0, sz - 2))]++;
++	}
+ 	st.rad_faf2 += Sx * Sy - 0.5 * Sxy;
+ 	st.rad_used += rad;
+ 	return (int) blocks.size();
