@@ -4,8 +4,10 @@ Pregunta del profesor: ¿cómo elegir k según la densidad? Respuesta corta: **k
 producto, y ese tamaño lo fija el número de símbolos compartidos con diagonal del mismo signo, no la densidad de Q.** En synq
 los factores (A_k·x) y (M_k·x) son densos (ρ es la densidad de Q = AᵀM), así que el clique disponible crece con n (medio 2.4, 2.9,
 4.0, 4.9 para n = 3, 5, 8, 10) y ρ solo entra por las restricciones, cuyos factores sí se generan con densidad max(ρ, 0.5).
-Con el parche 0009 el costo de k es despreciable, así que la regla práctica es "k tan grande como el material": k=3 basta para
-n=3, k=4 es el mejor en todo lo demás, y para n ≥ 8 el nivel 2 del 02-11 confirma que k=5 y k=6 siguen ganando (celdas 0.86 y 0.81 de k=4, CPU 0.87 y 0.86; ver `nivel2-k56/`).
+Con el parche 0009 el costo de k es despreciable hasta k=6, así que la regla práctica es "k tan grande como el material": en toda
+familia con material el mejor k fue el mayor probado, y la ganancia se detiene donde se acaba el material (n=3 satura en k=3, n=5 en
+k=5, reales y familias con funciones en k=3 o 4; synq n ≥ 8 sigue ganando hasta k=6: celdas 0.86 y 0.81 de k=4 con k=5 y k=6,
+CPU 0.87 y 0.86; ver `nivel2-k56/`). k=n (sin tope) no se recomienda sin cambiar la búsqueda: ver la sección de estrés al final.
 
 Tres fuentes cruzadas:
 1. `analysis/cliques_sinteticas.py` (`cliques_synq.csv`): clique máximo por producto leído del .bch (mayor clase de signo de a_i·m_i).
@@ -39,7 +41,7 @@ Tres fuentes cruzadas:
 
 k no se elige por la densidad de la forma cuadrática sino por el material de cada producto: el k efectivo es min(k, c) donde c es el
 tamaño de la mayor clase de signo entre los símbolos compartidos. Como la búsqueda ya se detiene sola cuando no hay cliques
-mayores, fijar k alto (4, o más para productos con muchos símbolos compartidos) no penaliza: con el parche 0009 el costo por
+mayores, fijar k alto no penaliza mientras el material sea moderado (k=6 cubre todo lo observado): con el parche 0009 el costo por
 evaluación de k=4 es 1.04 a 1.06 veces el de k=0, y en el solver k=6 cuesta por evaluación 1.06 veces k=4 (misma sesión).
 
 ## Nivel 2 con k = 4, 5, 6 (`nivel2-k56/`, 02-11-2026, 20:25 a 23:32)
@@ -65,3 +67,46 @@ Misma sesión y mismo binario (lib 0009 + 0010) para las tres variantes: synq n 
 
 Conclusión para el punto 2: en synq n ≥ 8 el mejor k en celdas y en CPU es el mayor probado, k=6, y k=5 queda en medio. Junto con
 el nivel 1 (n=3 satura en 3, n=5 en 5) la regla queda confirmada: k alto, el material de cada producto decide.
+
+## ¿k=n? Estrés con material grande y parche 0011 (`estres-k-grande/`, 03-11-2026)
+
+Pregunta: si el mejor k es siempre el mayor probado, ¿se recomienda k=n (sin tope)? Como Q solo tiene los n símbolos de las
+variables, k=n equivale a no limitar el clique. El problema no es la cota sino la búsqueda: la DFS de `knomial_rewrite` era
+exhaustiva y visitaba cada clique en todas sus permutaciones, (c−2)!/(c−k)! secuencias por arista base para un producto con c
+símbolos compartidos del mismo signo. Para medirlo se generaron synq `pos` con ρ=0.9 y n = 12, 15, 20, 30 (una semilla, mismo
+generador con `n in (12, 15, 20, 30)`), cuyo material por producto (clique disponible medio / máximo, `cliques.csv`) va de 7 / 9 a
+16 / 22, y se corrió el solver 60 s de CPU por configuración con corte duro a 300 s de reloj (`run_0010.sh`, `run_0011.sh`,
+`corridas.csv`, tabla de `analysis/estres_k_grande.py`). La medida es el costo por evaluación afín (CPU / evaluados); las celdas
+son las alcanzadas a los 60 s y solo indican cuánto avanzó cada corrida, no la calidad de la cota.
+
+| n | material (medio / máx) | binario | k=0 | k=6 | k=8 | k=n |
+|---|---|---|---|---|---|---|
+| 12 | 7.1 / 9 | 0010 (exhaustiva) | 96 µs (19158 celdas) | 193 µs (8644 celdas) | 645 µs (2842 celdas) | 1004 µs (1806 celdas) |
+| 12 | 7.1 / 9 | 0011 sin presupuesto | 107 µs (17362 celdas) | 125 µs (13954 celdas) | 133 µs (13186 celdas) | 131 µs (13168 celdas) |
+| 12 | 7.1 / 9 | 0011, presupuesto 2000 | 107 µs (17362 celdas) | 126 µs (13790 celdas) | 132 µs (13254 celdas) | 132 µs (13074 celdas) |
+| 15 | 8.8 / 12 | 0010 (exhaustiva) | 137 µs (10262 celdas) | 548 µs (2704 celdas) | 9977 µs (138 celdas) | 218029 µs (6 celdas) |
+| 15 | 8.8 / 12 | 0011 sin presupuesto | 153 µs (9310 celdas) | 191 µs (7550 celdas) | 214 µs (6698 celdas) | 210 µs (7060 celdas) |
+| 15 | 8.8 / 12 | 0011, presupuesto 2000 | 153 µs (9310 celdas) | 190 µs (7570 celdas) | 216 µs (6636 celdas) | 210 µs (7062 celdas) |
+| 20 | 10.9 / 16 | 0010 (exhaustiva) | 181 µs (6316 celdas) | 1846 µs (514 celdas) | 67821 µs (18 celdas) | matada a 300 s |
+| 20 | 10.9 / 16 | 0011 sin presupuesto | 192 µs (5946 celdas) | 325 µs (3612 celdas) | 534 µs (1834 celdas) | 718 µs (1300 celdas) |
+| 20 | 10.9 / 16 | 0011, presupuesto 2000 | 192 µs (5946 celdas) | 319 µs (3786 celdas) | 427 µs (2372 celdas) | 464 µs (2000 celdas) |
+| 30 | 15.8 / 22 | 0010 (exhaustiva) | 322 µs (2050 celdas) | 13985 µs (46 celdas) | 174 eval. en 265 s | matada a 300 s |
+| 30 | 15.8 / 22 | 0011 sin presupuesto | 343 µs (1930 celdas) | 1284 µs (590 celdas) | 3881 µs (180 celdas) | 22910 µs (28 celdas) |
+| 30 | 15.8 / 22 | 0011, presupuesto 2000 | 343 µs (1930 celdas) | 762 µs (952 celdas) | 721 µs (1004 celdas) | 1077 µs (732 celdas) |
+
+- Con la búsqueda exhaustiva (binario 0010) el costo explota con el material incluso con k=6: n=15 k=8 cuesta 74 veces k=0 y
+  k=15, 1600 veces (una evaluación cada 0.2 s); n=20 k=20 y n=30 k=30 no completan ni una iteración del solver en 300 s.
+- **Parche 0011** (`patches/0011-ibex-affine-cliques-sin-repetir-presupuesto.patch`): (a) cada clique se enumera una sola vez,
+  conservando la secuencia descendente que era la primera en alcanzarlo, con lo que benefit y orden de descubrimiento son los de
+  antes (hash de `knomial_diff_dump` 4e35cac9e4b800a4 y celdas iguales en synq n=8 con k=4 y k=6: 2404, 2140, 11188, 10330); (b)
+  presupuesto de nodos por producto, `RAAK_NODE_BUDGET` (0 = sin límite), que al agotarse deja de extender la búsqueda pero devuelve un
+  clique balanceado válido.
+- Solo con (a), k=n cuesta 1.2 veces k=0 en n=12, 1.4 en n=15, 3.7 en n=20 y 67 en n=30: el número de cliques distintos sigue siendo
+  exponencial en el material. Con presupuesto 2000, k=n queda en 1.2, 1.4, 2.4 y 3.1 veces k=0, y k=6 entre 1.2 y 2.2.
+- El presupuesto no interviene en n ≤ 15 (mismas cifras con y sin él) y por tanto no toca ninguno de los experimentos de los
+  informes 1 a 3, cuyo material máximo es 8.
+
+Respuesta: k=n es defendible solo con el parche 0011 y un presupuesto de nodos; sin él, un producto de dos sumas largas (12 o más
+variables compartidas del mismo signo) deja una evaluación en segundos o minutos. La recomendación práctica sigue siendo k alto
+(6) por defecto, y k=n con presupuesto cuando se quiera presentar "sin tope"; en ambos casos el k efectivo lo fija el material.
+Queda por medir en el nivel 2 si k=n con presupuesto gana celdas frente a k=6 en instancias con material 10 a 20.

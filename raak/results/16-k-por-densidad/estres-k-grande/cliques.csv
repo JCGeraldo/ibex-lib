@@ -1,0 +1,5 @@
+instance,n,densidad,diagonal,productos,clique_medio,clique_max,frac_ge2,frac_ge3,frac_ge4,frac_ge5,simbolos_mismo_signo_medio
+synq_n12_d90_pos_normal_s1,12,0.9,pos,22,7.09,9,1.0,1.0,1.0,1.0,7.09
+synq_n15_d90_pos_normal_s1,15,0.9,pos,27,8.81,12,1.0,1.0,1.0,1.0,8.81
+synq_n20_d90_pos_normal_s1,20,0.9,pos,38,10.89,16,1.0,1.0,1.0,1.0,10.89
+synq_n30_d90_pos_normal_s1,30,0.9,pos,58,15.79,22,1.0,1.0,1.0,1.0,15.79

@@ -1,0 +1,87 @@
+Parche 0011 (ibex-affine, sobre c219009c + 0001 + 0002 + 0004..0010) -- busqueda de cliques: cada clique una vez y presupuesto de nodos
+
+Que cambia
+  - ibex_KNomial.h, knomial_rewrite: la DFS que enumera los cliques balanceados de hasta k simbolos visitaba cada
+    conjunto en todas sus permutaciones ((c-2)!/(c-k)! secuencias por arista base para un producto con c simbolos
+    compartidos del mismo signo). Ahora solo extiende con simbolos menores que el ultimo agregado: como la DFS
+    saca primero el candidato mayor, la secuencia descendente era la primera con la que se alcanzaba cada conjunto,
+    asi que los valores de benefit y el orden de descubrimiento son exactamente los de antes y solo desaparecen
+    las repeticiones. Resultados identicos: hash de knomial_diff_dump 4e35cac9e4b800a4 y celdas iguales en el solver.
+  - knomial_node_budget(): presupuesto de nodos de la DFS por producto, por hilo, leido una vez de la variable de
+    entorno RAAK_NODE_BUDGET (0 o ausente = sin limite, comportamiento anterior). Agotado el presupuesto, los nodos
+    pendientes se evaluan pero no se extienden; el clique devuelto sigue siendo balanceado y valido.
+  Motivo: con k=n (sin tope) o con k=6 en productos con mas de 10 simbolos compartidos del mismo signo, la busqueda
+  exhaustiva dominaba el costo por evaluacion (synq n=15: k=8 costaba 74 veces k=0 y k=15, 1600 veces).
+
+diff --git a/src/arithmetic/ibex_KNomial.h b/src/arithmetic/ibex_KNomial.h
+index bc5a9f5..0bac785 100644
+--- a/src/arithmetic/ibex_KNomial.h
++++ b/src/arithmetic/ibex_KNomial.h
+@@ -16,6 +16,7 @@
+ 
+ #include <algorithm>
+ #include <cmath>
++#include <cstdlib>
+ #include <list>
+ #include <tuple>
+ #include <utility>
+@@ -58,6 +59,22 @@ inline AffineMode& affine_mode() {
+ 	return m;
+ }
+ 
++/**
++ * Parche 0011: presupuesto de nodos de la busqueda de cliques por producto (0 = sin limite).
++ * Se lee una vez por hilo de la variable de entorno RAAK_NODE_BUDGET. Cuando se agota, los
++ * nodos pendientes se evaluan pero no se extienden, asi que el resultado sigue siendo un clique
++ * balanceado valido (solo deja de ser el optimo entre los de hasta k simbolos).
++ */
++inline long& knomial_node_budget() {
++	static thread_local long b = -1;
++	if (b < 0) {
++		const char* e = std::getenv("RAAK_NODE_BUDGET");
++		b = e ? std::atol(e) : 0;
++		if (b < 0) b = 0;
++	}
++	return b;
++}
++
+ /**
+  * [raak local] Corner test de la Ec. (16) de [A] en coordenadas de ruido (parche 0005).
+  *
+@@ -268,6 +285,8 @@ inline int knomial_rewrite(std::vector<double>& Q, const std::vector<double>& w,
+ 	int n_infeasible = 0;
+ 	int guard = 0;
+ 	const int max_iter = 200 * std::max(1, n * n);
++	long dfs_nodes = 0;
++	const long budget = knomial_node_budget();
+ 	while (!heap.empty() && guard < max_iter) {
+ 		guard++;
+ 		HeapItem top = heap.front();
+@@ -309,6 +328,7 @@ inline int knomial_rewrite(std::vector<double>& Q, const std::vector<double>& w,
+ 		bool is_root = true;
+ 		while (sp > 0) {
+ 			std::swap(cur, stack[--sp]);
++			dfs_nodes++;
+ 			if (!is_root) {
+ 				ParamBenefit pc = benefit(&cur.clique[0], cur.clique.size(), Q, C, w, n);
+ 				if (pc.second > best_de && pc.first > 1e-12) {
+@@ -318,9 +338,18 @@ inline int knomial_rewrite(std::vector<double>& Q, const std::vector<double>& w,
+ 				}
+ 			}
+ 			is_root = false;
+-			if ((int) cur.clique.size() < max_k) {
++			// Parche 0011: cada clique se enumera una sola vez. La DFS saca primero el candidato
++			// mayor, asi que la primera secuencia con la que se alcanzaba cada conjunto era la
++			// descendente; se conserva esa (v < ultimo agregado) y se descartan las permutaciones,
++			// con lo que los valores de benefit y el orden de descubrimiento son los de antes.
++			// Con presupuesto agotado no se extiende ningun nodo mas.
++			bool extend = (int) cur.clique.size() < max_k
++			              && (budget == 0 || dfs_nodes < budget);
++			if (extend) {
++				int last = cur.clique.size() > 2 ? cur.clique.back() : n;
+ 				for (size_t ci = 0; ci < cur.cands.size(); ci++) {
+ 					int v = cur.cands[ci];
++					if (v >= last) continue;
+ 					double s_v = cur.sg[0] * sign1(r * Q[bi * n + v]);
+ 					bool ok = true;
+ 					for (size_t t = 1; t < cur.clique.size(); t++) {   // t = 0 es bi
