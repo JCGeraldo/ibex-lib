@@ -1,0 +1,2 @@
+inicio 2026-11-02T19:58:59-03:00 subboxes=2 samples=200 trig=auto, variantes +raa_k5 +raa_k6, columnas b2..b7p (parche 0010)
+fin 2026-11-02T19:59:15-03:00 rc=0

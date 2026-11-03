@@ -1,0 +1,80 @@
+Barrido nivel 2 k=4,5,6 sobre synq n=8,10 (36 instancias x 3 variantes), misma sesion, 2026-11-02 20:25-23:32
+
+k5/k4  todas(36): celdas gm=0.911 med=0.946  cpu gm=0.925 med=0.979 | ambas resueltas(20): celdas gm=0.859 cpu gm=0.874 | timeouts k5=15
+k6/k4  todas(36): celdas gm=0.853 med=0.881  cpu gm=0.915 med=1.000 | ambas resueltas(20): celdas gm=0.805 cpu gm=0.857 | timeouts k6=15
+timeouts k4=16
+
+Por configuracion (n, densidad, signos): media geometrica de celdas y CPU respecto a k4, sobre las 3 semillas; TO = timeouts k4/k5/k6
+config                c5/c4  t5/t4  c6/c4  t6/t4       TO bloq/prod k4     k5     k6
+n= 8 d=20 pos     0.810  0.829  0.753  0.779    1/0/0         1.79   1.60   1.55
+n= 8 d=20 posneg  0.944  0.958  0.951  0.998    0/0/0         1.83   1.66   1.66
+n= 8 d=50 pos     0.895  0.918  0.864  0.907    2/2/2         1.61   1.47   1.42
+n= 8 d=50 posneg  0.897  0.904  0.838  0.858    0/0/0         1.80   1.65   1.62
+n= 8 d=90 pos     0.771  0.796  0.714  0.737    0/0/0         2.06   1.91   1.89
+n= 8 d=90 posneg  0.938  0.893  0.883  0.891    0/0/0         2.04   1.94   1.91
+n=10 d=20 pos     0.949  1.000  0.855  1.000    3/3/3         2.19   1.92   1.73
+n=10 d=20 posneg  0.992  0.991  0.945  1.007    2/2/2         2.05   1.74   1.58
+n=10 d=50 pos     0.958  1.000  0.870  1.000    3/3/3         1.97   1.82   1.65
+n=10 d=50 posneg  0.887  0.902  0.828  0.914    1/1/1         2.15   1.88   1.77
+n=10 d=90 pos     1.001  1.000  0.953  1.000    3/3/3         2.54   2.13   2.00
+n=10 d=90 posneg  0.919  0.937  0.813  0.935    1/1/1         2.60   2.27   2.06
+
+Instancias con timeout en las tres variantes: brecha ub-lb a los 1800 s (menor es mejor)
+  synq_n08_d50_pos_normal_s2         k4: gap=1.835 celdas=1020714  k5: gap=1.719 celdas=1011146  k6: gap=1.666 celdas=1005720
+  synq_n08_d50_pos_normal_s3         k4: gap=4.812 celdas=992332  k5: gap=3.742 celdas=984936  k6: gap=3.698 celdas=959340
+  synq_n10_d20_pos_normal_s1         k4: gap=5.48 celdas=377746  k5: gap=4.768 celdas=351912  k6: gap=4.405 celdas=307108
+  synq_n10_d20_pos_normal_s2         k4: gap=4.484 celdas=375538  k5: gap=3.958 celdas=353398  k6: gap=3.499 celdas=316092
+  synq_n10_d20_pos_normal_s3         k4: gap=17.76 celdas=414398  k5: gap=17.72 celdas=403706  k6: gap=17.19 celdas=378592
+  synq_n10_d20_posneg_normal_s1      k4: gap=16.8 celdas=410118  k5: gap=15.91 celdas=431538  k6: gap=16.1 celdas=389864
+  synq_n10_d20_posneg_normal_s3      k4: gap=13.2 celdas=422100  k5: gap=12.34 celdas=407500  k6: gap=10.63 celdas=400250
+  synq_n10_d50_pos_normal_s1         k4: gap=14.84 celdas=440738  k5: gap=14.16 celdas=420200  k6: gap=13.5 celdas=377542
+  synq_n10_d50_pos_normal_s2         k4: gap=33.56 celdas=475592  k5: gap=32.56 celdas=452434  k6: gap=31.91 celdas=397474
+  synq_n10_d50_pos_normal_s3         k4: gap=7.501 celdas=409690  k5: gap=6.663 celdas=396664  k6: gap=6.321 celdas=376838
+  synq_n10_d50_posneg_normal_s2      k4: gap=19.12 celdas=393604  k5: gap=17.64 celdas=391540  k6: gap=17.2 celdas=372140
+  synq_n10_d90_pos_normal_s1         k4: gap=10.53 celdas=356220  k5: gap=10.28 celdas=327082  k6: gap=9.792 celdas=293954
+  synq_n10_d90_pos_normal_s2         k4: gap=17.67 celdas=353252  k5: gap=15.05 celdas=341260  k6: gap=13.75 celdas=334924
+  synq_n10_d90_pos_normal_s3         k4: gap=27.91 celdas=383206  k5: gap=25.5 celdas=432736  k6: gap=24.97 celdas=424548
+  synq_n10_d90_posneg_normal_s1      k4: gap=19.93 celdas=421434  k5: gap=17.15 celdas=459282  k6: gap=16.41 celdas=416650
+
+Por instancia: celdas k4, cpu k4, y cocientes k5/k4, k6/k4 (celdas, cpu)
+  synq_n08_d20_pos_normal_s1         k4    70898   102.7  | k5 0.753 0.765  | k6 0.696 0.720 
+  synq_n08_d20_pos_normal_s2         k4   142994   244.5  | k5 0.795 0.826  | k6 0.703 0.745 
+  synq_n08_d20_pos_normal_s3         k4  1036456  1800.0* | k5 0.887 0.902  | k6 0.872 0.883 
+  synq_n08_d20_posneg_normal_s1      k4    82088   125.9  | k5 0.939 0.986  | k6 0.926 0.992 
+  synq_n08_d20_posneg_normal_s2      k4   103124   173.7  | k5 0.929 0.919  | k6 0.964 1.049 
+  synq_n08_d20_posneg_normal_s3      k4    85526   155.4  | k5 0.964 0.970  | k6 0.964 0.956 
+  synq_n08_d50_pos_normal_s1         k4   118252   223.7  | k5 0.729 0.774  | k6 0.677 0.747 
+  synq_n08_d50_pos_normal_s2         k4  1020714  1800.0* | k5 0.991 1.000* | k6 0.985 1.000*
+  synq_n08_d50_pos_normal_s3         k4   992332  1800.0* | k5 0.993 1.000* | k6 0.967 1.000*
+  synq_n08_d50_posneg_normal_s1      k4     2404     3.7  | k5 0.958 0.993  | k6 0.890 0.879 
+  synq_n08_d50_posneg_normal_s2      k4    21974    38.8  | k5 0.780 0.792  | k6 0.684 0.709 
+  synq_n08_d50_posneg_normal_s3      k4   165978   256.6  | k5 0.968 0.939  | k6 0.967 1.013 
+  synq_n08_d90_pos_normal_s1         k4    60132   114.7  | k5 0.791 0.773  | k6 0.790 0.760 
+  synq_n08_d90_pos_normal_s2         k4   298326   510.8  | k5 0.771 0.788  | k6 0.717 0.743 
+  synq_n08_d90_pos_normal_s3         k4    78866   135.8  | k5 0.750 0.830  | k6 0.643 0.710 
+  synq_n08_d90_posneg_normal_s1      k4    11188    22.5  | k5 0.980 0.822  | k6 0.923 0.795 
+  synq_n08_d90_posneg_normal_s2      k4    34514    58.8  | k5 0.995 1.014  | k6 0.932 1.096 
+  synq_n08_d90_posneg_normal_s3      k4   207450   365.4  | k5 0.847 0.855  | k6 0.800 0.811 
+  synq_n10_d20_pos_normal_s1         k4   377746  1800.0* | k5 0.932 1.000* | k6 0.813 1.000*
+  synq_n10_d20_pos_normal_s2         k4   375538  1800.0* | k5 0.941 1.000* | k6 0.842 1.000*
+  synq_n10_d20_pos_normal_s3         k4   414398  1800.0* | k5 0.974 1.000* | k6 0.914 1.000*
+  synq_n10_d20_posneg_normal_s1      k4   410118  1800.0* | k5 1.052 1.000* | k6 0.951 1.000*
+  synq_n10_d20_posneg_normal_s2      k4   359768  1412.3  | k5 0.961 0.973  | k6 0.937 1.022 
+  synq_n10_d20_posneg_normal_s3      k4   422100  1800.0* | k5 0.965 1.000* | k6 0.948 1.000*
+  synq_n10_d50_pos_normal_s1         k4   440738  1800.0* | k5 0.953 1.000* | k6 0.857 1.000*
+  synq_n10_d50_pos_normal_s2         k4   475592  1800.0* | k5 0.951 1.000* | k6 0.836 1.000*
+  synq_n10_d50_pos_normal_s3         k4   409690  1800.0* | k5 0.968 1.000* | k6 0.920 1.000*
+  synq_n10_d50_posneg_normal_s1      k4   299098  1042.0  | k5 0.864 0.893  | k6 0.787 0.945 
+  synq_n10_d50_posneg_normal_s2      k4   393604  1800.0* | k5 0.995 1.000* | k6 0.945 1.000*
+  synq_n10_d50_posneg_normal_s3      k4   188998   717.5  | k5 0.812 0.822  | k6 0.763 0.809 
+  synq_n10_d90_pos_normal_s1         k4   356220  1800.0* | k5 0.918 1.000* | k6 0.825 1.000*
+  synq_n10_d90_pos_normal_s2         k4   353252  1800.0* | k5 0.966 1.000* | k6 0.948 1.000*
+  synq_n10_d90_pos_normal_s3         k4   383206  1800.0* | k5 1.129 1.000* | k6 1.108 1.000*
+  synq_n10_d90_posneg_normal_s1      k4   421434  1800.0* | k5 1.090 1.000* | k6 0.989 1.000*
+  synq_n10_d90_posneg_normal_s2      k4   562978  1731.6  | k5 0.875 0.946  | k6 0.787 0.898 
+  synq_n10_d90_posneg_normal_s3      k4   123588   391.7  | k5 0.815 0.870  | k6 0.691 0.910 
+(* = timeout a 1800 s; en esos casos celdas y CPU son las alcanzadas al corte)
+
+Costo por evaluacion afin (cpu/evaluados) respecto a k4, instancias resueltas por ambas:
+  k5/k4: gm=1.015 min=0.873 max=1.100 (n=20)
+  k6/k4: gm=1.062 min=0.892 max=1.302 (n=20)
