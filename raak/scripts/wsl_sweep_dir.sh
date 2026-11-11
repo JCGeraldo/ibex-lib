@@ -9,6 +9,7 @@
 #   VARIANTS="raa_k0 raa_k2 raa_k3"   etiquetas <arith>_k<K>; LR=art; opcional xn
 #   TLIM=1800  P=10       limite de CPU por corrida (s) y procesos en paralelo
 #   TRIG=auto             --trig para las variantes afines
+#   EXTRA="--seed=2"      argumentos adicionales para todas las corridas (p. ej. semilla)
 #   BIN=<binario>         ibexopt-raak a usar (por defecto el de ~/ibex-local/ibexopt-raak/build)
 # Uso tipico (en segundo plano):
 #   DIR=~/ibex-local/ibex-lib/raak/instancias/sinteticas OUT=~/ibex-local/results/sint-$(date +%Y%m%d) \
@@ -18,9 +19,9 @@ ROOT="$HOME/ibex-local"
 BIN="${BIN:-$ROOT/ibexopt-raak/build/ibexopt-raak}"
 : "${DIR:?falta DIR}"; : "${OUT:?falta OUT}"
 SET="${SET:-$(basename "$DIR")}"; LR="${LR:-art}"; VARIANTS="${VARIANTS:-raa_k0 raa_k2 raa_k3}"
-TLIM="${TLIM:-1800}"; P="${P:-10}"; TRIG="${TRIG:-auto}"
+TLIM="${TLIM:-1800}"; P="${P:-10}"; TRIG="${TRIG:-auto}"; EXTRA="${EXTRA:-}"
 mkdir -p "$OUT/logs" "$OUT/rows"
-export BIN DIR SET TLIM OUT
+export BIN DIR SET TLIM OUT EXTRA
 
 VLIST=()
 for v in $VARIANTS; do
@@ -36,7 +37,7 @@ run_one () {
   local log="$OUT/logs/${inst}__${label}.log"
   local t0; t0=$(date +%s.%N)
   # shellcheck disable=SC2086
-  timeout "$(( TLIM * 2 + 120 ))" "$BIN" $argstr -t "$TLIM" "$DIR/$inst.bch" > "$log" 2>&1
+  timeout "$(( TLIM * 2 + 120 ))" "$BIN" $argstr $EXTRA -t "$TLIM" "$DIR/$inst.bch" > "$log" 2>&1
   local code=$?
   if [ "$code" -eq 143 ] || [ "$code" -eq 137 ]; then echo "[INTERRUMPIDA] $inst $label (exit $code)"; return 0; fi
   local wall; wall=$(awk -v a="$t0" -v b="$(date +%s.%N)" 'BEGIN{printf "%.2f", b-a}')
@@ -68,7 +69,7 @@ TASKS="$OUT/tasks.txt"; : > "$TASKS"
 for f in "$DIR"/*.bch; do inst="$(basename "$f" .bch)"; for v in "${VLIST[@]}"; do printf '%s\t%s\n' "$inst" "$v" >> "$TASKS"; done; done
 { echo "binario: $BIN"; echo "ibex-affine: $(git -C "$ROOT/ibex-affine" log -1 --format='%h') + parches: $(git -C "$ROOT/ibex-affine" status --short -- src | tr '\n' ' ')"
   echo "ibex-lib: $(git -C "$ROOT/ibex-lib" log -1 --format='%h') ($(git -C "$ROOT/ibex-lib" branch --show-current))"
-  echo "DIR=$DIR SET=$SET LR=$LR VARIANTS=$VARIANTS TLIM=$TLIM P=$P TRIG=$TRIG"; echo "instancias: $(ls "$DIR"/*.bch | wc -l)  variantes: ${#VLIST[@]}  tareas: $(wc -l < "$TASKS")"
+  echo "DIR=$DIR SET=$SET LR=$LR VARIANTS=$VARIANTS TLIM=$TLIM P=$P TRIG=$TRIG EXTRA=$EXTRA"; echo "instancias: $(ls "$DIR"/*.bch | wc -l)  variantes: ${#VLIST[@]}  tareas: $(wc -l < "$TASKS")"
   echo "inicio: $(date -Is)"; } >> "$OUT/meta.txt"
 echo "== $(date -Is) tareas: $(wc -l < "$TASKS") (P=$P, TLIM=$TLIM)"
 xargs -P "$P" -d '\n' -n 1 bash -c 'run_task "$0"' < "$TASKS"

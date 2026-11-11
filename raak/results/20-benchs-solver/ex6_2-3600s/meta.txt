@@ -1,0 +1,7 @@
+binario: /home/jgera/ibex-local/ibexopt-raak/build/ibexopt-raak
+ibex-affine: c219009 + parches:  M src/CMakeLists.txt  M src/arithmetic/ibex_Affine2_fAF2.cpp  M src/arithmetic/ibex_Affine3_fAFFullI.cpp  M src/arithmetic/ibex_AffineMain.h  M src/arithmetic/ibex_AffineMain_impl.h  M src/numeric/ibex_LinearizerAffine2.cpp  M src/numeric/ibex_LinearizerAffine2.h ?? src/arithmetic/ibex_AffineMain_trig_impl.h ?? src/arithmetic/ibex_AffineTrig.h ?? src/arithmetic/ibex_KNomial.h 
+ibex-lib: d2beb195 (raak-experimentos)
+DIR=/home/jgera/ibex-local/instancias/ex6_2-largas SET=ex6_2 LR=art VARIANTS=raa_k0 raa_k4 raa_k6 TLIM=3600 P=10 TRIG=auto EXTRA=
+instancias: 3  variantes: 3  tareas: 9
+inicio: 2026-11-11T05:52:33-03:00
+fin: 2026-11-11T06:52:39-03:00

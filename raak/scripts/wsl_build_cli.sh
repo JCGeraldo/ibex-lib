@@ -22,6 +22,7 @@ cp "$SRC_CLI/cli_CMakeLists.txt"               "$CLI/CMakeLists.txt"
 cp "$SRC_CLI/cli_Optimizer04Config_Affine.h"   "$CLI/src/ibex_Optimizer04Config_Affine.h"
 cp "$SRC_CLI/cli_Optimizer04Config_Affine.cpp" "$CLI/src/ibex_Optimizer04Config_Affine.cpp"
 cp "$SRC_CLI/cli_ibexopt_raak.cpp"             "$CLI/src/bin/ibexopt_raak.cpp"
+cp "$SRC_CLI/cli_ibexsolve_raak.cpp"           "$CLI/src/bin/ibexsolve_raak.cpp"
 cp "$ROOT/ibex-lib/src/bin/parse_args.h"    "$CLI/src/bin/parse_args.h"
 
 CURRENT_LOG="$LOGS/cli-cmake.log"

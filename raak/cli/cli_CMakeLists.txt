@@ -19,3 +19,8 @@ target_include_directories (ibexopt-raak PRIVATE
                             ${CMAKE_CURRENT_SOURCE_DIR}/src
                             ${CMAKE_CURRENT_SOURCE_DIR}/src/bin)
 target_link_libraries (ibexopt-raak PRIVATE Ibex::ibex-affine)
+
+# ibexsolve-raak: IbexSolve con contractor elegible (solo afin, solo XTaylor, por defecto, ...), 10-11-2026
+add_executable (ibexsolve-raak src/bin/ibexsolve_raak.cpp)
+target_include_directories (ibexsolve-raak PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/bin)
+target_link_libraries (ibexsolve-raak PRIVATE Ibex::ibex-affine)

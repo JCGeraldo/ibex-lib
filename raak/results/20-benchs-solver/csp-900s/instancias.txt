@@ -1,0 +1,17 @@
+benchs/solver/non-polynom/Directkin.bch
+benchs/solver/non-polynom/Trigexp2-11.bch
+benchs/solver/non-polynom/Trigexp2-13.bch
+benchs/solver/non-polynom/Trigexp2-13sp.bch
+benchs/solver/non-polynom/Trigexp2-15.bch
+benchs/solver/non-polynom/Trigexp2-17.bch
+benchs/solver/non-polynom/Trigexp2-19.bch
+benchs/solver/non-polynom/Trigexp2-21.bch
+benchs/solver/non-polynom/Trigexp2-23.bch
+benchs/solver/non-polynom/Trigexp2-3.bch
+benchs/solver/non-polynom/Trigexp2-5.bch
+benchs/solver/non-polynom/Trigexp2-7.bch
+benchs/solver/non-polynom/Trigexp2-9.bch
+benchs/solver/polynom/Dietmaier.bch
+benchs/solver/polynom/Neveu1.bch
+benchs/solver/polynom/Pramanik.bch
+benchs/solver/polynom/ponts-geo.bch
