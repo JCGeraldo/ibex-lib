@@ -19,6 +19,8 @@
 // Un --arith o --knomial_k explicito prevalece sobre lo que fije un alias.
 //
 // Fase 2 (parche 0008):
+//   --knomial_budget=N       presupuesto de nodos de la busqueda de cliques por producto (0 = sin limite)
+//   --knomial_bound=interval|directed   como se calcula la cota rigurosa (parches 0012 / 0013)
 //   --trig=auto|cheb|minrange|legacy   linealizacion de sin/cos en la aritmetica afin
 //                                      (auto* = sigue el modo del plugin, que por defecto es
 //                                      Chebyshev -> pendiente de cuerda; legacy = codigo original)
@@ -71,6 +73,8 @@ int main(int argc, char** argv) {
     args::ValueFlag<std::string> _arith(parser, "arith", "Affine arithmetic for art/compo: af2* (fAF2), raa (RAA of [A]), aa (traditional AA, patch 0007)", {"arith"});
     args::ValueFlag<int> _knomialK(parser, "knomial_k", "k-nomial rewriting: 0* = none, K>=2 = blocks of up to K variables", {"knomial_k"});
     args::ValueFlag<int> _raakK(parser, "raak_k", "[compat] 0 -> af2,k=0 | 1 -> raa,k=0 | K>=2 -> raa,k=K", {"raak_k"});
+    args::ValueFlag<long> _knomialBudget(parser, "knomial_budget", "Node budget of the clique search per product: 0* = unlimited (patch 0011). Overrides RAAK_NODE_BUDGET", {"knomial_budget"});
+    args::ValueFlag<std::string> _knomialBound(parser, "knomial_bound", "Rigorous k-nomial bound computed with: interval* (ibex::Interval, patch 0012) | directed (doubles rounded upward, patch 0013). Overrides RAAK_BOUND_MODE", {"knomial_bound"});
     args::ValueFlag<std::string> _trig(parser, "trig", "sin/cos linearization in the affine arithmetic: auto* (plugin mode: Chebyshev = chord slope), cheb, minrange, legacy (original plugin code)", {"trig"});
     args::ValueFlag<std::string> _bisection(parser, "bisection", "Bisection option (roundrobin|largestfirst|largestfirstnoobj|smearsum|smearmax|smearsumrel|smearmaxrel|lsmear|lsmearmg*)", {'b'});
     args::ValueFlag<std::string> _strategy(parser, "strategy", "Search Strategy (bfs|dh|bs*)", {'s'});
@@ -135,6 +139,19 @@ int main(int argc, char** argv) {
         std::cerr << "--knomial_k=" << knomial_k << ": debe ser 0 (sin reescritura) o >= 2" << std::endl;
         return 1;
     }
+    // [raak local] 10-11-2026: presupuesto de la busqueda de cliques y modo de la cota rigurosa como opciones
+    // (antes solo por las variables de entorno RAAK_NODE_BUDGET y RAAK_BOUND_MODE, que siguen valiendo como
+    // valor inicial si la opcion no se da). Por hilo, igual que affine_mode() y knomial_max_k().
+    if (_knomialBudget) {
+        if (_knomialBudget.Get() < 0) { std::cerr << "--knomial_budget debe ser >= 0" << std::endl; return 1; }
+        ibex::knomial_node_budget() = _knomialBudget.Get();
+    }
+    if (_knomialBound) {
+        const std::string b = _knomialBound.Get();
+        if (b == "interval")      ibex::knomial_bound_mode() = 0;
+        else if (b == "directed") ibex::knomial_bound_mode() = 1;
+        else { std::cerr << "--knomial_bound=" << b << ": modo desconocido (interval | directed)" << std::endl; return 1; }
+    }
     // [raak local] Fase 2: linealizacion de sin/cos (por hilo; solo actua si art/compo evaluan formas afines)
     std::string trig = _trig ? _trig.Get() : "auto";
     if (trig == "auto")          ibex::trig_lin_mode() = ibex::TRIG_AUTO;
@@ -145,7 +162,9 @@ int main(int argc, char** argv) {
         std::cerr << "--trig=" << trig << ": modo desconocido (auto | cheb | minrange | legacy)" << std::endl;
         return 1;
     }
-    std::cout << "arith=" << arith << " knomial_k=" << knomial_k << " lr=" << lr << " trig=" << trig << std::endl;
+    std::cout << "arith=" << arith << " knomial_k=" << knomial_k << " lr=" << lr << " trig=" << trig
+              << " knomial_budget=" << ibex::knomial_node_budget()
+              << " knomial_bound=" << (ibex::knomial_bound_mode() == 1 ? "directed" : "interval") << std::endl;
 
     std::string defaultFiltering = "acidhc4";
     std::string defaultBisection = "lsmearmg";

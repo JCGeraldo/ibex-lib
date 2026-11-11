@@ -52,8 +52,8 @@ Todo el detalle, con tablas y controles, está en [`docs/REPORTE_IBEX_BASELINE.m
 | Carpeta | Contenido |
 |---|---|
 | `docs/` | Reporte completo, resumen y `ENTORNO.md` (versiones, comandos y cómo reconstruir todo) |
-| `patches/` | `0001` corrige un segfault de `LinearizerAffine2`; `0002` es el prototipo RAA-K en ibex-affine; `0003` es el cambio de 2 líneas en este repo |
-| `affine/ibex_KNomial.h` | El método: reescritura k-nomial y cota de la parte cuadrática (copia legible; se instala vía el parche `0002`) |
+| `patches/` | Cadena para ibex-affine sobre el commit c219009c: `0001`, `0002` y `0004` a `0014` (segfault de `LinearizerAffine2`, RAA-K, modos de aritmética, corner test, AA, trigonometría, búsqueda sin reservas y sin repetir cliques, cota rigurosa con residuo intervalar o redondeo dirigido). `raak-ibex-affine-consolidado.patch` es toda la cadena en un solo archivo. `0003` es el cambio de 2 líneas en este repo |
+| `affine/ibex_KNomial.h` | El método: reescritura k-nomial y cota rigurosa de la parte cuadrática (copia legible del archivo que deja la cadena de parches) |
 | `cli/` | `ibexopt-raak`: subclase de `Optimizer04Config` que habilita `--lr=art\|compo\|raak\|raakcompo` y el flag `--raak_k` |
 | `scripts/` | Clonado, compilación, barridos, medición de tiempos y guardado de parches (pensados para WSL/Ubuntu) |
 | `tests/` | Prueba dorada contra Python, prueba aritmética (contención, pendientes, radio) y el evaluador de QPLIB |
@@ -73,8 +73,9 @@ Requiere Ubuntu (probado en WSL, Ubuntu 24.04, GCC 13.3, CMake 3.28).
 mkdir -p ~/ibex-local && cp -r raak/scripts ~/ibex-local/scripts
 cd ~/ibex-local/scripts
 ./wsl_clone.sh              # clona y fija ibex-lib e ibex-affine
-# aplicar los parches 0001 y 0002 sobre ibex-affine, y 0003 sobre ibex-lib
-./wsl_build_ibexlib.sh && ./wsl_build_affine.sh && ./wsl_build_cli.sh
+# sobre ibex-affine (commit c219009c): git apply raak/patches/raak-ibex-affine-consolidado.patch
+#   (equivale a aplicar 0001, 0002 y 0004..0014 en orden); 0003 ya esta en este repo
+./wsl_build_ibexlib.sh && ./wsl_build_affine.sh && ./wsl_build_cli.sh   # el CLI se copia desde raak/cli
 ```
 
 Uso del binario:
@@ -84,6 +85,7 @@ ibexopt-raak --lr=raakcompo --raak_k=3 -t 60 benchs/optim/medium/ex8_4_4bis.bch
 ```
 
 `--raak_k`: `0` = fAF2 original · `1` = parte cuadrática de la RAA de [A] · `≥2` = RAA-K.
+Forma actual: `--lr=art --arith=raa --knomial_k=6`, con `--knomial_budget=N` (presupuesto de la búsqueda de cliques, 0 = sin límite) y `--knomial_bound=interval|directed` (cómo se calcula la cota rigurosa).
 
 Barridos y análisis: ver `docs/ENTORNO.md`, sección *Scripts*.
 

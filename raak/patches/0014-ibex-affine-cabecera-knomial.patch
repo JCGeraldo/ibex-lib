@@ -1,0 +1,63 @@
+Parche 0014 (ibex-affine, sobre c219009c + 0001 + 0002 + 0004..0013) -- solo comentarios: cabecera de ibex_KNomial.h al dia
+
+Que cambia
+  - ibex_KNomial.h: la cabecera ya no dice "PROTOTIPO sin redondeo dirigido"; describe el teorema de conservatividad,
+    el residuo intervalar (0012/0013) y las opciones por hilo. El comentario del corner test (0005) cita el test estricto
+    de contencion tests/affine_containment_check.cpp (0 violaciones seguras en 3.6 millones de evaluaciones).
+  No cambia codigo: hashes de knomial_diff_dump identicos (13f8bd6372dd083f interval, 87e9221dac5eceb6 directed).
+
+diff --git a/src/arithmetic/ibex_KNomial.h b/src/arithmetic/ibex_KNomial.h
+index e17e677..9f15d77 100644
+--- a/src/arithmetic/ibex_KNomial.h
++++ b/src/arithmetic/ibex_KNomial.h
+@@ -1,14 +1,22 @@
+ //============================================================================
+ //                    ibex-affine -- rama local "raak"
+ //
+-// Reduccion k-nomial SDSOS de formas cuadraticas para el prototipo de RAA-K.
+-// Port directo de raa_lib/knomial.py con mode='sdsos' y sign_mode='fixed'.
++// Reduccion k-nomial SDSOS de formas cuadraticas para RAA-K.
++// La busqueda de bloques (knomial_rewrite) es un port de raa_lib/knomial.py con mode='sdsos' y
++// sign_mode='fixed', en dobles: es una heuristica y solo decide la anchura de la cota.
+ //
+-// PROTOTIPO (fase F5): aritmetica en punto flotante sin redondeo dirigido.
+-// La fase de rigor (F6) debe acotar formalmente el redondeo de la reescritura.
++// RIGOR (parches 0012 y 0013, noviembre de 2026): la cota de knomial_quad_bound es conservativa en
++// punto flotante. Teorema: para bloques (c_b, u_b) cualesquiera,
++//     eps^T Q eps = sum_b c_b (u_b^T eps)^2 + eps^T R eps,  R = Q - sum_b c_b u_b u_b^T,
++// y el residuo se calcula con coeficientes intervalares (redondeo hacia fuera), de modo que todo el
++// error de redondeo queda dentro de [R]. No hay margenes heuristicos (los antiguos 'disc' y 'qmargin').
++// Comprobado sin tolerancia con tests/knomial_lemma_check.cpp y tests/affine_containment_check.cpp (raak).
+ //
+-// C++11, solo cabecera. Parche 0009 (29-10-2026): sin reservas de memoria por llamada en la
+-// reescritura (buffers por hilo), con los mismos resultados bit a bit.
++// Opciones por hilo: knomial_max_k() (tope k del bloque), knomial_node_budget() (presupuesto de la
++// busqueda, 0 = sin limite), knomial_bound_mode() (0 = ibex::Interval, 1 = dobles con redondeo dirigido).
++//
++// C++11, solo cabecera. Parche 0009: sin reservas de memoria por llamada (buffers por hilo).
++// Parche 0011: cada clique se enumera una sola vez y la busqueda admite presupuesto de nodos.
+ //============================================================================
+ 
+ #ifndef __IBEX_KNOMIAL_H__
+@@ -106,8 +114,10 @@ inline long& knomial_node_budget() {
+  * Devuelve max_{s} sum_i |ey a_i + s ex b_i| mayorado por el redondeo: cada termino tiene 2
+  * productos y 1 suma, y la acumulacion n sumas; con un factor (1 + 2 em) por operacion (patron
+  * de ibex_Affine2_fAF2.cpp, em = AF_EM) se usa (1+2em)^3 (1 + 4 em n) >= (1+2em)^(n+3), valido
+- * mientras 2 em n <= 1. No incluye el termino ex*ey (lo suma el llamador). Mayorante razonado,
+- * no riguroso en el sentido de F6.
++ * mientras 2 em n <= 1. No incluye el termino ex*ey (lo suma el llamador). Es el mismo esquema de
++ * mayoracion por factores (1 + 2 em) que usa fAF2 en todo el producto. Comprobado sin tolerancia con
++ * tests/affine_containment_check.cpp (raak, 10-11-2026): 0 violaciones seguras en 3.6 millones de
++ * evaluaciones de funciones que ejercitan el corner test, el cuadrado de Chebyshev y sin/cos/exp/ln.
+  */
+ inline double raa_corner_cross(const std::vector<double>& a, const std::vector<double>& b,
+                                double ex, double ey, double em) {
+@@ -449,7 +459,7 @@ inline int knomial_rewrite(std::vector<double>& Q, const std::vector<double>& w,
+ 	return n_infeasible;
+ }
+ 
+-/** Contadores por hilo de la cota cuadratica alternativa (RAA o k>=2; diagnostico del prototipo). */
++/** Contadores por hilo de la cota cuadratica alternativa (RAA o k>=2; diagnostico). */
+ struct KNomialStats {
+ 	long products;           // productos de formas activas no degeneradas con RAA o k>=2
+ 	long calls;              // productos que pasaron el filtro y llegaron a knomial_quad_bound

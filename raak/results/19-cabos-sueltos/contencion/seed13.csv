@@ -1,0 +1,46 @@
+familia,variante,casos,violaciones_seguras,posibles,peor_exceso_relativo
+"corner: (L*L)*(L*L)",af2_k0,20000,0,6,0.000e+00
+"corner: (L*L)*(L*L)",raa_k0,20000,0,6,0.000e+00
+"corner: (L*L)*(L*L)",raa_k4,20000,0,6,0.000e+00
+"corner: (L*L)*(L*L)",raa_k4_cheb,20000,0,6,0.000e+00
+"corner: (L*L)*(L*L)",raa_k4_minrange,20000,0,6,0.000e+00
+"corner: (L*L+L)*(sin(L)+L)",af2_k0,20000,0,0,0.000e+00
+"corner: (L*L+L)*(sin(L)+L)",raa_k0,20000,0,0,0.000e+00
+"corner: (L*L+L)*(sin(L)+L)",raa_k4,20000,0,0,0.000e+00
+"corner: (L*L+L)*(sin(L)+L)",raa_k4_cheb,20000,0,0,0.000e+00
+"corner: (L*L+L)*(sin(L)+L)",raa_k4_minrange,20000,0,1,0.000e+00
+"corner: (L*L)*(L^2+L)",af2_k0,20000,0,1,0.000e+00
+"corner: (L*L)*(L^2+L)",raa_k0,20000,0,1,0.000e+00
+"corner: (L*L)*(L^2+L)",raa_k4,20000,0,1,0.000e+00
+"corner: (L*L)*(L^2+L)",raa_k4_cheb,20000,0,1,0.000e+00
+"corner: (L*L)*(L^2+L)",raa_k4_minrange,20000,0,1,0.000e+00
+"sqr: (L*L+L)^2",af2_k0,20000,0,11,0.000e+00
+"sqr: (L*L+L)^2",raa_k0,20000,0,13,0.000e+00
+"sqr: (L*L+L)^2",raa_k4,20000,0,15,0.000e+00
+"sqr: (L*L+L)^2",raa_k4_cheb,20000,0,15,0.000e+00
+"sqr: (L*L+L)^2",raa_k4_minrange,20000,0,15,0.000e+00
+"sqr: L^2 y (L^2+L)^2",af2_k0,20000,0,1,0.000e+00
+"sqr: L^2 y (L^2+L)^2",raa_k0,20000,0,3,0.000e+00
+"sqr: L^2 y (L^2+L)^2",raa_k4,20000,0,3,0.000e+00
+"sqr: L^2 y (L^2+L)^2",raa_k4_cheb,20000,0,3,0.000e+00
+"sqr: L^2 y (L^2+L)^2",raa_k4_minrange,20000,0,3,0.000e+00
+"trig: sin(L), cos(L)",af2_k0,20000,0,0,0.000e+00
+"trig: sin(L), cos(L)",raa_k0,20000,0,0,0.000e+00
+"trig: sin(L), cos(L)",raa_k4,20000,0,0,0.000e+00
+"trig: sin(L), cos(L)",raa_k4_cheb,20000,0,0,0.000e+00
+"trig: sin(L), cos(L)",raa_k4_minrange,20000,0,0,0.000e+00
+"trig: sin(L*L)+cos(L)*L",af2_k0,20000,0,0,0.000e+00
+"trig: sin(L*L)+cos(L)*L",raa_k0,20000,0,0,0.000e+00
+"trig: sin(L*L)+cos(L)*L",raa_k4,20000,0,0,0.000e+00
+"trig: sin(L*L)+cos(L)*L",raa_k4_cheb,20000,0,0,0.000e+00
+"trig: sin(L*L)+cos(L)*L",raa_k4_minrange,20000,0,0,0.000e+00
+"exp/log: exp(L)*L + ln(4+L^2)",af2_k0,20000,0,0,0.000e+00
+"exp/log: exp(L)*L + ln(4+L^2)",raa_k0,20000,0,0,0.000e+00
+"exp/log: exp(L)*L + ln(4+L^2)",raa_k4,20000,0,0,0.000e+00
+"exp/log: exp(L)*L + ln(4+L^2)",raa_k4_cheb,20000,0,0,0.000e+00
+"exp/log: exp(L)*L + ln(4+L^2)",raa_k4_minrange,20000,0,0,0.000e+00
+"mezcla: (sin(L)+L)^2*(L*L)",af2_k0,20000,0,1,0.000e+00
+"mezcla: (sin(L)+L)^2*(L*L)",raa_k0,20000,0,1,0.000e+00
+"mezcla: (sin(L)+L)^2*(L*L)",raa_k4,20000,0,1,0.000e+00
+"mezcla: (sin(L)+L)^2*(L*L)",raa_k4_cheb,20000,0,1,0.000e+00
+"mezcla: (sin(L)+L)^2*(L*L)",raa_k4_minrange,20000,0,1,0.000e+00

@@ -5,6 +5,7 @@
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
+SRC_CLI="$HERE/../cli"   # las fuentes del CLI viven en raak/cli (antes se buscaban en raak/scripts)
 ROOT="$HOME/ibex-local"
 PREFIX="$ROOT/prefix"
 LOGS="$ROOT/logs"
@@ -13,13 +14,14 @@ JOBS="${JOBS:-8}"
 BENCH="$ROOT/ibex-lib/benchs/optim/easy/ex5_4_3.bch"
 mkdir -p "$CLI/src/bin" "$LOGS"
 
+CURRENT_LOG="$LOGS/cli-copy.log"
 trap 'echo; echo "*** FALLO. Ultimas lineas del log correspondiente:"; tail -40 "$CURRENT_LOG" 2>/dev/null' ERR
 
 echo "== copiando fuentes a $CLI"
-cp "$HERE/cli_CMakeLists.txt"               "$CLI/CMakeLists.txt"
-cp "$HERE/cli_Optimizer04Config_Affine.h"   "$CLI/src/ibex_Optimizer04Config_Affine.h"
-cp "$HERE/cli_Optimizer04Config_Affine.cpp" "$CLI/src/ibex_Optimizer04Config_Affine.cpp"
-cp "$HERE/cli_ibexopt_raak.cpp"             "$CLI/src/bin/ibexopt_raak.cpp"
+cp "$SRC_CLI/cli_CMakeLists.txt"               "$CLI/CMakeLists.txt"
+cp "$SRC_CLI/cli_Optimizer04Config_Affine.h"   "$CLI/src/ibex_Optimizer04Config_Affine.h"
+cp "$SRC_CLI/cli_Optimizer04Config_Affine.cpp" "$CLI/src/ibex_Optimizer04Config_Affine.cpp"
+cp "$SRC_CLI/cli_ibexopt_raak.cpp"             "$CLI/src/bin/ibexopt_raak.cpp"
 cp "$ROOT/ibex-lib/src/bin/parse_args.h"    "$CLI/src/bin/parse_args.h"
 
 CURRENT_LOG="$LOGS/cli-cmake.log"
