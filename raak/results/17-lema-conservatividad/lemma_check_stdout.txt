@@ -1,0 +1,69 @@
+# knomial_lemma_check N=20000 por semilla, binario 0011, 2026-11-08
+== semilla 7
+productos=20000 con_bloques=16894 bloques=29346
+violaciones SEGURAS (f(eps) evaluado con intervalos, disjunto de la cota): lema3=0 actual_sin_qmargin=0 actual_con_qmargin=0
+posibles (el intervalo de evaluacion de f sobresale, puede ser su propio redondeo): lema3=154 actual_sin_qmargin=548 actual_con_qmargin=0
+lema 2: max |R_tilde - (Q - sum c u u^T)| / max|Q| = 6.303e-16
+anchura lema3 / anchura actual con qmargin: media=1.000000 min=1.000000 max=1.000000 (n=19695)
+max (rad_actual - rad_lema3)/rad_lema3 = 1.071e-15
+== semilla 123
+VIOLACION SEGURA cota actual sin qmargin: producto 4829 n=2 k=2 modo=0 bloques=0 f=[-0.23862893767193707,-0.23862893767193704] cota=[-0.23862893767193701,0.10743785848649754] exceso=2.776e-17 exceso/rad=1.605e-16 qmargin=4.239e-16 lema3=[-0.2386289376719371,0.10743785848649757]
+  x= 0.15689941034716748 0
+  y= -0.83614768784124948 -0.68475629225611767
+  eps= 1 1
+productos=20000 con_bloques=16862 bloques=29178
+violaciones SEGURAS (f(eps) evaluado con intervalos, disjunto de la cota): lema3=0 actual_sin_qmargin=1 actual_con_qmargin=0
+posibles (el intervalo de evaluacion de f sobresale, puede ser su propio redondeo): lema3=178 actual_sin_qmargin=568 actual_con_qmargin=0
+lema 2: max |R_tilde - (Q - sum c u u^T)| / max|Q| = 6.433e-16
+anchura lema3 / anchura actual con qmargin: media=1.000000 min=1.000000 max=1.000000 (n=19716)
+max (rad_actual - rad_lema3)/rad_lema3 = 1.009e-15
+== semilla 1
+VIOLACION SEGURA cota actual sin qmargin: producto 14897 n=2 k=4 modo=0 bloques=0 f=[-0.20108251825862175,-0.20108251825862172] cota=[-0.20108251825862169,0.12501671143840657] exceso=2.776e-17 exceso/rad=1.703e-16 qmargin=3.572e-16 lema3=[-0.20108251825862177,0.12501671143840662]
+  x= -0.17787436948226809 0
+  y= 0.42763781562018677 0.70283713051120178
+  eps= -1 -1
+productos=20000 con_bloques=16764 bloques=28965
+violaciones SEGURAS (f(eps) evaluado con intervalos, disjunto de la cota): lema3=0 actual_sin_qmargin=1 actual_con_qmargin=0
+posibles (el intervalo de evaluacion de f sobresale, puede ser su propio redondeo): lema3=195 actual_sin_qmargin=572 actual_con_qmargin=0
+lema 2: max |R_tilde - (Q - sum c u u^T)| / max|Q| = 6.236e-16
+anchura lema3 / anchura actual con qmargin: media=1.000000 min=1.000000 max=1.000000 (n=19704)
+max (rad_actual - rad_lema3)/rad_lema3 = 1.517e-15
+== semilla 2
+productos=20000 con_bloques=16892 bloques=29394
+violaciones SEGURAS (f(eps) evaluado con intervalos, disjunto de la cota): lema3=0 actual_sin_qmargin=0 actual_con_qmargin=0
+posibles (el intervalo de evaluacion de f sobresale, puede ser su propio redondeo): lema3=159 actual_sin_qmargin=554 actual_con_qmargin=0
+lema 2: max |R_tilde - (Q - sum c u u^T)| / max|Q| = 6.344e-16
+anchura lema3 / anchura actual con qmargin: media=1.000000 min=1.000000 max=1.000000 (n=19736)
+max (rad_actual - rad_lema3)/rad_lema3 = 1.074e-15
+== semilla 3
+productos=20000 con_bloques=16931 bloques=29301
+violaciones SEGURAS (f(eps) evaluado con intervalos, disjunto de la cota): lema3=0 actual_sin_qmargin=0 actual_con_qmargin=0
+posibles (el intervalo de evaluacion de f sobresale, puede ser su propio redondeo): lema3=197 actual_sin_qmargin=528 actual_con_qmargin=0
+lema 2: max |R_tilde - (Q - sum c u u^T)| / max|Q| = 6.282e-16
+anchura lema3 / anchura actual con qmargin: media=1.000000 min=1.000000 max=1.000000 (n=19720)
+max (rad_actual - rad_lema3)/rad_lema3 = 1.201e-15
+== semilla 4
+productos=20000 con_bloques=16774 bloques=29235
+violaciones SEGURAS (f(eps) evaluado con intervalos, disjunto de la cota): lema3=0 actual_sin_qmargin=0 actual_con_qmargin=0
+posibles (el intervalo de evaluacion de f sobresale, puede ser su propio redondeo): lema3=183 actual_sin_qmargin=599 actual_con_qmargin=0
+lema 2: max |R_tilde - (Q - sum c u u^T)| / max|Q| = 6.264e-16
+anchura lema3 / anchura actual con qmargin: media=1.000000 min=1.000000 max=1.000000 (n=19707)
+max (rad_actual - rad_lema3)/rad_lema3 = 9.121e-16
+== semilla 5
+VIOLACION SEGURA cota actual sin qmargin: producto 12455 n=2 k=4 modo=2 bloques=0 f=[-437.94990949780299,-437.94990949780293] cota=[-437.94990949780287,291.6351556551274] exceso=5.685e-14 exceso/rad=1.559e-16 qmargin=7.780e-13 lema3=[-437.94990949780304,291.63515565512751]
+  x= -185.78905287195451 0
+  y= 0.78753162030227575 1.5697111920588878
+  eps= 1 1
+productos=20000 con_bloques=16878 bloques=29117
+violaciones SEGURAS (f(eps) evaluado con intervalos, disjunto de la cota): lema3=0 actual_sin_qmargin=1 actual_con_qmargin=0
+posibles (el intervalo de evaluacion de f sobresale, puede ser su propio redondeo): lema3=150 actual_sin_qmargin=563 actual_con_qmargin=0
+lema 2: max |R_tilde - (Q - sum c u u^T)| / max|Q| = 6.445e-16
+anchura lema3 / anchura actual con qmargin: media=1.000000 min=1.000000 max=1.000000 (n=19731)
+max (rad_actual - rad_lema3)/rad_lema3 = 1.126e-15
+== semilla 6
+productos=20000 con_bloques=16786 bloques=29088
+violaciones SEGURAS (f(eps) evaluado con intervalos, disjunto de la cota): lema3=0 actual_sin_qmargin=0 actual_con_qmargin=0
+posibles (el intervalo de evaluacion de f sobresale, puede ser su propio redondeo): lema3=168 actual_sin_qmargin=531 actual_con_qmargin=0
+lema 2: max |R_tilde - (Q - sum c u u^T)| / max|Q| = 6.545e-16
+anchura lema3 / anchura actual con qmargin: media=1.000000 min=1.000000 max=1.000000 (n=19706)
+max (rad_actual - rad_lema3)/rad_lema3 = 1.039e-15
