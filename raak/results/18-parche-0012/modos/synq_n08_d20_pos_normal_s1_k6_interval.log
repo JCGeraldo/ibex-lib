@@ -1,0 +1,4 @@
+ f* in	[-5.25085822269,-5.25085297183]
+ cpu time used:			73.7414010001s
+ number of cells:		49346
+RAA-K stats: productos=1312124 con_bloques=1310345 bloques=2108052 usados=1311576 radio_cuadratico_vs_fAF2=0.6542 evaluados=1312124 cuadrados=0 cuadrados_usados=0 corner_products=1311918 corner_used=1063736 cruces_vs_fAF2=0.8666 aa_products=0 aa_used=0

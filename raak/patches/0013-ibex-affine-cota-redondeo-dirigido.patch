@@ -1,0 +1,114 @@
+Parche 0013 (ibex-affine, sobre c219009c + 0001 + 0002 + 0004..0012) -- cota rigurosa con dobles y redondeo dirigido (modo alternativo)
+
+Que cambia
+  - ibex_KNomial.h: knomial_bound_mode(), por hilo, leido una vez de la variable de entorno RAAK_BOUND_MODE:
+    "interval" (por defecto) = la cota del parche 0012 con ibex::Interval; "directed" = la misma cota calculada con
+    dobles y redondeo hacia +inf (fesetround(FE_UPWARD), restaurado al salir), obteniendo los extremos inferiores
+    con el truco de signo -up(-expr). Por entrada (i, j) solo se calculan los dos extremos de [R_ij]; la cota se
+    acumula como U (hacia arriba) y -L (hacia arriba); shift = (L+U)/2 y rad = max(up(shift - L), up(U - shift)).
+  Misma matematica que 0012 (lema 3); no hay objetos Interval ni comprobaciones de Gaol. Con Gaol el procesador ya
+  esta permanentemente en FE_UPWARD, asi que fijarlo es un no-op en la practica.
+  Resultados: 0 violaciones en 160 000 productos; frente al modo interval, rad es igual o mayor en a lo sumo 2.2e-16
+  relativo (media 5e-18) y shift difiere a veces en un ulp. Hash de knomial_diff_dump en modo directed: 87e9221dac5eceb6
+  (interval: 13f8bd6372dd083f).
+
+diff --git a/src/arithmetic/ibex_KNomial.h b/src/arithmetic/ibex_KNomial.h
+index e4e04b5..e17e677 100644
+--- a/src/arithmetic/ibex_KNomial.h
++++ b/src/arithmetic/ibex_KNomial.h
+@@ -22,6 +22,7 @@
+ #include <utility>
+ #include <vector>
+ #include "ibex_Interval.h"
++#include <cfenv>
+ 
+ namespace ibex {
+ 
+@@ -66,6 +67,23 @@ inline AffineMode& affine_mode() {
+  * nodos pendientes se evaluan pero no se extienden, asi que el resultado sigue siendo un clique
+  * balanceado valido (solo deja de ser el optimo entre los de hasta k simbolos).
+  */
++/**
++ * Parche 0013: modo de calculo de la cota rigurosa de knomial_quad_bound, por hilo, leido una vez de la
++ * variable de entorno RAAK_BOUND_MODE: "interval" (0, por defecto) usa ibex::Interval (parche 0012);
++ * "directed" (1) usa dobles con redondeo dirigido hacia +inf (fesetround(FE_UPWARD)) y el truco de
++ * signo para los extremos inferiores, -up((-a)*b). Misma matematica, sin objetos ni comprobaciones
++ * de Gaol. Nota: con Gaol el procesador ya esta en FE_UPWARD de forma permanente; se fija y se restaura
++ * igualmente para no depender de ello.
++ */
++inline int& knomial_bound_mode() {
++	static thread_local int m = -1;
++	if (m < 0) {
++		const char* e = std::getenv("RAAK_BOUND_MODE");
++		m = (e && (e[0] == 'd' || e[0] == 'D' || e[0] == '1')) ? 1 : 0;
++	}
++	return m;
++}
++
+ inline long& knomial_node_budget() {
+ 	static thread_local long b = -1;
+ 	if (b < 0) {
+@@ -520,6 +538,55 @@ inline int knomial_quad_bound(const std::vector<double>& x_all, const std::vecto
+ 	w.assign(n, 2.0);
+ 	if (max_k >= 2) knomial_rewrite(Q, w, n, max_k, blocks);
+ 
++	if (knomial_bound_mode() == 1) {
++		// Parche 0013: misma cota que abajo con dobles y redondeo hacia +inf. Para cada entrada (i, j)
++		// se necesitan solo los dos extremos de [R_ij]; un extremo inferior se obtiene como -up(-expr).
++		// Las sumas de la cota se acumulan por separado: U (hacia arriba) y negL = -L (hacia arriba).
++		const int old_rm = std::fegetround();
++		if (old_rm != FE_UPWARD) std::fesetround(FE_UPWARD);
++		double U = 0.0, negL = 0.0;
++		for (size_t b = 0; b < blocks.size(); b++) {
++			double sb = 0.0;
++			for (int i = 0; i < n; i++) if (blocks[b].u[i] != 0.0) sb += std::fabs(blocks[b].u[i]);
++			const double s2 = sb * sb;                       // hacia arriba
++			if (blocks[b].c > 0.0) U += s2; else negL += s2;  // c [0, s2]: [0, s2] o [-s2, 0]
++		}
++		for (int i = 0; i < n; i++)
++			for (int j = i; j < n; j++) {
++				// [Q_ij] = 1/2 ([x_i][y_j] + [x_j][y_i])
++				const double q_up = 0.5 * ((xc[i] * yc[j]) + (xc[j] * yc[i]));
++				const double q_lo = -(0.5 * (((-xc[i]) * yc[j]) + ((-xc[j]) * yc[i])));
++				// t = sum_b c_b u_bi u_bj
++				double t_up = 0.0, negt = 0.0;
++				for (size_t b = 0; b < blocks.size(); b++) {
++					const double ui = blocks[b].u[i], uj = blocks[b].u[j];
++					if (ui != 0.0 && uj != 0.0) {
++						const double si = blocks[b].c * ui;   // exacto (c = +-1)
++						t_up += si * uj;
++						negt += (-si) * uj;
++					}
++				}
++				const double t_lo = -negt;
++				const double r_up = q_up - t_lo;             // hacia arriba
++				const double r_lo = -(t_up - q_lo);          // hacia abajo
++				if (i == j) {
++					// [R_ii] [0,1] = [min(r_lo,0), max(r_up,0)]
++					if (r_up > 0.0) U += r_up;
++					if (r_lo < 0.0) negL += (-r_lo);
++				} else {
++					// 2 [R_ij] [-1,1] = [-2M, 2M], M = max(|r_lo|, |r_up|)
++					const double M2 = 2.0 * std::max(std::fabs(r_lo), std::fabs(r_up));
++					U += M2;
++					negL += M2;
++				}
++			}
++		const double L = -negL;
++		const double m = 0.5 * (L + U);                  // cualquier doble sirve como centro
++		const double r1 = m - L, r2 = U - m;             // ambas hacia arriba
++		if (old_rm != FE_UPWARD) std::fesetround(old_rm);
++		shift = m;
++		rad = (r1 > r2) ? r1 : r2;
++	} else {
+ 	// Parche 0012: residuo con coeficientes intervalares (solo el triangulo superior) y cota [L,U].
+ 	std::vector<Interval>& R = B.R;
+ 	R.resize((size_t) n * n);
+@@ -545,6 +612,7 @@ inline int knomial_quad_bound(const std::vector<double>& x_all, const std::vecto
+ 	}
+ 	shift = LU.mid();
+ 	rad = LU.rad();
++	}
+ 
+ 	KNomialStats& st = knomial_stats();
+ 	st.calls++;

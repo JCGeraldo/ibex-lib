@@ -1,0 +1,187 @@
+Parche 0012 (ibex-affine, sobre c219009c + 0001 + 0002 + 0004..0011) -- cota k-nomial rigurosa: residuo con coeficientes intervalares
+
+Que cambia
+  - ibex_KNomial.h, knomial_quad_bound: la cota de la parte cuadratica eps^T Q eps se calcula con aritmetica de
+    intervalos redondeada hacia fuera. La reescritura (knomial_rewrite, en dobles) solo aporta los bloques (c_b, u_b);
+    el residuo se forma al final, [R_ij] = 1/2([x_i][y_j] + [x_j][y_i]) - sum_b c_b [u_bi][u_bj], y la cota es
+    [L,U] = sum_b c_b [0, s_b^2] + sum_i [R_ii][0,1] + sum_{i<j} 2[R_ij][-1,1] con s_b = sum|u_bi| redondeada arriba;
+    shift = mid([L,U]), rad = rad([L,U]) (IBEX garantiza [shift - rad, shift + rad] >= [L,U]). Desaparece el margen
+    heuristico 'disc' y el vector Q0. Lema: la identidad eps^T Q eps = sum c (u^T eps)^2 + eps^T R eps vale para bloques
+    cualesquiera, asi que el redondeo de u no necesita analisis y todo el error de redondeo queda dentro de [R]
+    (principio de las formas afines fiables rAF2 de Ninin, Messine y Hansen, 2015).
+  - ibex_Affine2_fAF2.cpp: qmargin = 0 (era AF_EM (n^2+4)(|shift| + rad + Sx Sy), heuristico). El criterio de uso
+    y el resto del producto no cambian; el redondeo de sumar qshift y qrad lo cubren twoSum y los factores (1+2 AF_EM).
+  - ibex_Affine3_fAFFullI.cpp: idem; knom = Interval(shift) + Interval(-rad, rad) en lugar de dobles con qmargin.
+  Resultados: identicos en bloques; shift y rad cambian en el ultimo digito (|dshift| <= 1.1e-15 relativo, rad entre 0 y
+  5e-15 mayor) porque el redondeo real sustituye a disc + qmargin. Contencion comprobada en 160 000 productos
+  (tests/knomial_lemma_check.cpp): 0 violaciones sin ningun margen (con 0011 sin qmargin habia 3).
+  Hash de knomial_diff_dump: 13f8bd6372dd083f (era 4e35cac9e4b800a4).
+
+diff --git a/src/arithmetic/ibex_Affine2_fAF2.cpp b/src/arithmetic/ibex_Affine2_fAF2.cpp
+index 57c8034..7e30984 100644
+--- a/src/arithmetic/ibex_Affine2_fAF2.cpp
++++ b/src/arithmetic/ibex_Affine2_fAF2.cpp
+@@ -633,8 +633,8 @@ AffineMain<AF_fAF2>& AffineMain<AF_fAF2>::operator*=(const AffineMain<AF_fAF2>&
+ 
+ 			// [raak local] con quad_alt la parte cuadratica (centro 0.5*Sz, radio Sx*Sy - 0.5*Sxy)
+ 			// se reemplaza por la cota de knomial_quad_bound. Los terminos cruzados con los
+-			// errores son los mismos de fAF2. El margen por el redondeo de la reescritura es
+-			// heuristico (prototipo, sin rigor; ver fase F6).
++			// errores son los mismos de fAF2. Desde el parche 0012 la cota es rigurosa (residuo con
++			// coeficientes intervalares) y no lleva margen heuristico.
+ 			// Solo se usa la cota k-nomial si mejora la de fAF2 mas alla de su margen; si no,
+ 			// se sigue exactamente por la formula original y el resultado es identico a fAF2.
+ 			bool use_raak = false;
+@@ -642,7 +642,10 @@ AffineMain<AF_fAF2>& AffineMain<AF_fAF2>::operator*=(const AffineMain<AF_fAF2>&
+ 			const double ex = _elt._err, ey = y._elt._err;
+ 			if (kcand) {
+ 				knomial_quad_bound(qx, qy, _n_noise, kmode, qshift, qrad);
+-				qmargin = AF_EM * ((double) _n_noise * _n_noise + 4.0) * (std::fabs(qshift) + qrad + Sx*Sy);
++				// Parche 0012: qshift y qrad son rigurosos ([qshift - qrad, qshift + qrad] contiene la parte
++				// cuadratica, lema de conservatividad); el margen heuristico qmargin pasa a 0. El redondeo
++				// de sumar qshift al centro y qrad al error lo cubren twoSum y los factores (1+2*AF_EM).
++				qmargin = 0.0;
+ 				use_raak = (qrad + qmargin) < (1- 2*AF_EM*(_n_noise + 4)) * (Sx*Sy - 0.5*Sxy);
+ 				if (use_raak) knomial_stats().calls_used++;
+ 			}
+diff --git a/src/arithmetic/ibex_Affine3_fAFFullI.cpp b/src/arithmetic/ibex_Affine3_fAFFullI.cpp
+index 94ff3a4..1939c36 100644
+--- a/src/arithmetic/ibex_Affine3_fAFFullI.cpp
++++ b/src/arithmetic/ibex_Affine3_fAFFullI.cpp
+@@ -536,8 +536,8 @@ AffineMain<AF_fAFFullI>& AffineMain<AF_fAFFullI>::operator*=(const AffineMain<AF
+ 			// intervalos _garbage. Original: producto de intervalos rad(x)*rad(y). Con knomial_max_k()>=2
+ 			// la parte (a^T eps)(b^T eps) se acota con knomial_quad_bound sobre la union de ids de los
+ 			// rayos (forma simetrica + reescritura k-nomial) y los cruces con gx, gy se suman con
+-			// aritmetica de intervalos (rigurosa). El margen qmargin de la reescritura es el heuristico
+-			// de 0002 (no riguroso; fase F6). Solo se usa si estrecha el intervalo; si no, el codigo es
++			// aritmetica de intervalos (rigurosa). Desde el parche 0012 la cota de knomial_quad_bound
++			// es rigurosa y no lleva margen. Solo se usa si estrecha el intervalo; si no, el codigo es
+ 			// bit a bit el original. El rayo nuevo lo crea el operator+(Interval) de abajo.
+ 			Interval quad = ax.itv() * (y.itv() - y._elt._center);
+ 			if (knomial_max_k() >= 2 && !ax._elt._rays.empty() && !y._elt._rays.empty()) {
+@@ -549,11 +549,11 @@ AffineMain<AF_fAFFullI>& AffineMain<AF_fAFFullI>::operator*=(const AffineMain<AF
+ 				std::list<std::pair<af3_int,double> >::const_iterator it;
+ 				for (it = ax._elt._rays.begin(); it != ax._elt._rays.end(); ++it) Sa += Interval(std::fabs(it->second));
+ 				for (it = y._elt._rays.begin(); it != y._elt._rays.end(); ++it) Sb += Interval(std::fabs(it->second));
+-				const double nu = (double) (ax._elt._rays.size() + y._elt._rays.size());
+-				const double qmargin = AF_EM * (nu * nu + 4.0) * (std::fabs(shift) + rad + Sa.ub() * Sb.ub());
++				// Parche 0012: shift y rad son rigurosos; sin margen heuristico. La suma de intervalos
++				// redondea hacia fuera, asi que knom contiene [shift - rad, shift + rad] como reales.
+ 				const Interval& gx = ax._elt._garbage;
+ 				const Interval& gy = y._elt._garbage;
+-				Interval knom = Interval(shift - rad - qmargin, shift + rad + qmargin)
++				Interval knom = Interval(shift) + Interval(-rad, rad)
+ 				              + Interval(-Sa.ub(), Sa.ub()) * gy
+ 				              + gx * Interval(-Sb.ub(), Sb.ub())
+ 				              + gx * gy;
+diff --git a/src/arithmetic/ibex_KNomial.h b/src/arithmetic/ibex_KNomial.h
+index 0bac785..e4e04b5 100644
+--- a/src/arithmetic/ibex_KNomial.h
++++ b/src/arithmetic/ibex_KNomial.h
+@@ -21,6 +21,7 @@
+ #include <tuple>
+ #include <utility>
+ #include <vector>
++#include "ibex_Interval.h"
+ 
+ namespace ibex {
+ 
+@@ -458,20 +459,29 @@ inline KNomialStats& knomial_stats() {
+ /**
+  * Cota de la parte cuadratica eps^T Q eps, con Q = (x y^T + y x^T)/2 y eps en
+  * [-1,1]^n (coordenadas de ruido de AF2). En 'shift' devuelve lo que se suma al
+- * centro y en 'rad' el radio de error:
+- *   - bloque c (u^T eps)^2, con s = sum|u_i|: rango [0, s^2]  -> centro c s^2/2,  radio |c| s^2/2
+- *   - diagonal residual Q_ii eps_i^2 en Q_ii [0,1]           -> centro Q_ii/2,   radio |Q_ii|/2
+- *   - cruce residual 2 Q_ij eps_i eps_j (i < j)               -> radio 2|Q_ij|
+- * Mas un margen por la discrepancia en punto flotante de Q = Q_res + sum c u u^T
+- * (prototipo: no es una cota rigurosa del redondeo).
+- * Con max_k < 2 no hay reescritura: es la forma simetrica termino a termino.
++ * centro y en 'rad' el radio de error, con [shift - rad, shift + rad] (como reales)
++ * conteniendo el rango de eps^T Q eps para todo eps.
++ *
++ * Parche 0012 (lema de conservatividad, 08-11-2026): la cota es rigurosa en punto flotante.
++ * La reescritura (knomial_rewrite, en dobles) solo aporta los bloques (c_b, u_b); el lema vale
++ * para bloques cualesquiera, asi que su redondeo no necesita analisis. El residuo se forma al
++ * final con aritmetica de intervalos redondeada hacia fuera,
++ *     [R_ij] = 1/2 ([x_i][y_j] + [x_j][y_i]) - sum_b c_b [u_bi][u_bj]   (contiene Q - sum c u u^T),
++ * y la cota es la suma de intervalos
++ *     [L,U] = sum_b c_b [0, s_b^2] + sum_i [R_ii] [0,1] + sum_{i<j} 2 [R_ij] [-1,1],
++ * con s_b = sum|u_bi| redondeada hacia arriba; shift = mid([L,U]) y rad = rad([L,U]) de IBEX,
++ * que garantizan [shift - rad, shift + rad] >= [L,U]. Desaparece el margen 'disc' (y el 'qmargin'
++ * del producto de fAF2): el error de redondeo queda dentro de los coeficientes del residuo, como en
++ * las formas afines fiables rAF2 de Ninin, Messine y Hansen (2015).
++ * Con max_k < 2 no hay reescritura: [R] = [Q] y es la forma simetrica termino a termino (RAA de [A]).
+  * Devuelve el numero de bloques extraidos.
+- * Parche 0009: los vectores de trabajo (xc, yc, Q, Q0, w, blocks) se reutilizan por hilo.
++ * Parche 0009: los vectores de trabajo (xc, yc, Q, w, blocks, R) se reutilizan por hilo.
+  */
+ namespace knomial_detail {
+ struct QuadBuf {
+-	std::vector<double> xc, yc, Q, Q0, w;
++	std::vector<double> xc, yc, Q, w;
+ 	std::vector<KNomialBlock> blocks;
++	std::vector<Interval> R;
+ };
+ inline QuadBuf& quad_buf() {
+ 	static thread_local QuadBuf b;
+@@ -504,38 +514,37 @@ inline int knomial_quad_bound(const std::vector<double>& x_all, const std::vecto
+ 	for (int i = 0; i < n; i++)
+ 		for (int j = 0; j < n; j++)
+ 			Q[i * n + j] = 0.5 * (xc[i] * yc[j] + xc[j] * yc[i]);
+-	std::vector<double>& Q0 = B.Q0;
+-	Q0.assign(Q.begin(), Q.end());
+-
+ 	std::vector<KNomialBlock>& blocks = B.blocks;
+ 	blocks.clear();
+ 	std::vector<double>& w = B.w;
+ 	w.assign(n, 2.0);
+ 	if (max_k >= 2) knomial_rewrite(Q, w, n, max_k, blocks);
+ 
+-	shift = 0.0;
+-	rad = 0.0;
++	// Parche 0012: residuo con coeficientes intervalares (solo el triangulo superior) y cota [L,U].
++	std::vector<Interval>& R = B.R;
++	R.resize((size_t) n * n);
++	for (int i = 0; i < n; i++)
++		for (int j = i; j < n; j++) {
++			Interval q = 0.5 * (Interval(xc[i]) * Interval(yc[j]) + Interval(xc[j]) * Interval(yc[i]));
++			for (size_t b = 0; b < blocks.size(); b++) {
++				const double ui = blocks[b].u[i], uj = blocks[b].u[j];
++				if (ui != 0.0 && uj != 0.0) q -= blocks[b].c * (Interval(ui) * Interval(uj));
++			}
++			R[i * n + j] = q;
++		}
++	Interval LU(0.0);
+ 	for (size_t b = 0; b < blocks.size(); b++) {
+-		double s = 0.0;
+-		for (int i = 0; i < n; i++) s += std::fabs(blocks[b].u[i]);
+-		double sq = s * s;
+-		shift += blocks[b].c * sq / 2.0;
+-		rad += std::fabs(blocks[b].c) * sq / 2.0;
++		Interval s(0.0);
++		for (int i = 0; i < n; i++) if (blocks[b].u[i] != 0.0) s += Interval(std::fabs(blocks[b].u[i]));
++		const double sb = s.ub();
++		LU += blocks[b].c * Interval(0.0, (Interval(sb) * Interval(sb)).ub());
+ 	}
+ 	for (int i = 0; i < n; i++) {
+-		shift += Q[i * n + i] / 2.0;
+-		rad += std::fabs(Q[i * n + i]) / 2.0;
+-		for (int j = i + 1; j < n; j++) rad += 2.0 * std::fabs(Q[i * n + j]);
++		LU += R[i * n + i] * Interval(0.0, 1.0);
++		for (int j = i + 1; j < n; j++) LU += 2.0 * (R[i * n + j] * Interval(-1.0, 1.0));
+ 	}
+-
+-	double disc = 0.0;
+-	for (int i = 0; i < n; i++)
+-		for (int j = i; j < n; j++) {
+-			double d = Q0[i * n + j] - Q[i * n + j];
+-			for (size_t b = 0; b < blocks.size(); b++) d -= blocks[b].c * blocks[b].u[i] * blocks[b].u[j];
+-			disc += (i == j ? 1.0 : 2.0) * std::fabs(d);
+-		}
+-	rad += disc;
++	shift = LU.mid();
++	rad = LU.rad();
+ 
+ 	KNomialStats& st = knomial_stats();
+ 	st.calls++;

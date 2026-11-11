@@ -1,0 +1,5 @@
+ optimization successful!
+ f* in	[-5.2508577315,-5.25085248065]
+ cpu time used:			85.9483970001s
+ number of cells:		70898
+RAA-K stats: productos=1862430 con_bloques=1860861 bloques=3285005 usados=1861924 radio_cuadratico_vs_fAF2=0.6787 evaluados=1862430 cuadrados=0 cuadrados_usados=0 corner_products=1862229 corner_used=1511070 cruces_vs_fAF2=0.8663 aa_products=0 aa_used=0
