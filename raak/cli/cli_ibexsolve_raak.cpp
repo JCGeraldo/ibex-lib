@@ -17,6 +17,7 @@
 // Biseccion y pila: las de DefaultSolver (SmearSumRelative si el sistema es cuadrado de igualdades,
 // RoundRobin si no; busqueda en profundidad).
 //============================================================================
+#include <fstream>
 #include "ibex.h"
 #include "ibex_LinearizerAffine2.h"
 #include "ibex_KNomial.h"
@@ -41,6 +42,7 @@ int main(int argc, char** argv) {
 	args::ValueFlag<double> _epsMax(parser, "eps-max", "Maximal width of output boxes (default +oo)", {'E', "eps-max"});
 	args::ValueFlag<double> _timeout(parser, "timeout", "Time limit in seconds (default: none)", {'t', "timeout"});
 	args::ValueFlag<double> _seed(parser, "seed", "Random seed", {"random-seed"});
+	args::ValueFlag<string> _boxes(parser, "boxes", "Write every output box to this text file: one line per box, 'S|B|U|P lb ub lb ub ...' (solution, boundary, unknown, pending)", {"boxes"});
 	args::Flag _bfs(parser, "bfs", "Breadth-first search", {"bfs"});
 	args::Flag quiet(parser, "quiet", "Print no report", {'q', "quiet"});
 	args::Positional<string> filename(parser, "filename", "The name of the MINIBEX file.");
@@ -117,6 +119,18 @@ int main(int argc, char** argv) {
 		const char* stn = st == Solver::SUCCESS ? "SUCCESS" : st == Solver::INFEASIBLE ? "INFEASIBLE" : st == Solver::NOT_ALL_VALIDATED ? "NOT_ALL_VALIDATED"
 		                : st == Solver::TIME_OUT ? "TIME_OUT" : st == Solver::CELL_OVERFLOW ? "CELL_OVERFLOW" : "USER_BREAK";
 		const CovSolverData& d = s.get_data();
+		if (_boxes) {
+			ofstream fo(_boxes.Get().c_str()); fo.precision(17);
+			for (int t = 0; t < 4; t++) {
+				const size_t nb = t == 0 ? d.nb_solution() : t == 1 ? d.nb_boundary() : t == 2 ? d.nb_unknown() : d.nb_pending();
+				for (size_t i = 0; i < nb; i++) {
+					const IntervalVector& b = t == 0 ? d.solution(i) : t == 1 ? d.boundary(i) : t == 2 ? d.unknown(i) : d.pending(i);
+					fo << "SBUP"[t];
+					for (int j = 0; j < b.size(); j++) fo << ' ' << b[j].lb() << ' ' << b[j].ub();
+					fo << '\n';
+				}
+			}
+		}
 		const KNomialStats& ks = knomial_stats();
 		cout << "RAAK-SOLVE status=" << stn << " cells=" << (long) s.get_nb_cells() << " time=" << s.get_time()
 		     << " solution=" << d.nb_solution() << " boundary=" << d.nb_boundary() << " unknown=" << d.nb_unknown() << " pending=" << d.nb_pending()

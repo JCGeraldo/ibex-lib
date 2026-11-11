@@ -1,0 +1,8 @@
+binario: /home/jgera/ibex-local/results/dia2-20261111/bin-seed.sh (fe0c20d86f4b)
+ibex-affine: c219009 + parches locales
+ibex-lib: 75b53375 (raak-experimentos)
+LIST=/home/jgera/ibex-local/results/dia2-20261111/lista-B.txt CONFIGS=default default+affine_af2 default+affine_raa default+affine_raa_k6 TLIM=900 P=10 MEMKB=4000000
+instancias: 17  tareas: 68
+carga al inicio: 3.54 7.18 8.34
+inicio: 2026-11-11T18:02:59-03:00
+fin: 2026-11-11T18:24:15-03:00
