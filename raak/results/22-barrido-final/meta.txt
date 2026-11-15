@@ -1,0 +1,6 @@
+encadenado: semillas listas, lanzo el barrido final 2026-11-11T19:30:09-03:00
+inicio total: 2026-11-11T19:30:09-03:00
+VARIANTS=af2_k0 raa_k0 raa_k2 raa_k3 raa_k4 raa_k6 TLIM=1800 P=10 SEED=42 BOUND=interval BUDGET=0
+binario: 9f242fe5f0bb  carga: 1.20 5.67 7.88
+fin total: 2026-11-12T05:00:00-03:00
+BARRIDO_FINAL_LISTO

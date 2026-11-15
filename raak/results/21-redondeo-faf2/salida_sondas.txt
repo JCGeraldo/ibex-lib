@@ -1,0 +1,15 @@
+modo de redondeo: 2048 (FE_UPWARD=2048, FE_TONEAREST=0)
+a=1 b=-9.99999e-41: s=1  t=0  error real en [-1.11022e-16, 0]  t exacto
+a=1 b=1e-40: s=1.0000000000000003  t=-2.2204460492503128e-16  error real en [-2.22044e-16, 0]  t exacto
+a=3 b=-9.99999e-21: s=3  t=-9.9999999999745245e-21  error real en [-4.44089e-16, 0]  t exacto
+
+hacia arriba (Gaol)            directo  a += -1e-40 : centro=1.5 err=0 cota inferior=1
+hacia arriba (Gaol)            directo  b += Interval(-1e-40): centro=1.5 err=0
+hacia arriba (Gaol)            directo  c += -1e-10 : centro=1.4999999999000003 err=4.27542e-16 cota inferior=0.99999999989999989
+hacia arriba (Gaol)            directo  d += -1e-17 : centro=1.5 err=2.00001e-17 cota inferior=1
+al mas cercano                 directo  a += -1e-40 : centro=1.5 err=0 cota inferior=1
+al mas cercano                 directo  b += Interval(-1e-40): centro=1.5 err=0
+al mas cercano                 directo  c += -1e-10 : centro=1.4999999999000003 err=4.27542e-16 cota inferior=0.99999999989999989
+al mas cercano                 directo  d += -1e-17 : centro=1.5 err=2.00001e-17 cota inferior=1
+
+b negativo con |b| < 2^-106 |a|: twoSum devuelve 0 (error perdido = b) en 536587 de 1000000

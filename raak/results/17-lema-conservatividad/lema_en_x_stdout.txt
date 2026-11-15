@@ -1,0 +1,4 @@
+productos 4000, violaciones 0 dif max entre enunciado en x y en eps 3.9297026796787627e-16
+ejemplo guia: 2Qm [4. 4. 0.] mQm 4.0
+ejemplo 2: m [1. 3. 0.] rho [1. 2. 1.] 2Qm [8. 8. 0.] mQm 16.0
+rango verdadero del residuo (malla): -1.0 9.0
