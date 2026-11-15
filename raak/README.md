@@ -52,7 +52,7 @@ Todo el detalle, con tablas y controles, está en [`docs/REPORTE_IBEX_BASELINE.m
 | Carpeta | Contenido |
 |---|---|
 | `docs/` | Reporte completo, resumen y `ENTORNO.md` (versiones, comandos y cómo reconstruir todo) |
-| `patches/` | Cadena para ibex-affine sobre el commit c219009c: `0001`, `0002` y `0004` a `0014` (segfault de `LinearizerAffine2`, RAA-K, modos de aritmética, corner test, AA, trigonometría, búsqueda sin reservas y sin repetir cliques, cota rigurosa con residuo intervalar o redondeo dirigido). `raak-ibex-affine-consolidado.patch` es toda la cadena en un solo archivo. `0003` es el cambio de 2 líneas en este repo |
+| `patches/` | Cadena para ibex-affine sobre el commit c219009c: `0001`, `0002` y `0004` a `0015` (segfault de `LinearizerAffine2`, RAA-K, modos de aritmética, corner test, AA, trigonometría, búsqueda sin reservas y sin repetir cliques, cota rigurosa con residuo intervalar o redondeo dirigido, umbrales de la búsqueda relativos al tamaño de la forma). `raak-ibex-affine-consolidado.patch` es toda la cadena en un solo archivo. `0003` es el cambio de 2 líneas en este repo |
 | `affine/ibex_KNomial.h` | El método: reescritura k-nomial y cota rigurosa de la parte cuadrática (copia legible del archivo que deja la cadena de parches) |
 | `cli/` | `ibexopt-raak`: subclase de `Optimizer04Config` que habilita `--lr=art\|compo\|raak\|raakcompo` y el flag `--raak_k` |
 | `scripts/` | Clonado, compilación, barridos, medición de tiempos y guardado de parches (pensados para WSL/Ubuntu) |
@@ -74,7 +74,7 @@ mkdir -p ~/ibex-local && cp -r raak/scripts ~/ibex-local/scripts
 cd ~/ibex-local/scripts
 ./wsl_clone.sh              # clona y fija ibex-lib e ibex-affine
 # sobre ibex-affine (commit c219009c): git apply raak/patches/raak-ibex-affine-consolidado.patch
-#   (equivale a aplicar 0001, 0002 y 0004..0014 en orden); 0003 ya esta en este repo
+#   (equivale a aplicar 0001, 0002 y 0004..0015 en orden); 0003 ya esta en este repo
 ./wsl_build_ibexlib.sh && ./wsl_build_affine.sh && ./wsl_build_cli.sh   # el CLI se copia desde raak/cli
 ```
 

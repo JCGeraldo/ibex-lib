@@ -1,0 +1,91 @@
+Parche 0015 (ibex-affine, sobre c219009c + 0001 + 0002 + 0004..0014) -- umbrales relativos en la reescritura k-nomial
+
+Problema (reportado el 15-11-2026 desde un port a Python usado en flujo de potencia, confirmado en C++)
+  knomial_rewrite descarta coeficientes y ganancias por debajo de 1e-12 en valor ABSOLUTO (lineas 156, 255, 301,
+  332, 338, 363, 422, 445 y 451 de la cabecera 0014). Q esta en coordenadas de ruido (coeficiente por radio de la
+  variable), asi que con coeficientes pequenos o con cajas pequenas toda la forma cae bajo el umbral y la reescritura
+  deja de formar bloques sin avisar. El mas estricto es C[u]*C[v] <= 1e-12, que ya actua con entradas de Q de 1e-6:
+  con coeficientes 1, radio de las variables menor que 1e-3. La cota seguia siendo valida (cae a la de k=0).
+
+Que cambia
+  - ibex_KNomial.h: la busqueda anterior pasa a llamarse knomial_rewrite_abs. El nuevo knomial_rewrite normaliza Q
+    por una potencia de 4 (mayor entrada en [1/4, 1)), llama a knomial_rewrite_abs y deshace la escala: Q por la
+    potencia de 4 y los u_b por su raiz, una potencia de 2. Las dos escalas son exactas en punto flotante.
+    Los umbrales quedan relativos a max|Q_ij|. knomial_relative_tol() = false (por hilo) recupera el comportamiento
+    anterior.
+  No cambia: la cota (knomial_quad_bound recalcula el residuo con intervalos a partir de x, y y los bloques).
+
+Verificacion (15-11-2026)
+  - knomial_golden: 80 casos, diferencia 0 con knomial.py.
+  - knomial_diff_dump: hash identico al de 0014 (13f8bd6372dd083f) sobre 20 000 productos de escala 1.
+  - knomial_lemma_check: 8 semillas x 20 000 productos, 0 violaciones seguras.
+  - affine_containment_check: 4 semillas x 4000 expresiones x 9 familias x 5 variantes (cajas de radio 1e-6 a 3),
+    0 violaciones seguras.
+  - (x1+x2-x3)(x1+x2+x3), radio r: k3/k0 = 0.714 para r de 1 a 1e-6 (antes 1.000 para r <= 5e-4).
+
+diff --git a/src/arithmetic/ibex_KNomial.h b/src/arithmetic/ibex_KNomial.h
+--- a/src/arithmetic/ibex_KNomial.h
++++ b/src/arithmetic/ibex_KNomial.h
+@@ -251,8 +251,8 @@
+  * buffers reutilizados por hilo. El benefit del nodo raiz de la busqueda no se recalcula: es
+  * exactamente benefit(base), ya calculado, y no puede superar best_de.
+  */
+-inline int knomial_rewrite(std::vector<double>& Q, const std::vector<double>& w, int n, int max_k,
+-                           std::vector<KNomialBlock>& blocks, double tol = 1e-12) {
++inline int knomial_rewrite_abs(std::vector<double>& Q, const std::vector<double>& w, int n, int max_k,
++                               std::vector<KNomialBlock>& blocks, double tol = 1e-12) {
+ 	using namespace knomial_detail;
+ 	blocks.clear();
+ 	if (n <= 0) return 0;
+@@ -459,6 +459,51 @@
+ 	return n_infeasible;
+ }
+ 
++/**
++ * [raak local] Parche 0015 (15-11-2026): umbrales relativos al tamano de la forma.
++ * knomial_rewrite_abs descarta coeficientes y ganancias por debajo de 1e-12 en valor ABSOLUTO.
++ * Como Q esta en coordenadas de ruido (coeficiente por radio), con cajas pequenas o coeficientes
++ * pequenos toda la forma cae bajo el umbral y la reescritura deja de formar bloques sin avisar
++ * (C[u]*C[v] <= 1e-12 ya actua con entradas de Q del orden de 1e-6). Aqui se normaliza Q por una
++ * potencia de 4 de modo que su mayor entrada quede en [1/4, 1), se reescribe y se deshace la
++ * escala: Q vuelve a su escala y los u_b se multiplican por la raiz (potencia de 2). Las dos
++ * escalas son exactas en punto flotante, asi que lambda, los signos y los cliques son los de la
++ * forma normalizada y los umbrales pasan a ser relativos a max|Q_ij|. Una forma cuya mayor
++ * entrada ya esta en [1/4, 1) se reescribe exactamente igual que antes.
++ * La validez de la cota no depende de esto: knomial_quad_bound recalcula el residuo con
++ * intervalos a partir de x, y y de los bloques, cualesquiera que sean (lema de conservatividad).
++ * knomial_relative_tol() = false recupera el comportamiento anterior (por hilo; diagnostico).
++ */
++inline bool& knomial_relative_tol() {
++	static thread_local bool on = true;
++	return on;
++}
++
++inline int knomial_rewrite(std::vector<double>& Q, const std::vector<double>& w, int n, int max_k,
++                           std::vector<KNomialBlock>& blocks, double tol = 1e-12) {
++	if (n <= 0 || max_k < 2 || !knomial_relative_tol())
++		return knomial_rewrite_abs(Q, w, n, max_k, blocks, tol);
++	const size_t nn = (size_t) n * n;
++	double qmax = 0.0;
++	for (size_t t = 0; t < nn; t++) {
++		const double a = std::fabs(Q[t]);
++		if (a > qmax) qmax = a;
++	}
++	int e2 = 0;
++	if (qmax > 0.0 && std::isfinite(qmax)) {
++		const int e = std::ilogb(qmax);                      // qmax en [2^e, 2^(e+1))
++		e2 = 2 * (int) std::floor((e + 2) / 2.0);            // qmax / 2^e2 en [1/4, 1)
++	}
++	if (e2 == 0) return knomial_rewrite_abs(Q, w, n, max_k, blocks, tol);
++	for (size_t t = 0; t < nn; t++) Q[t] = std::ldexp(Q[t], -e2);
++	const int r = knomial_rewrite_abs(Q, w, n, max_k, blocks, tol);
++	for (size_t t = 0; t < nn; t++) Q[t] = std::ldexp(Q[t], e2);
++	for (size_t b = 0; b < blocks.size(); b++)
++		for (size_t i = 0; i < blocks[b].u.size(); i++)
++			if (blocks[b].u[i] != 0.0) blocks[b].u[i] = std::ldexp(blocks[b].u[i], e2 / 2);
++	return r;
++}
++
+ /** Contadores por hilo de la cota cuadratica alternativa (RAA o k>=2; diagnostico). */
+ struct KNomialStats {
+ 	long products;           // productos de formas activas no degeneradas con RAA o k>=2

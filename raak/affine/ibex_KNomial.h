@@ -251,8 +251,8 @@ inline RewriteBuf& rewrite_buf() {
  * buffers reutilizados por hilo. El benefit del nodo raiz de la busqueda no se recalcula: es
  * exactamente benefit(base), ya calculado, y no puede superar best_de.
  */
-inline int knomial_rewrite(std::vector<double>& Q, const std::vector<double>& w, int n, int max_k,
-                           std::vector<KNomialBlock>& blocks, double tol = 1e-12) {
+inline int knomial_rewrite_abs(std::vector<double>& Q, const std::vector<double>& w, int n, int max_k,
+                               std::vector<KNomialBlock>& blocks, double tol = 1e-12) {
 	using namespace knomial_detail;
 	blocks.clear();
 	if (n <= 0) return 0;
@@ -457,6 +457,51 @@ inline int knomial_rewrite(std::vector<double>& Q, const std::vector<double>& w,
 	for (int k = 0; k < n; k++)
 		Q[k * n + k] = P[k] ? C[k] : (N[k] ? -C[k] : 0.0);
 	return n_infeasible;
+}
+
+/**
+ * [raak local] Parche 0015 (15-11-2026): umbrales relativos al tamano de la forma.
+ * knomial_rewrite_abs descarta coeficientes y ganancias por debajo de 1e-12 en valor ABSOLUTO.
+ * Como Q esta en coordenadas de ruido (coeficiente por radio), con cajas pequenas o coeficientes
+ * pequenos toda la forma cae bajo el umbral y la reescritura deja de formar bloques sin avisar
+ * (C[u]*C[v] <= 1e-12 ya actua con entradas de Q del orden de 1e-6). Aqui se normaliza Q por una
+ * potencia de 4 de modo que su mayor entrada quede en [1/4, 1), se reescribe y se deshace la
+ * escala: Q vuelve a su escala y los u_b se multiplican por la raiz (potencia de 2). Las dos
+ * escalas son exactas en punto flotante, asi que lambda, los signos y los cliques son los de la
+ * forma normalizada y los umbrales pasan a ser relativos a max|Q_ij|. Una forma cuya mayor
+ * entrada ya esta en [1/4, 1) se reescribe exactamente igual que antes.
+ * La validez de la cota no depende de esto: knomial_quad_bound recalcula el residuo con
+ * intervalos a partir de x, y y de los bloques, cualesquiera que sean (lema de conservatividad).
+ * knomial_relative_tol() = false recupera el comportamiento anterior (por hilo; diagnostico).
+ */
+inline bool& knomial_relative_tol() {
+	static thread_local bool on = true;
+	return on;
+}
+
+inline int knomial_rewrite(std::vector<double>& Q, const std::vector<double>& w, int n, int max_k,
+                           std::vector<KNomialBlock>& blocks, double tol = 1e-12) {
+	if (n <= 0 || max_k < 2 || !knomial_relative_tol())
+		return knomial_rewrite_abs(Q, w, n, max_k, blocks, tol);
+	const size_t nn = (size_t) n * n;
+	double qmax = 0.0;
+	for (size_t t = 0; t < nn; t++) {
+		const double a = std::fabs(Q[t]);
+		if (a > qmax) qmax = a;
+	}
+	int e2 = 0;
+	if (qmax > 0.0 && std::isfinite(qmax)) {
+		const int e = std::ilogb(qmax);                      // qmax en [2^e, 2^(e+1))
+		e2 = 2 * (int) std::floor((e + 2) / 2.0);            // qmax / 2^e2 en [1/4, 1)
+	}
+	if (e2 == 0) return knomial_rewrite_abs(Q, w, n, max_k, blocks, tol);
+	for (size_t t = 0; t < nn; t++) Q[t] = std::ldexp(Q[t], -e2);
+	const int r = knomial_rewrite_abs(Q, w, n, max_k, blocks, tol);
+	for (size_t t = 0; t < nn; t++) Q[t] = std::ldexp(Q[t], e2);
+	for (size_t b = 0; b < blocks.size(); b++)
+		for (size_t i = 0; i < blocks[b].u.size(); i++)
+			if (blocks[b].u[i] != 0.0) blocks[b].u[i] = std::ldexp(blocks[b].u[i], e2 / 2);
+	return r;
 }
 
 /** Contadores por hilo de la cota cuadratica alternativa (RAA o k>=2; diagnostico). */

@@ -1,0 +1,5 @@
+inicio: 2026-11-15T18:03:33-03:00 carga: 0.68 0.53 0.27
+48e036b07056ce256daf74ff7f4c3fa5  /home/jgera/ibex-local/ibexopt-raak/build/ibexopt-raak
+9f242fe5f0bb88a71d7fc377bd6a1e7c  /home/jgera/ibex-local/ibexopt-raak/build/ibexopt-raak-0014
+fin: 2026-11-15T19:17:58-03:00
+COMPARACION_LISTA
