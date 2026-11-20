@@ -1,0 +1,32 @@
+== 2026-11-15T22:41:09-03:00 ETAPA 1 barrido final de optimizacion 136x6 1800s
+== 2026-11-16T08:09:51-03:00 ETAPA 1 LISTA
+== 2026-11-16T08:09:51-03:00 ETAPA 2 semillas synq n=8, semilla 42, 600s
+== 2026-11-16T08:38:06-03:00 ETAPA 2 semillas synq n=8, semilla 1, 600s
+== 2026-11-16T09:06:20-03:00 ETAPA 2 semillas synq n=8, semilla 2, 600s
+== 2026-11-16T09:34:34-03:00 ETAPA 2 semillas synq n=8, semilla 3, 600s
+== 2026-11-16T10:02:48-03:00 ETAPA 2 semillas synq n=3,5, semilla 42, 600s
+== 2026-11-16T10:04:44-03:00 ETAPA 2 semillas synq n=3,5, semilla 1, 600s
+== 2026-11-16T10:06:42-03:00 ETAPA 2 semillas synq n=3,5, semilla 2, 600s
+== 2026-11-16T10:08:38-03:00 ETAPA 2 semillas synq n=3,5, semilla 3, 600s
+== 2026-11-16T10:10:35-03:00 ETAPA 2 LISTA
+== 2026-11-16T10:10:35-03:00 ETAPA 3 csp 17x7 900s
+== 2026-11-16T11:51:47-03:00 ETAPA 3 LISTA
+== 2026-11-16T11:51:47-03:00 ETAPA 4 csp default +afin 17x4 900s
+== 2026-11-16T12:13:14-03:00 ETAPA 4 LISTA
+== 2026-11-16T12:13:14-03:00 ETAPA 5 csp semilla 1, 17x4, 900s
+== 2026-11-16T12:34:41-03:00 ETAPA 5 csp semilla 2, 17x4, 900s
+== 2026-11-16T12:56:22-03:00 ETAPA 5 csp semilla 3, 17x4, 900s
+== 2026-11-16T13:19:28-03:00 ETAPA 5 csp semilla 7, 17x4, 900s
+== 2026-11-16T13:41:34-03:00 ETAPA 5 LISTA
+== 2026-11-16T13:41:34-03:00 ETAPA 6 costo por evaluacion: range_eval 0014 y 0015 alternados, 3 repeticiones, synq, un proceso
+== 2026-11-16T13:43:26-03:00 ETAPA 6 LISTA
+== 2026-11-16T13:43:26-03:00 ETAPA 7 csp 264x5 60s
+== 2026-11-16T19:12:22-03:00 ETAPA 7 reanudada tras caida de WSL (15:25): 15 corridas pendientes, P=3, segunda sesion
+== 2026-11-16T19:22:14-03:00 ETAPA 7 LISTA (rc=0; 1305 corridas en la sesion 1, 15 en la sesion 2)
+== 2026-11-20T17:15:33-03:00 ETAPA 8a csp default +afin 262x4 60s P=9 (sesion del 2026-11-20; carga 0.04 0.14 0.08)
+== 2026-11-20T18:20:53-03:00 ETAPA 8a LISTA
+== 2026-11-20T18:20:53-03:00 ETAPA 8b csp default +afin, Yamamura1-0400 y Yamamura1-1000sp, P=2
+== 2026-11-20T18:30:15-03:00 ETAPA 8 LISTA
+== 2026-11-20T18:30:15-03:00 ETAPA 9 ex6_2_5/7/13 3600s
+== 2026-11-20T19:30:21-03:00 ETAPA 9 LISTA
+== 2026-11-20T19:30:21-03:00 ETAPA COLA2_LISTA

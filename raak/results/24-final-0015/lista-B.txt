@@ -1,0 +1,17 @@
+/home/jgera/ibex-local/ibex-lib/benchs/solver/non-polynom/Directkin.bch
+/home/jgera/ibex-local/ibex-lib/benchs/solver/non-polynom/Trigexp2-11.bch
+/home/jgera/ibex-local/ibex-lib/benchs/solver/non-polynom/Trigexp2-13.bch
+/home/jgera/ibex-local/ibex-lib/benchs/solver/non-polynom/Trigexp2-13sp.bch
+/home/jgera/ibex-local/ibex-lib/benchs/solver/non-polynom/Trigexp2-15.bch
+/home/jgera/ibex-local/ibex-lib/benchs/solver/non-polynom/Trigexp2-17.bch
+/home/jgera/ibex-local/ibex-lib/benchs/solver/non-polynom/Trigexp2-19.bch
+/home/jgera/ibex-local/ibex-lib/benchs/solver/non-polynom/Trigexp2-21.bch
+/home/jgera/ibex-local/ibex-lib/benchs/solver/non-polynom/Trigexp2-23.bch
+/home/jgera/ibex-local/ibex-lib/benchs/solver/non-polynom/Trigexp2-3.bch
+/home/jgera/ibex-local/ibex-lib/benchs/solver/non-polynom/Trigexp2-5.bch
+/home/jgera/ibex-local/ibex-lib/benchs/solver/non-polynom/Trigexp2-7.bch
+/home/jgera/ibex-local/ibex-lib/benchs/solver/non-polynom/Trigexp2-9.bch
+/home/jgera/ibex-local/ibex-lib/benchs/solver/polynom/Dietmaier.bch
+/home/jgera/ibex-local/ibex-lib/benchs/solver/polynom/Neveu1.bch
+/home/jgera/ibex-local/ibex-lib/benchs/solver/polynom/Pramanik.bch
+/home/jgera/ibex-local/ibex-lib/benchs/solver/polynom/ponts-geo.bch

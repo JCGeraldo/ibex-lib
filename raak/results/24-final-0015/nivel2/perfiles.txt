@@ -1,0 +1,13 @@
+instancias 136 resueltas por al menos una 115
+k6 menor arbol: 100  dentro de 5%: 105
+art_af2_k0 mejor: 19 5%: 22
+art_raa_k0 mejor: 24 5%: 30
+art_raa_k2 mejor: 34 5%: 41
+art_raa_k3 mejor: 51 5%: 60
+art_raa_k4 mejor: 66 5%: 79
+art_raa_k6 mejor: 100 5%: 105
+ambas 114 k6 > k0: 5 [('sinteticas/synq_n03_d50_posneg_normal_s1', 22.0, 18.0, 1.222), ('sinteticas-log/synl_n08_d50_s1', 124.0, 122.0, 1.016), ('sinteticas-fun/synt_n05_d50_s1', 186.0, 164.0, 1.134), ('sinteticas-fun/synt_n08_d50_s1', 1740.0, 1542.0, 1.128), ('sinteticas-fun/synt_n08_d50_s2', 1144.0, 1122.0, 1.02)]
+sinteticas-fun/synt_n08_d90_s3 [('k0', 'SUCC', '60860', '163.513'), ('k0', 'SUCC', '42230', '122.588'), ('k2', 'SUCC', '37148', '118.978'), ('k3', 'SUCC', '26834', '90.0595'), ('k4', 'SUCC', '30892', '101.027'), ('k6', 'SUCC', '24278', '82.7640')]
+sinteticas-fun/synt_n10_d90_s3 [('k0', 'TIME', '289520', '1799.99'), ('k0', 'SUCC', '191592', '1322.04'), ('k2', 'SUCC', '128138', '924.013'), ('k3', 'SUCC', '113162', '813.322'), ('k4', 'SUCC', '117324', '644.517'), ('k6', 'SUCC', '92748', '532.391')]
+sinteticas-fun/synt_n10_d90_s2 [('k0', 'TIME', '230688', '1799.99'), ('k0', 'SUCC', '249110', '1494.10'), ('k2', 'SUCC', '222668', '1498.81'), ('k3', 'SUCC', '204136', '1386.35'), ('k4', 'SUCC', '131684', '892.245'), ('k6', 'SUCC', '222074', '1459.66')]
+sinteticas/synq_n08_d20_pos_normal_s3 [('k0', 'TIME', '1235528', '1799.99'), ('k0', 'TIME', '1044038', '1799.99'), ('k2', 'TIME', '968226', '1799.99'), ('k3', 'TIME', '981618', '1799.99'), ('k4', 'TIME', '1035510', '1799.99'), ('k6', 'SUCC', '893674', '1555.63')]

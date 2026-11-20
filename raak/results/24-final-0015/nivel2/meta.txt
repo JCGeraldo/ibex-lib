@@ -1,0 +1,5 @@
+inicio total: 2026-11-15T22:41:09-03:00
+VARIANTS=af2_k0 raa_k0 raa_k2 raa_k3 raa_k4 raa_k6 TLIM=1800 P=10 SEED=42 BOUND=interval BUDGET=0
+binario: 48e036b07056  carga: 3.85 1.13 0.38
+fin total: 2026-11-16T08:09:51-03:00
+BARRIDO_FINAL_LISTO

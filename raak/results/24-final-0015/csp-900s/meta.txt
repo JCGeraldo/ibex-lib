@@ -1,0 +1,8 @@
+binario: /home/jgera/ibex-local/ibexopt-raak/build/ibexsolve-raak (ede806a8940c)
+ibex-affine: c219009 + parches locales
+ibex-lib: 24480efb (raak-experimentos)
+LIST=/home/jgera/ibex-local/results/final-0015-20261115/lista-B.txt CONFIGS=default xn affine_af2 affine_raa affine_raa_k4 affine_raa_k6 default+affine_raa_k6 TLIM=900 P=10 MEMKB=4000000
+instancias: 17  tareas: 119
+carga al inicio: 1.75 2.95 5.35
+inicio: 2026-11-16T10:10:35-03:00
+fin: 2026-11-16T11:51:47-03:00

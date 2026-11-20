@@ -1,0 +1,16 @@
+binario: /home/jgera/ibex-local/ibexopt-raak/build/ibexsolve-raak (ede806a8940c)
+ibex-affine: c219009 + parches locales
+ibex-lib: 24480efb (raak-experimentos)
+LIST=/home/jgera/ibex-local/results/final-0015-20261115/lista-A-sin-yam-grandes.txt CONFIGS=default default+affine_af2 default+affine_raa default+affine_raa_k6 TLIM=60 P=9 MEMKB=4000000
+instancias: 262  tareas: 1048
+carga al inicio: 0.04 0.14 0.08
+inicio: 2026-11-20T17:15:33-03:00
+fin: 2026-11-20T18:20:53-03:00
+binario: /home/jgera/ibex-local/ibexopt-raak/build/ibexsolve-raak (ede806a8940c)
+ibex-affine: c219009 + parches locales
+ibex-lib: 24480efb (raak-experimentos)
+LIST=/home/jgera/ibex-local/results/final-0015-20261115/lista-A.txt CONFIGS=default default+affine_af2 default+affine_raa default+affine_raa_k6 TLIM=60 P=2 MEMKB=4000000
+instancias: 264  tareas: 1056
+carga al inicio: 6.87 8.56 8.86
+inicio: 2026-11-20T18:20:53-03:00
+fin: 2026-11-20T18:30:15-03:00
